@@ -1,0 +1,83 @@
+
+
+
+
+
+
+
+Hello! In addition to what I informed you in conversation.
+I found another critical bug. 
+if someone in the lobby looks in the gui selection menu, and someone in the arena quits the game or arena end round, 
+a failure occurs in the updated menu, and the arena freezes or the regeneration does not end. Finita la comedi..
+https://pastebin.com/KCZ8BkAD   https://pastebin.com/eVqQZYPR
+
+You may already be tired of me, but I bought your plugin to save time on updating my old plugin. 
+Now I have already spent so much time setting up yours, but it is still not stable, 
+and it is impossible to fix something in the plugin core due to obfuscation. 
+It begins to seem to me that the purchase was a mistake and I had to finish my own, which may have to be returned soon ..
+
+
+
+
+
+
+
+
+
+
+
+
+
+BUGS
+!!!! bed can not break if any weapon in hand
+Death-skipscreen - has no afect
+Diein-void - has no afect
+Spectator item "next arena" must switch only running arena (now switch an can join to lobby status arena)
+update to api-version 1.13
+
+
+REQUEST
+Lobby Countdown messages "start" do nor spam in chat, move it to actionbar
+Add arenaStatus preStart (prestart countdown)
+Spectator to player teleport - location.add(0,3,0)
+Add SpectateReason in PlayerQuitArenaSpectatorEvent and PlayerJoinArenaSpectatorEvent 
+Move autobalace option to team select menu (dissalow team choise if disbalance) (now - can create disbalaced team, and schufle player after round start? it`s not good) 
+Lobby teleport not in one point (mash), do small dispersion with location.add ( rnd(-2,+2), 0, rnd(-2,+2))
+Team displayName different per every map (not a (red,blue) for all, e.t.c. map1(red=hobbits,blue=orcs);map2(green=jedi,blue=sith)
+
+Add arena api methods:
+- arena.getRoundRemainingTime()
+- arena.getCooldownTime() (for arenaState preStart)
+- openAchivMenu (player)
+
+
+
+POSSIBLE:
+Game timer change color (40% time left - yellow, 10% time left - red)
+If player disconnect (bed is not broken), after relog back to game, kill it, and respawn with message "you back to game". If bed brocken, after relog move to spectator.
+Arena statistic save and show in arena select gui menu: gameplayed, middle round time
+Dissalow spectator switch fly-off
+If spectator take void damage - back to arena spectator point
+
+
+BIG JOB
+Recode the voting system. The fake votearena is ugly variant (votearena - votelobby - team select - votearena start join to voteWin arena - one more team select - that's horrible!!!)  
+Must be lobby - vote & team select -  voteWin arena start !!!!!!
+
+
+
+With all these improvements, the plugin will be much more userful.
+
+
++1 one small bugs:  duplicate TeamEliminateEvent (bed broken, last player in team die) 
+onPlayerRoundDeathEvent
+PlayerTeleportEvent cause=PLUGIN from=lobby<>24<>71<>9 to=lobby<>24<>71<>9 canceled?false gamemode =SURVIVAL 
+>>>> TeamEliminateEvent getFinalPlayer=semen isCausingEnd?false
+---- onPlayerQuitArenaEvent --- Ферма semen arena contains?false KickReason=Leave
+---- onPlayerJoinArenaSpectatorEvent --- Ферма semen
+PlayerTeleportEvent cause=PLUGIN from=lobby<>24<>71<>9 to=map1<>105<>159<>-427 canceled?false gamemode =SURVIVAL
+>>>>> TeamEliminateEvent getFinalPlayer=semen isCausingEnd?false
+---- onPlayerQuitArenaEvent --- Ферма semen arena contains?false KickReason=Lose
+PlayerTeleportEvent cause=COMMAND from=map1<>105<>159<>-427 to=lobby<>24<>71<>9 canceled?false gamemode =SURVIVAL
+---- onPlayerQuitArenaSpectatorEvent --- Ферма semen arena contains?false
+PlayerTeleportEvent cause=PLUGIN from=map1<>105<>159<>-427 to=lobby<>24<>71<>9 canceled?false gamemode =SURVIVAL

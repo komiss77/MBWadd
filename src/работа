@@ -1,0 +1,84 @@
+
+
+бв - вылазят рецепты
+
+
+
++swapHand disable
+время меняется!!!
++спавн мобов генерацией
+
+
+
+
+
++гибель в пустоту - зрителем не тп наверх
++кровать не ломается, ломать если стоит рядом!
++PlayerEarnAchievementEvent PlayerUseExtraItemEvent - давать опыт
++зритель лодка смена арены - перешел на незапущеную и присоединился с предметами лобби
++deathmessage ?
++звук при гибели
++выдать предметы, обрабатывать их
++после регена арены гуи выбор накрывается ? если был корявый выход игрока
+
+
+---БАГИ---
+SpectateReason в PlayerQuitArenaSpectatorEvent PlayerJoinArenaSpectatorEvent
+кровать не ломается оружием  ? конфиг bed-block: LEGACY_BED_BLOCK
+- голосование-выбор команды- совместить? сейчас: голование, лобби2 -выбора автозаход в голосование - игра - лобби - и не в голосование, а выбор арены вручную arena votinglobby system is 
+death-skipscreen: true не работает? 
+
+
+---СДЕЛАТЬ---
+из старого БВ не ломать блок под соими ingame.no-friendlybreak
+таймер - менять цвет от остатка
+сильно спамит сообщениями
+- перезаход - вернуть в игру и убить
+teambalance - не давать выбрать команду, или сообщать о перераспределении после старта
+кастомные названия команд для каждой карты
+
+
+
+---ВОЗМОЖНО---
+статистика - доработать учёт BW_loose в PlayerListener
+инфо по арене - сколько раз играли, наигранное время
+небольшой разброс x z при тп в лобби
+переделать зрителя на ГМ3 ?
+
+
+
+
+
+запустило с 2 игроками в 1 команде с ошибкой (лечится автобалансером)
+team_balancer = off
+[Server thread/WARN]: de.marcely.bedwars.bq: Player 'semen' isn't in a team?!
+[01:26:09] [Server thread/WARN]:        at de.marcely.bedwars.game.arena.Arena.D(Arena.java:1174)
+[01:26:09] [Server thread/WARN]:        at de.marcely.bedwars.game.arena.b.D(ArenaScheduler.java:396)
+[01:26:09] [Server thread/WARN]:        at de.marcely.bedwars.MBedwars$3.run(MBedwars.java:218)
+
+
+
+
+joingui
+[14:53:12] [Server thread/ERROR]: Could not pass event PlayerInteractEvent to MBedwars v4.0.13.1
+org.bukkit.event.EventException: null
+Caused by: java.lang.IllegalArgumentException: Size for custom inventory must be a multiple of 9 between 9 and 54 slots (got 0)
+	at org.apache.commons.lang.Validate.isTrue(Validate.java:136) ~[bw01.jar:git-Spigot-56f8471-43183ea]
+	at org.bukkit.craftbukkit.v1_14_R1.CraftServer.createInventory(CraftServer.java:1551) ~[bw01.jar:git-Spigot-56f8471-43183ea]
+	at org.bukkit.Bukkit.createInventory(Bukkit.java:1004) ~[bw01.jar:git-Spigot-56f8471-43183ea]
+	at de.marcely.bedwars.api.gui.GUI.open(GUI.java:212) ~[?:?]
+	at de.marcely.bedwars.api.gui.GUI.update(GUI.java:236) ~[?:?]
+	at de.marcely.bedwars.api.gui.GUI.clear(GUI.java:267) ~[?:?]
+	at de.marcely.bedwars.command.e.a(ArenasGUI.java:114) ~[?:?]
+	at de.marcely.bedwars.command.e.b(ArenasGUI.java:113) ~[?:?]
+	at de.marcely.bedwars.command.e$1$1.a(ArenasGUI.java:53) ~[?:?]
+	at de.marcely.bedwars.util.s$9.run(Util.java:2750) ~[?:?]
+	at de.marcely.bedwars.util.Synchronizer.<init>(Synchronizer.java:50) ~[?:?]
+	at de.marcely.bedwars.util.Synchronizer.<init>(Synchronizer.java:43) ~[?:?]
+	at de.marcely.bedwars.util.s$9.<init>(Util.java:2745) ~[?:?]
+	at de.marcely.bedwars.util.s.c(Util.java:2745) ~[?:?]
+	at de.marcely.bedwars.game.arena.Arena.a(Arena.java:856) ~[?:?]
+	at de.marcely.bedwars.game.arena.Arena.a(Arena.java:770) ~[?:?]
+	... 19 more
+
+

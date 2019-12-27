@@ -1,0 +1,9 @@
+api-version: 1.14
+name: BwAdd
+main: ru.komiss77.BwAdd
+version: 1.0
+load: POSTWORLD
+author: Komiss77
+
+depend: [Ostrov, MBedwars]
+
