@@ -1,9 +1,7 @@
 package de.marcely.bedwarsaddon.selectshopdesign;
 
-import de.marcely.bedwars.Language;
 import de.marcely.bedwars.Sound;
 import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.api.BedwarsAddon;
 import de.marcely.bedwars.api.CustomLobbyItem;
 import de.marcely.bedwars.api.Util;
 import de.marcely.bedwars.api.event.PlayerOpenShopEvent;
@@ -11,15 +9,14 @@ import de.marcely.bedwars.api.event.PlayerQuitArenaEvent;
 import de.marcely.bedwars.api.gui.DecGUIItem;
 import de.marcely.bedwars.api.gui.GUI;
 import de.marcely.bedwars.api.gui.GUIItem;
-import de.marcely.bedwars.game.shop.ShopDesignData;
-import de.marcely.bedwars.game.shop.ShopDesignType;
+import de.marcely.bedwars.game.shop.design.ShopDesignData;
+import de.marcely.bedwars.game.shop.design.ShopDesignType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,7 +30,7 @@ import ru.komiss77.BwAdd;
 
 
 public class BedwarsAddonSelectShopDesign {
-    
+   
     
     public static HashMap<ShopDesignData, ItemStack> DESIGN_ICON;
     public static List<ShopDesignData> DESIGN_DISABLED;
@@ -122,7 +119,7 @@ public class BedwarsAddonSelectShopDesign {
                 gui.open(player);
             }
         });
-        
+        /*
         BwAdd.bedwarsAddon.registerCommand(new BedwarsAddon.BedwarsAddonCommand("reload", "") {
             @Override
             public void onWrite(final CommandSender sender, final String[] args, final String fullUsage) {
@@ -132,7 +129,7 @@ public class BedwarsAddonSelectShopDesign {
                 Config.save();
                 sender.sendMessage(Language.Configurations_Reload_End.getMessage().replace("{time}", new StringBuilder().append((System.currentTimeMillis() - startTime) / 1000.0).toString()));
             }
-        });
+        });*/
         
         
         

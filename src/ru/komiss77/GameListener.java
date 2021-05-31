@@ -1,16 +1,5 @@
 package ru.komiss77;
 
-import de.marcely.bedwars.api.Arena;
-import de.marcely.bedwars.api.ArenaStatus;
-import de.marcely.bedwars.api.SpectateReason;
-import de.marcely.bedwars.api.Team;
-import de.marcely.bedwars.api.event.ArenaStatusUpdateEvent;
-import de.marcely.bedwars.api.event.PlayerJoinArenaEvent;
-import de.marcely.bedwars.api.event.PlayerQuitArenaEvent;
-import de.marcely.bedwars.cB;
-import de.marcely.bedwars.cC;
-import de.marcely.bedwars.game.spectator.item.SpectatorItem;
-import me.clip.deluxechat.DeluxeChat;
 import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,6 +8,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import ru.komiss77.Enums.UniversalArenaState;
+import me.clip.deluxechat.DeluxeChat;
+import de.marcely.bedwars.api.Arena;
+import de.marcely.bedwars.api.ArenaStatus;
+import de.marcely.bedwars.api.Team;
+import de.marcely.bedwars.api.event.ArenaStatusUpdateEvent;
+import de.marcely.bedwars.api.event.PlayerJoinArenaEvent;
+import de.marcely.bedwars.api.event.PlayerQuitArenaEvent;
 
 
 
@@ -113,7 +109,7 @@ class GameListener implements Listener {
                         return;
 
 
-                    case Reseting:
+                    case Resetting:
                         ApiOstrov.sendArenaData(
                             e.getArena().getName(),                        //arena name
                             "§bBedWars",                        //line0
@@ -162,7 +158,7 @@ class GameListener implements Listener {
     
     @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerJoinArenaEvent (final PlayerJoinArenaEvent e) {
-System.out.println(" ---- onPlayerJoinArenaEvent --- "+e.getArena().getName()+" "+e.getPlayer().getName());
+//System.out.println(" ---- onPlayerJoinArenaEvent --- "+e.getArena().getName()+" "+e.getPlayer().getName());
         if (e.getArena().GetStatus()==ArenaStatus.Lobby) sendLobbyState(e.getArena());
         e.getPlayer().resetPlayerTime();
         e.getPlayer().resetPlayerWeather();
@@ -171,7 +167,7 @@ System.out.println(" ---- onPlayerJoinArenaEvent --- "+e.getArena().getName()+" 
     
     @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerQuitArenaEvent (final PlayerQuitArenaEvent e) {
-System.out.println(" ---- onPlayerQuitArenaEvent --- "+e.getArena().getName()+" "+e.getPlayer().getName());
+//System.out.println(" ---- onPlayerQuitArenaEvent --- "+e.getArena().getName()+" "+e.getPlayer().getName());
         if (e.getArena().GetStatus()==ArenaStatus.Lobby)  sendLobbyState(e.getArena());
     }
  

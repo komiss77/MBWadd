@@ -1,4 +1,4 @@
-package de.marcely.bedwarsaddon.multiplebeds;
+package de.marcely.bedwarsaddon.multiplebeds115;
 
 import de.marcely.bedwars.api.Arena;
 import de.marcely.bedwars.api.BedwarsAPI;
@@ -7,7 +7,7 @@ import de.marcely.bedwars.api.BedwarsAPI;
 
 
 public class AUtil {
-    
+    /*
     public static AArena getAArena(final String arenaName) {
         for (final AArena arena : BedwarsAddonMultipleBeds.arenas) {
             if (arena.getName().equalsIgnoreCase(arenaName)) {
@@ -21,5 +21,5 @@ public class AUtil {
             return arena2;
         }
         return null;
-    }
+    }*/
 }

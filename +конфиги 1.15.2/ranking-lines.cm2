@@ -1,0 +1,6 @@
+# Placeholders: {player}, {rank}, {kd}, {wl}, {wins}, {loses}, {kills}, {deaths}, {bedsdestroyed}, {roundsplayed}, {playtime}
+&2&l{rank}
+&6&n{player}
+
+&3W/L: &b{wl}
+&3K/D: &b{kd}

@@ -1,10 +1,7 @@
 package ru.komiss77;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -14,29 +11,24 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import de.marcely.bedwars.Language;
-import de.marcely.bedwars.achievements.Achievement;
-import de.marcely.bedwars.achievements.UserAchievements;
+import ru.komiss77.utils.ItemBuilder;
+import ru.komiss77.utils.inventory.SmartInventory;
 import de.marcely.bedwars.api.Arena;
 import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.api.gui.DecGUIItem;
-import de.marcely.bedwars.api.gui.GUI;
-import de.marcely.bedwars.api.gui.GUIItem;
-import de.marcely.bedwars.config.ConfigValue;
-import ru.komiss77.utils.ItemBuilder;
-
+import de.marcely.bedwars.api.BedwarsAPIa;
 
 
 
@@ -93,7 +85,7 @@ class LobbyListener implements Listener {
                 player.setSneaking(false);
                 player.setSprinting(false);
                 player.setFoodLevel(20);
-                player.setMaxHealth(20.0D);
+                //player.setMaxHealth(20.0D);
                 player.setHealth(20.0D);
                 player.setFireTicks(0);
                 player.setPlayerListName("§f"+player.getName());
@@ -101,11 +93,19 @@ class LobbyListener implements Listener {
                 //player.resetPlayerTime();
                 //player.resetPlayerWeather();
                 player.getInventory().setItem(0, arenaSelector.clone());
-                player.getInventory().setItem(2, achivki.clone());
+                //player.getInventory().setItem(2, achivki.clone());
                 player.getInventory().setItem(4, stat.clone());
                 player.getInventory().setItem(6, profile.clone());
                 player.getInventory().setItem(8, exit.clone());
                 player.updateInventory();
+                
+                //BwAdd.scoreboard.apply(player);
+                
+                //player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+                player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+                //player.getScoreboard().getTeams().clear();
+                //player.getScoreboard().getEntries().clear();
+                //player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).unregister();
                 //if (executed.contains(player.getName())) executed.remove(player.getName());
             }
         }.runTaskLater(BwAdd.instance, 1);
@@ -225,10 +225,46 @@ class LobbyListener implements Listener {
 
     }
     
-    private void openAchivInv(final Player player) {
+    private void openAchivInv(final Player p) {
+        
+        //BedwarsAPI.getEntityAPI().
+        BedwarsAPIa.getPlayerDataAPI().getAchievements(p.getUniqueId() , acm -> {
+            System.out.println("++ acm"+acm);
+                SmartInventory.builder()
+                .id("§aДостижения "+p.getName())
+                .provider(new AchivMenu(acm))
+                .size(6, 9)
+                .title("§aДостижения")
+                .build()
+                .open(p);
+
+        } );
+
+        //getAchievements
+      /*  final PlayerAchievements pac = BedwarsAPIa.getPlayerDataAPI().getAchievementsNow(p.getUniqueId()).get();
+        
+        PlayerAchievement pa;
+        for (int i=1; i<=28; i++) {
+            pa = get(i);
+            if (pac.has(pa)) {
+                
+                //
+                
+            }
+        }*/
+       // final AchievementsAPI aa = 
+        //for (final DefaultPlayerAchievement da : DefaultPlayerAchievement.values()) {
+         //   if (BedwarsAPI.getPlayerStatsNow(player).))
+       // }
+        
+       // for (final PlayerAchievement pa : PlayerAchievement.values()) {
+        //    if (BedwarsAPI.getPlayerStatsNow(player).))
+       // }
+        
+        
        // Inventory inv = Bukkit.createInventory(player, InventoryType.CHEST, "§bДостижения");
        // player.openInventory(inv);
-        de.marcely.bedwars.Sound.LOBBY_ACHIEVEMENTS_OPEN.play(player);
+     /*   de.marcely.bedwars.Sound.LOBBY_ACHIEVEMENTS_OPEN.play(player);
         final Future futureResult = UserAchievements.a(player.getUniqueId());
 
          de.marcely.bedwars.util.s.a(futureResult, new Runnable() {
@@ -255,18 +291,18 @@ class LobbyListener implements Listener {
 
                   }
                   
-               //   for(Iterator achivki = Achievement.values(); achivki.hasNext(); guiInv.setBackground(new DecGUIItem(de.marcely.bedwars.util.i.a(ConfigValue.gui_achievements_backgroundmaterial, " ")))) {
-                //     Achievement achiv = (Achievement)achivki.next();
-                //     ItemStack item = userAcivki.has(achiv) ? de.marcely.bedwars.util.i.a(de.marcely.bedwars.util.i.a(ConfigValue.gui_achievements_material_earned.clone(), ChatColor.GREEN + var3.a(player)), ChatColor.DARK_PURPLE + " " + var3.c(player)) : de.marcely.bedwars.util.i.a(de.marcely.bedwars.util.i.a(ConfigValue.gui_achievements_material_unearned.clone(), ChatColor.RED + var3.a(player)), "" + ChatColor.GRAY + ChatColor.BOLD + " ????");
-                //     guiInv.addItem(new GUIItem(item) {
-                //        public void onClick(Player var1x, boolean var2, boolean var3) {
-                 //          de.marcely.bedwars.Sound.LOBBY_ACHIEVEMENTS_CLICK.play(var1x);
-                 //       }
-                //     });
-                 //    if (ConfigValue.gui_achievements_centered) {
-                 //       guiInv.centerAtYAll(GUI.CenterFormatType.Normal);
-                 //    }
-                  //}
+                  for(Iterator achivki = Achievement.values(); achivki.hasNext(); guiInv.setBackground(new DecGUIItem(de.marcely.bedwars.util.i.a(ConfigValue.gui_achievements_backgroundmaterial, " ")))) {
+                     Achievement achiv = (Achievement)achivki.next();
+                     ItemStack item = userAcivki.has(achiv) ? de.marcely.bedwars.util.i.a(de.marcely.bedwars.util.i.a(ConfigValue.gui_achievements_material_earned.clone(), ChatColor.GREEN + var3.a(player)), ChatColor.DARK_PURPLE + " " + var3.c(player)) : de.marcely.bedwars.util.i.a(de.marcely.bedwars.util.i.a(ConfigValue.gui_achievements_material_unearned.clone(), ChatColor.RED + var3.a(player)), "" + ChatColor.GRAY + ChatColor.BOLD + " ????");
+                     guiInv.addItem(new GUIItem(item) {
+                        public void onClick(Player var1x, boolean var2, boolean var3) {
+                           de.marcely.bedwars.Sound.LOBBY_ACHIEVEMENTS_CLICK.play(var1x);
+                        }
+                     });
+                     if (ConfigValue.gui_achievements_centered) {
+                        guiInv.centerAtYAll(GUI.CenterFormatType.Normal);
+                     }
+                  }
 
                   guiInv.open(player);
                } catch (ExecutionException | InterruptedException var6) {
@@ -274,21 +310,19 @@ class LobbyListener implements Listener {
                }
 
             }
-         });
+         });*/
 
     }
   
    
-    
-    
-    
+
     
 
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onPickup(PlayerPickupItemEvent e) {
+    public void onPickup(EntityPickupItemEvent e) {
 //System.out.println("PlayerPickupItemEvent "+e.getItem());        
-        if (e.getPlayer().getWorld().getName().equals("lobby") && !e.getPlayer().isOp()) {
+        if (e.getEntityType()==EntityType.PLAYER && e.getEntity().getWorld().getName().equals("lobby") ) {
             e.setCancelled(true);
             e.getItem().remove();
         }
@@ -298,7 +332,7 @@ class LobbyListener implements Listener {
         
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent e) {
-       if (e.getPlayer().getWorld().getName().equals("lobby") && !e.getPlayer().isOp()) {
+       if (e.getPlayer().getWorld().getName().equals("lobby") ) {
             e.setCancelled(true);
             e.getItemDrop().remove();
         }
@@ -356,9 +390,11 @@ class LobbyListener implements Listener {
             }
             
         if (e.getCause()==EntityDamageEvent.DamageCause.VOID) { //падение в бездну - сразу гибель
-            e.setDamage(21);
+           if (p.getGameMode()==GameMode.SURVIVAL) {
+               e.setDamage(21);
+               System.out.println("onPlayerDamage  DamageCause.VOID "+p.getName());        
+           }
             //p.playSound(p.getLocation(), Sound.ENTITY_PARROT_IMITATE_SKELETON , 20.0F, 20.0F);
-System.out.println("onPlayerDamage  DamageCause.VOID");        
         }
     }      
 
@@ -368,7 +404,20 @@ System.out.println("onPlayerDamage  DamageCause.VOID");
     
     
     
+     
+    @EventHandler(ignoreCancelled = true,priority = EventPriority.LOWEST)    
+	public void onPlace(BlockPlaceEvent e) {
+            //PM.getOplayer(e.getPlayer().getName()).last_breack=Timer.Единое_время();
+            if ( !ApiOstrov.isLocalBuilder(e.getPlayer(), false) && e.getPlayer().getWorld().getName().equals("lobby") ) e.setCancelled(true);
+        }
     
+    @EventHandler(ignoreCancelled = true,priority = EventPriority.LOWEST)    
+	public void onBreak(BlockBreakEvent e) {
+            if ( !ApiOstrov.isLocalBuilder(e.getPlayer(), false) && e.getPlayer().getWorld().getName().equals("lobby") ) e.setCancelled(true);
+        }
+ 
+   
+   
     
     
      

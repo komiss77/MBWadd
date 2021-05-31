@@ -1,4 +1,4 @@
-package de.marcely.bedwarsaddon.deathmatch;
+package de.marcely.bedwarsaddon.deathmatch115;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,23 +16,25 @@ import org.bukkit.event.Listener;
 
 import de.marcely.bedwars.api.BedwarsAPI;
 import de.marcely.bedwars.api.event.OutOfArenaEvent;
-import de.marcely.bedwarsaddon.multiplebeds.AArena;
-import de.marcely.bedwarsaddon.multiplebeds.AUtil;
+import de.marcely.bedwarsaddon.multiplebeds115.AArena;
+import de.marcely.bedwarsaddon.multiplebeds115.AUtil;
 import de.marcely.bedwars.api.Team;
 import de.marcely.bedwars.api.event.ArenaOutOfTimeEvent;
 import de.marcely.bedwars.api.Arena;
 
 
 
-public class Events implements Listener
-{
+public class Events implements Listener {
+ /*   
     private List<Arena> alreadyInDeathmatch;
     private List<Player> teleportingPlayers;
     
     public Events() {
-        this.alreadyInDeathmatch = new ArrayList<Arena>();
-        this.teleportingPlayers = new ArrayList<Player>();
+        this.alreadyInDeathmatch = new ArrayList<>();
+        this.teleportingPlayers = new ArrayList<>();
     }
+    
+    
     
     @EventHandler
     public void onArenaOutOfTimeEvent(final ArenaOutOfTimeEvent event) {
@@ -57,7 +59,7 @@ public class Events implements Listener
             }
             this.teleportingPlayers.addAll(arena.getPlayers());
             for (final Player player : arena.getPlayers()) {
-                player.teleport((Location)BedwarsAddonDeathmatch.deathmatchLocations.get(arena));
+                player.teleport(BedwarsAddonDeathmatch.deathmatchLocations.get(arena));
             }
         }
     }
@@ -85,5 +87,5 @@ public class Events implements Listener
         if (arena != null && this.alreadyInDeathmatch.contains(arena)) {
             event.setCancelled(true);
         }
-    }
+    }*/
 }

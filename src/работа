@@ -1,13 +1,45 @@
 
 
-бв - вылазят рецепты
 
 
 
-+swapHand disable
-время меняется!!!
-+спавн мобов генерацией
 
+
+
+
+
+зрителей тп вверх при воид дамаж
+
++лобби - наметаг не гаснет
+достижения??
+
+
+1. Взрыв кровати тнт овцой
+Описание: Ты взрываешь кровать тнт овцой. Она взорвалась все норм но галочка в scoreboard не убирается + если убить игрока он будет возрождаться постоянно. Итог: Победить не возможно.
+2. Появился баг со статой, пока на данный момент только килы не засчитывает. Но я не могу знать точно, думаю стату надо посмотреть.
+3. Блоки, их то поставить нельзя то сломать. в основном сломать нельзя если поставил у кровати. ( не знаю из-за анти чита это или из-за бв) Тут даже у меня работает, так что думаю не анти чит.
+4. Режим зрителя бв.
+Идет игра, ты заходишь в зрителя, оказываешься в лобби бв, там у тебя тп к игрокам скорость полета и т д, получается ты не можешь тп на карту и к игрокам. У меня с этим все норм, если игрок то не робит.
+5. Это уж не баг но так мешает игре. Взорвал ты базу, и все блоки выпали там шерсть дерево и т д. ладно если бы их поставить можно было, кстати думаю было бы круто) тут у игроков спрашивать надо. Но поставить их нельзя и получается в самый пик драки тебе надо выкинуть все это, чтобы меч то взять и другие предметы. Короче мешает.
+6. ломание блоков в лобби тоже легко исправлю, просто блочить ломание в мире лобби. 
+
+
+java.lang.NullPointerException: null
+	at de.marcely.bedwarsaddon.kits.BedwarsAddonKits.loadConfig(BedwarsAddonKits.java:84) ~[?:?]
+	at de.marcely.bedwarsaddon.kits.BedwarsAddonKits.load(BedwarsAddonKits.java:55) ~[?:?]
+	at ru.komiss77.BwAdd.onEnable(BwAdd.java:108) ~[?:?]
+	at org.bukkit.plugin.java.JavaPlugin.setEnabled(JavaPlugin.java:263) ~[bw01.jar:git-Spigot-492a779-83af86d]
+	at org.bukkit.plugin.java.JavaPluginLoader.enablePlugin(JavaPluginLoader.java:352) [bw01.jar:git-Spigot-492a779-83af86d]
+	at org.bukkit.plugin.SimplePluginManager.enablePlugin(SimplePluginManager.java:417) [bw01.jar:git-Spigot-492a779-83af86d]
+	at org.bukkit.craftbukkit.v1_15_R1.CraftServer.enablePlugin(CraftServer.java:462) [bw01.jar:git-Spigot-492a779-83af86d]
+	at org.bukkit.craftbukkit.v1_15_R1.CraftServer.enablePlugins(CraftServer.java:376) [bw01.jar:git-Spigot-492a779-83af86d]
+	at net.minecraft.server.v1_15_R1.MinecraftServer.a(MinecraftServer.java:456) [bw01.jar:git-Spigot-492a779-83af86d]
+	at net.minecraft.server.v1_15_R1.DedicatedServer.init(DedicatedServer.java:266) [bw01.jar:git-Spigot-492a779-83af86d]
+	at net.minecraft.server.v1_15_R1.MinecraftServer.run(MinecraftServer.java:783) [bw01.jar:git-Spigot-492a779-83af86d]
+
+
+
+BedwarsAddonKits.load();  ava.lang.NullPointerException: null
 
 
 

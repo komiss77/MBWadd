@@ -1,4 +1,4 @@
-package de.marcely.bedwarsaddon.multiplebeds;
+package de.marcely.bedwarsaddon.multiplebeds115;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,6 @@ import de.marcely.bedwars.api.event.BedPlaceEvent;
 import de.marcely.bedwars.game.arena.CrashMessage;
 import de.marcely.bedwars.api.event.EnableArenaEvent;
 import de.marcely.bedwars.api.event.ArenaStatusUpdateEvent;
-import de.marcely.bedwars.Language;
 import de.marcely.bedwars.api.ArenaStatus;
 import de.marcely.bedwars.api.Arena;
 import de.marcely.bedwars.game.location.XYZD;
@@ -34,7 +33,7 @@ import ru.komiss77.BwAdd;
 
 
 public class Events implements Listener {
-    @EventHandler
+   /* @EventHandler
     public void onBlockPlaceEvent(final BlockPlaceEvent event) {
         final Player player = event.getPlayer();
         final Block block = event.getBlock();
@@ -143,5 +142,5 @@ public class Events implements Listener {
     public void onPlayerRespawnEvent(final PlayerRespawnEvent event) {
         final AArena arena = AUtil.getAArena(event.getArena().getName());
         event.kickPlayer(arena.getDestroyedBedsAmount(event.getArena().GetPlayerTeam(event.getPlayer())) >= arena.getMaxBedsAmount());
-    }
+    }*/
 }

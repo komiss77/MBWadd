@@ -1,4 +1,4 @@
-package de.marcely.bedwarsaddon.deathmatch;
+package de.marcely.bedwarsaddon.deathmatch115;
 
 import java.util.List;
 import java.util.Set;
@@ -13,13 +13,12 @@ import org.bukkit.Location;
 
 import ru.komiss77.BwAdd;
 import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.Language;
 import de.marcely.bedwars.api.Arena;
 import de.marcely.bedwars.api.BedwarsAddon;
 
 public class BedwarsAddonDeathmatch {
     
-    
+/*    
     public static HashMap<Arena, Location> deathmatchLocations;
     public static int deathmatchTime;
 
@@ -92,5 +91,5 @@ public class BedwarsAddonDeathmatch {
     public static void loadConfig() {
         BedwarsAddonDeathmatch.deathmatchLocations.clear();
         Config.load();
-    }
+    }*/
 }

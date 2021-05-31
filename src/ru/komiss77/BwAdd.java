@@ -8,12 +8,12 @@ import de.marcely.bedwars.api.BedwarsAPI;
 import de.marcely.bedwars.api.BedwarsAddon;
 import de.marcely.bedwars.api.Team;
 import de.marcely.bedwars.config.ConfigValue;
-import de.marcely.bedwarsaddon.deathmatch.BedwarsAddonDeathmatch;
-import de.marcely.bedwarsaddon.kits.BedwarsAddonKits;
-import de.marcely.bedwarsaddon.multiplebeds.BedwarsAddonMultipleBeds;
+import de.marcely.bedwars.libraries.configmanager2.ConfigManager;
+import de.marcely.bedwarsaddon.deathmatch115.BedwarsAddonDeathmatch;
+import de.marcely.bedwarsaddon.kits115.BedwarsAddonKits;
 import de.marcely.bedwarsaddon.selectshopdesign.BedwarsAddonSelectShopDesign;
-import de.marcely.configmanager2.ConfigManager;
-import de.marcely.lvlshop.LVLShop;
+import de.marcely.lvlshop115.LVLShop;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -39,7 +39,7 @@ public class BwAdd extends JavaPlugin {
     public static ConfigManager multibedConfig;    
     public static ConfigManager kitConfig;    
     //public static ConfigManager lvlshopConfig;    
-    
+    public static CustomScoreboard scoreboard;
     
     
     @Override
@@ -58,6 +58,20 @@ public class BwAdd extends JavaPlugin {
         } else {
             log_ok("DeluxeChat не найден!");
         }
+        
+        
+        scoreboard = new CustomScoreboard(this, false, 
+                    "§eBW",
+                    new String[] {
+                        "§6§m-----------",
+                        "",
+                        "",
+                        "§6§m-----------",
+                    }
+            );
+        
+        //scoreboard.update("§7Прячутся:", "§5"+hidersTotal, true);
+        
         
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new GameListener(), this);
@@ -95,17 +109,17 @@ public class BwAdd extends JavaPlugin {
         BedwarsAddonSelectShopDesign.load();
         
         deadmatchConfig = new ConfigManager(this, "deadmatchConfig.cfg");
-        BedwarsAddonDeathmatch.load();
+        //BedwarsAddonDeathmatch.load();
         
         //multibedConfig = new ConfigManager(this, "multibedConfig.cfg");
         //BedwarsAddonMultipleBeds.load();
         
         //lvlshopConfig = new ConfigManager(this, "lvlshopConfig.cfg");
         //lvlshopConfig.load();
-        LVLShop.load();
+        //LVLShop.load();
         
         kitConfig = new ConfigManager(this, "kitConfig.cfg");
-        BedwarsAddonKits.load();
+        BedwarsAddonKits.load();  //ava.lang.NullPointerException: null
         
 
     }    
@@ -114,6 +128,13 @@ public class BwAdd extends JavaPlugin {
     
     
     
+    public static String stringToChatColor(String msg) {
+        return msg.replaceAll("&", "§");
+    }
+    
+    public static String chatColorToString(String msg) {
+        return ChatColor.translateAlternateColorCodes('&', msg);
+    }
     
     
     

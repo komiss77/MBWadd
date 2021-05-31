@@ -1,4 +1,4 @@
-package de.marcely.bedwarsaddon.kits;
+package de.marcely.bedwarsaddon.kits115;
 
 import java.util.ArrayList;
 import java.util.List;

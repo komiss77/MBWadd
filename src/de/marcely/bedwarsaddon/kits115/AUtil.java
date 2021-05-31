@@ -1,16 +1,14 @@
-// 
-// Decompiled by Procyon v0.5.36
-// 
-
-package de.marcely.bedwarsaddon.kits;
+package de.marcely.bedwarsaddon.kits115;
 
 import org.bukkit.Material;
 import de.marcely.bedwars.api.Util;
 import org.bukkit.inventory.ItemStack;
-import java.util.Iterator;
 
-public class AUtil
-{
+
+
+
+public class AUtil {
+    
     public static Kit getKit(final String name) {
         for (final Kit kit : BedwarsAddonKits.kits) {
             if (kit.getName().equalsIgnoreCase(name)) {
@@ -34,6 +32,7 @@ public class AUtil
     
     public static String toString(final ItemStack is) {
         return String.valueOf(Util.itemstackToConfigName(is)) + "," + is.getAmount();
+        //return is.getType().toString() + "," + is.getAmount();
     }
     
     public static String getMaterialUserFriendlyName(final Material m) {

@@ -1,4 +1,4 @@
-package de.marcely.bedwarsaddon.deathmatch;
+package de.marcely.bedwarsaddon.deathmatch115;
 
 import java.util.Map;
 
@@ -14,7 +14,7 @@ import de.marcely.bedwars.api.BedwarsAPI;
 public class Config {
     
     
-    public static void load() {
+  /*  public static void load() {
         if (BwAdd.deadmatchConfig.getRootTree().getChilds().size() == 0) {
             save();
         }
@@ -44,5 +44,5 @@ public class Config {
             BwAdd.deadmatchConfig.addConfig("arena_" + e.getKey().getName().replace("_", "{key;&#95;}"), (Object)(String.valueOf(e.getValue().getWorld().getName()) + "," + e.getValue().getX() + "," + e.getValue().getY() + "," + e.getValue().getZ() + "," + e.getValue().getYaw() + "," + e.getValue().getPitch()));
         }
         BwAdd.deadmatchConfig.save();
-    }
+    }*/
 }

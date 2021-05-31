@@ -1,0 +1,20 @@
+# #### IMPORTANT #### #
+# Names surrounded with % will be taken from the messages file.
+# Make sure when creating something new to remove the %!
+# ################### #
+
+tpto-player {
+	slot: 0
+	material: clock
+	name: %Spectator_Item_Teleporter%
+}
+change-speed {
+	slot: 1
+	material: arrow
+	name: %Spectator_Item_ChangeSpeed%
+}
+leave {
+	slot: 8
+	material: redstone
+	name: %Spectator_Item_Leave%
+}

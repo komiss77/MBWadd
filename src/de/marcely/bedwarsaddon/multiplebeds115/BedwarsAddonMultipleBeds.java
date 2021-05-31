@@ -1,4 +1,4 @@
-package de.marcely.bedwarsaddon.multiplebeds;
+package de.marcely.bedwarsaddon.multiplebeds115;
 
 import java.util.Collections;
 import java.util.ArrayList;
@@ -16,14 +16,13 @@ import de.marcely.bedwars.config.ConfigValue;
 import de.marcely.bedwars.api.Team;
 import de.marcely.bedwars.api.Arena;
 import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.Language;
 import de.marcely.bedwars.api.Util;
 import de.marcely.bedwars.api.BedwarsAddon;
 import ru.komiss77.BwAdd;
 
 
 public class BedwarsAddonMultipleBeds {
-    public static List<AArena> arenas;
+   /* public static List<AArena> arenas;
 
     
     public static void load() {
@@ -138,5 +137,5 @@ public class BedwarsAddonMultipleBeds {
                 }
             }
         });
-    }
+    }*/
 }

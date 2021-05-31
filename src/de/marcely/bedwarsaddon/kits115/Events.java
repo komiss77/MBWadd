@@ -1,4 +1,4 @@
-package de.marcely.bedwarsaddon.kits;
+package de.marcely.bedwarsaddon.kits115;
 
 
 

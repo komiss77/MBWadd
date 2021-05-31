@@ -1,27 +1,24 @@
-package de.marcely.bedwarsaddon.kits;
+package de.marcely.bedwarsaddon.kits115;
 
+import com.meowj.langutils.lang.LanguageHelper;
+import de.marcely.bedwars.api.BedwarsAPI;
+import de.marcely.bedwars.api.CustomLobbyItem;
+import de.marcely.bedwars.api.Util;
+import de.marcely.bedwars.api.VersionAPI;
+import de.marcely.bedwars.api.gui.GUI;
+import de.marcely.bedwars.api.gui.GUIItem;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.command.CommandSender;
-import org.bukkit.event.Listener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
-import de.marcely.bedwars.api.gui.GUIItem;
-import de.marcely.bedwars.api.Util;
-import de.marcely.bedwars.api.gui.GUI;
-import de.marcely.bedwars.api.VersionAPI;
-import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.Language;
-import de.marcely.bedwars.api.CustomLobbyItem;
-import de.marcely.bedwars.api.BedwarsAddon;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import ru.komiss77.BwAdd;
+
+
+
 
 public class BedwarsAddonKits {
     
@@ -33,26 +30,29 @@ public class BedwarsAddonKits {
     public static String message_noPermissions;
     public static String message_setKit;
     public static String message_loreItems;
-    public static String message_loreItemsEach;
+    //public static String message_loreItemsEach;
     public static HashMap<Player, Kit> selectedKits;
 
     
     public static void load () {
         
         BedwarsAddonKits.kits = new ArrayList<>();
+        
         BedwarsAddonKits.kitsGUITitle = ChatColor.GOLD + "Наборы";
         BedwarsAddonKits.lobbyItem = null;
         BedwarsAddonKits.permissionsEnabled = false;
         BedwarsAddonKits.permissionsMissingItemName = "{name} " + ChatColor.RED + "нет права";
         BedwarsAddonKits.message_noPermissions = ChatColor.RED + "нет права!";
         BedwarsAddonKits.message_setKit = ChatColor.GREEN + "Вы выбрали набор " + ChatColor.DARK_GREEN + "{kit}";
-        BedwarsAddonKits.message_loreItems = new StringBuilder().append(ChatColor.GRAY).append(ChatColor.UNDERLINE).append("Items:").toString();
-        BedwarsAddonKits.message_loreItemsEach = ChatColor.DARK_PURPLE + " {material}" + ChatColor.LIGHT_PURPLE + " {material-amount}";
+        BedwarsAddonKits.message_loreItems = new StringBuilder().append(ChatColor.GRAY).append(ChatColor.UNDERLINE).append("Предметы:").toString();
+        //BedwarsAddonKits.message_loreItemsEach = ChatColor.DARK_PURPLE + " {material}" + ChatColor.LIGHT_PURPLE + " {material-amount}";
         BedwarsAddonKits.selectedKits = new HashMap<>();
 
         
         Bukkit.getPluginManager().registerEvents(new Events(), BwAdd.instance);
+        
         loadConfig();
+        /*
         BwAdd.bedwarsAddon.registerCommand((BedwarsAddon.BedwarsAddonCommand)new BedwarsAddon.BedwarsAddonCommand("reload") {
             @Override
             public void onWrite(final CommandSender sender, final String[] args, final String fullUsage) {
@@ -61,7 +61,7 @@ public class BedwarsAddonKits {
                 loadConfig();
                 sender.sendMessage(Language.Configurations_Reload_End.getMessage().replace("{time}", new StringBuilder().append((System.currentTimeMillis() - startTime) / 1000.0).toString()));
             }
-        });
+        });*/
     }
     
     
@@ -77,7 +77,9 @@ public class BedwarsAddonKits {
             final List<String> lore = new ArrayList<>();
             lore.add(BedwarsAddonKits.message_loreItems);
             for (final ItemStack is : kit.getItems()) {
-                lore.add(BedwarsAddonKits.message_loreItemsEach.replace("{material}", AUtil.getMaterialUserFriendlyName(is.getType())).replace("{material-amount}", new StringBuilder().append(is.getAmount()).toString()));
+                //LanguageHelper.getItemName(armor[i], "ru_ru");
+                lore.add("§6"+LanguageHelper.getItemName(is, "ru_ru")+" x "+is.getAmount());
+                //lore.add(BedwarsAddonKits.message_loreItemsEach.replace("{material}", AUtil.getMaterialUserFriendlyName(is.getType())).replace("{material-amount}", new StringBuilder().append(is.getAmount()).toString()));
             }
             ItemStack is = kit.getIcon();
             final ItemMeta im = is.getItemMeta();
@@ -91,7 +93,8 @@ public class BedwarsAddonKits {
             public void onUse(final Player player) {
                 final GUI gui = new GUI(BedwarsAddonKits.kitsGUITitle, 0);
                 for (final Kit kit : BedwarsAddonKits.kits) {
-                    if (BedwarsAddonKits.permissionsEnabled && !Util.hasPermission((CommandSender)player, BedwarsAddonKits.getPermission(kit.getName()))) {
+                    //if (BedwarsAddonKits.permissionsEnabled && !Util.hasPermission((CommandSender)player, BedwarsAddonKits.getPermission(kit.getName()))) {
+                    if (BedwarsAddonKits.permissionsEnabled && !player.hasPermission("bedwars.kit."+kit.getName())) {
                         final ItemStack is = Util.renameItemstack(kit.getIcon().clone(), BedwarsAddonKits.permissionsMissingItemName.replace("{name}", ChatColor.WHITE + kit.getName()));
                         gui.addItem((GUIItem)new GUIItem(is) {
                             @Override

@@ -1,4 +1,4 @@
-package de.marcely.bedwarsaddon.multiplebeds;
+package de.marcely.bedwarsaddon.multiplebeds115;
 
 import ru.komiss77.BwAdd;
 import de.marcely.bedwars.api.Arena;
@@ -9,7 +9,7 @@ import de.marcely.bedwars.api.Team;
 
 
 public class Config {
-
+/*
     
     public static void load() {
         BwAdd.multibedConfig.load();
@@ -57,5 +57,5 @@ public class Config {
             BwAdd.multibedConfig.addConfig("arena_" + arenaname + "_max", (Object)arena.getMaxBedsAmount());
         }
         BwAdd.multibedConfig.save();
-    }
+    }*/
 }

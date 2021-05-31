@@ -1,4 +1,4 @@
-package de.marcely.lvlshop;
+package de.marcely.lvlshop115;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.Location;

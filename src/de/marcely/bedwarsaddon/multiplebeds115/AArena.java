@@ -1,31 +1,9 @@
-package de.marcely.bedwarsaddon.multiplebeds;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-
-import de.marcely.bedwars.api.StatsAPI;
-import de.marcely.bedwars.api.DropType;
-import de.marcely.bedwars.api.VersionAPI;
-import de.marcely.bedwars.Sound;
-import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.Language;
-import de.marcely.bedwars.config.ConfigValue;
-import de.marcely.bedwars.game.location.XYZ;
-import de.marcely.bedwars.game.location.XYZD;
-import de.marcely.bedwars.api.Team;
-import de.marcely.bedwars.api.Arena;
+package de.marcely.bedwarsaddon.multiplebeds115;
 
 
 
 public class AArena {
-    private Arena arena;
+  /*  private Arena arena;
     private int maxBedsAmount;
     private List<ABed> beds;
     private HashMap<Team, Integer> destroyedBedsAmount;
@@ -225,5 +203,5 @@ public class AArena {
             //    this.arena.arena.getWorld().getBlockAt((int)this.loc.getX(), (int)this.loc.getY(), (int)this.loc.getZ()).setType(ConfigValue.bed_block);
             //}
         }
-    }
+    }*/
 }
