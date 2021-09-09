@@ -1,5 +1,11 @@
 package ru.komiss77;
 
+import de.marcely.bedwars.api.arena.Arena;
+import de.marcely.bedwars.api.arena.ArenaStatus;
+import de.marcely.bedwars.api.arena.Team;
+import de.marcely.bedwars.api.event.arena.ArenaStatusChangeEvent;
+import de.marcely.bedwars.api.event.player.PlayerJoinArenaEvent;
+import de.marcely.bedwars.api.event.player.PlayerQuitArenaEvent;
 import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -7,14 +13,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-import ru.komiss77.Enums.UniversalArenaState;
 import me.clip.deluxechat.DeluxeChat;
-import de.marcely.bedwars.api.Arena;
-import de.marcely.bedwars.api.ArenaStatus;
-import de.marcely.bedwars.api.Team;
-import de.marcely.bedwars.api.event.ArenaStatusUpdateEvent;
-import de.marcely.bedwars.api.event.PlayerJoinArenaEvent;
-import de.marcely.bedwars.api.event.PlayerQuitArenaEvent;
+import ru.komiss77.enums.GameState;
 
 
 
@@ -68,15 +68,13 @@ class GameListener implements Listener {
             public void run() {
                 ApiOstrov.sendArenaData(
                     arena.getName(),                        //arena name
-                    "§bBedWars §1"+ (arena.GetTeamColors().GetEnabledTeams().isEmpty() ? "" : arena.GetTeamColors().GetEnabledTeams().size()+"x"+arena.getPerTeamPlayers() ),                        //line0
+                    GameState.ОЖИДАНИЕ,
+                    "§bBedWars §1"+ (arena.getEnabledTeams().isEmpty() ? "" : arena.getEnabledTeams().size()+"x"+arena.getPlayersPerTeam()),                        //line0
                     "§5Арена: §1"+arena.getName(),                       //line1
                     "§2Заходите!",                        //line2
                     "§1"+arena.getPlayers().size()+" / "+arena.getMaxPlayers(),                        //line3
                     "§8ожидание в лобби",                        //extra
-                    arena.getPlayers().size(),                     //players
-                    UniversalArenaState.ОЖИДАНИЕ,
-                    true,                       //mysql ?
-                    true                        //async ?
+                    arena.getPlayers().size()                     //players
                 );
             }
         }.runTaskLater(BwAdd.instance, 1);
@@ -85,69 +83,63 @@ class GameListener implements Listener {
     
     
     @EventHandler (priority = EventPriority.MONITOR)
-    public void onArenaStatusUpdateEvent (final ArenaStatusUpdateEvent e) {
+    public void onArenaStatusUpdateEvent (final ArenaStatusChangeEvent e) {
 //System.out.println(" ---- onArenaStatusUpdateEvent --- "+e.getArena().getName()+" "+e.getStatusBefore()+" -> "+e.getStatus());
-                switch (e.getStatus()) {
+                switch (e.getNewStatus()) {
 
-                    case Lobby:
+                    case LOBBY:
                         sendLobbyState(e.getArena());
                         return;
 
-                    case EndLobby:
+                    case END_LOBBY:
                         ApiOstrov.sendArenaData(
                             e.getArena().getName(),                        //arena name
-                            "§bBedWars §1"+e.getArena().GetTeamColors().GetEnabledTeams().size()+"x"+e.getArena().getPerTeamPlayers(),                         //line0
+                            GameState.ОЖИДАНИЕ,
+                            "§bBedWars §1"+e.getArena().getEnabledTeams().size()+"x"+e.getArena().getPlayersPerTeam(),                         //line0
                             "§5Арена: §1"+e.getArena().getName(),                        //line1
                             "§5Заканчивается",                        //line2
                             "",                        //line3
                             "§8конец",                        //extra
-                            e.getArena().getPlayers().size(),                     //players
-                            UniversalArenaState.ФИНИШ,
-                            true,                       //mysql ?
-                            true                        //async ?
+                            e.getArena().getPlayers().size()                     //players
                         );
                         return;
 
 
-                    case Resetting:
+                    case RESETTING:
                         ApiOstrov.sendArenaData(
                             e.getArena().getName(),                        //arena name
+                            GameState.ОЖИДАНИЕ,
                             "§bBedWars",                        //line0
                             "§5Арена: §1"+e.getArena().getName(),                        //line1
                             "§eРегенерация",                        //line2
                             "",                        //line3
                             "§8реген",                        //extra
-                            e.getArena().getPlayers().size(),                     //players
-                            UniversalArenaState.РЕГЕНЕРАЦИЯ,
-                            true,                       //mysql ?
-                            true                        //async ?
+                            e.getArena().getPlayers().size()                     //players
                         );
                         return;
 
 
-                    case Stopped:
+                    case STOPPED:
                         ApiOstrov.sendArenaData(
                             e.getArena().getName(),                        //arena name
-                            "§bBedWars §1"+e.getArena().GetTeamColors().GetEnabledTeams().size()+"x"+e.getArena().getPerTeamPlayers(),                        //line0
+                            GameState.ОЖИДАНИЕ,
+                            "§bBedWars §1"+e.getArena().getEnabledTeams().size()+"x"+e.getArena().getPlayersPerTeam(),                        //line0
                             "§5Арена: §1"+e.getArena().getName(),                        //line1
                             "§4Выключена",                        //line2
                             "",                        //line3
                             "§8off",                        //extra
-                            e.getArena().getPlayers().size(),                     //players
-                            UniversalArenaState.ВЫКЛЮЧЕНА,
-                            true,                       //mysql ?
-                            true                        //async ?
+                            e.getArena().getPlayers().size()                     //players
                         );
                         return;
                         
-                    case Running:
+                    case RUNNING:
                         for (Team team : e.getArena().getRemainingTeams()) {
                             for (Player p : e.getArena().getPlayersInTeam(team)) {
-                                p.setPlayerListName("§8["+team.getChatColor()+team.getName()+"§8] §f"+p.getName());
+                                p.setPlayerListName("§8["+team.getChatColor()+team.getDisplayName()+"§8] §f"+p.getName());
                             }
                         }
-                        e.getArena().getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-                        e.getArena().getWorld().setTime(1000);
+                        e.getArena().getGameWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+                        e.getArena().getGameWorld().setTime(1000);
                         return;
 
                 }
@@ -159,7 +151,7 @@ class GameListener implements Listener {
     @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerJoinArenaEvent (final PlayerJoinArenaEvent e) {
 //System.out.println(" ---- onPlayerJoinArenaEvent --- "+e.getArena().getName()+" "+e.getPlayer().getName());
-        if (e.getArena().GetStatus()==ArenaStatus.Lobby) sendLobbyState(e.getArena());
+        if (e.getArena().getStatus()==ArenaStatus.LOBBY) sendLobbyState(e.getArena());
         e.getPlayer().resetPlayerTime();
         e.getPlayer().resetPlayerWeather();
     }
@@ -168,7 +160,7 @@ class GameListener implements Listener {
     @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerQuitArenaEvent (final PlayerQuitArenaEvent e) {
 //System.out.println(" ---- onPlayerQuitArenaEvent --- "+e.getArena().getName()+" "+e.getPlayer().getName());
-        if (e.getArena().GetStatus()==ArenaStatus.Lobby)  sendLobbyState(e.getArena());
+        if (e.getArena().getStatus()==ArenaStatus.LOBBY)  sendLobbyState(e.getArena());
     }
  
     

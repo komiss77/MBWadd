@@ -1,6 +1,5 @@
 package de.marcely.bedwars.api.gui;
 
-import static de.marcely.bedwars.api.gui.SimpleGUI.openInventories;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

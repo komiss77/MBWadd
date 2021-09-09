@@ -1,15 +1,13 @@
 package de.marcely.bedwarsaddon.selectshopdesign;
 
 import org.bukkit.inventory.ItemStack;
-import de.marcely.bedwars.api.Util;
 import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.game.shop.design.ShopDesignData;
 import ru.komiss77.BwAdd;
 
 
 public class Config {
 
-    
+    /*
     public static void load() {
         BwAdd.ssdConfig.load();
         for (final de.marcely.bedwars.libraries.configmanager2.objects.Config c : BwAdd.ssdConfig.getConfigsWhichStartWith("design-enabled-") ) {
@@ -57,5 +55,5 @@ public class Config {
             BwAdd.ssdConfig.addConfig("message-" + msg.name(), (Object)BwAdd.chatColorToString(msg.getMessage()));
         }
         BwAdd.ssdConfig.save();
-    }
+    }*/
 }

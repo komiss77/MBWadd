@@ -1,33 +1,7 @@
 package de.marcely.bedwarsaddon.multiplebeds115;
 
-import java.util.ArrayList;
-
-import org.bukkit.Material;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.EventHandler;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.Listener;
 
-import de.marcely.bedwars.api.event.PlayerRespawnEvent;
-import de.marcely.bedwars.api.event.BedBreakEvent;
-import de.marcely.bedwars.api.event.BedPlaceEvent;
-import de.marcely.bedwars.game.arena.CrashMessage;
-import de.marcely.bedwars.api.event.EnableArenaEvent;
-import de.marcely.bedwars.api.event.ArenaStatusUpdateEvent;
-import de.marcely.bedwars.api.ArenaStatus;
-import de.marcely.bedwars.api.Arena;
-import de.marcely.bedwars.game.location.XYZD;
-import de.marcely.bedwars.api.Team;
-import de.marcely.bedwars.config.ConfigValue;
-import de.marcely.bedwars.api.Util;
-import de.marcely.bedwars.Permission;
-import de.marcely.bedwars.api.BedwarsAPI;
-import ru.komiss77.BwAdd;
 
 
 

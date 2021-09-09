@@ -1,6 +1,7 @@
 package ru.komiss77;
 
 
+import de.marcely.bedwars.api.arena.Arena;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -26,9 +27,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import ru.komiss77.utils.ItemBuilder;
 import ru.komiss77.utils.inventory.SmartInventory;
-import de.marcely.bedwars.api.Arena;
-import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.api.BedwarsAPIa;
 
 
 
@@ -132,7 +130,7 @@ class LobbyListener implements Listener {
         
         Player player = (Player) e.getWhoClicked();
         if (!player.getWorld().getName().equals("lobby")) return;
-        Arena arena = BedwarsAPI.getArena(player);
+        Arena arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(player);
         if (arena==null) {
             ItemStack item = e.getCurrentItem();
             if ( item == null || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName() ) return;
@@ -188,7 +186,7 @@ class LobbyListener implements Listener {
 //System.out.println("PlayerInteract "+e.getAction()+"   "+e.getClickedBlock());                
         Player player = e.getPlayer();
         if (!player.getWorld().getName().equals("lobby") || e.getAction()==Action.PHYSICAL ) return;
-        Arena arena = BedwarsAPI.getArena(player);
+        Arena arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(player);
         if (arena==null) {
             ItemStack item = e.getItem();
             if ( item == null || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName() ) return;
@@ -228,7 +226,7 @@ class LobbyListener implements Listener {
     private void openAchivInv(final Player p) {
         
         //BedwarsAPI.getEntityAPI().
-        BedwarsAPIa.getPlayerDataAPI().getAchievements(p.getUniqueId() , acm -> {
+        de.marcely.bedwars.api.BedwarsAPI.getPlayerDataAPI().getAchievements(p.getUniqueId() , acm -> {
             System.out.println("++ acm"+acm);
                 SmartInventory.builder()
                 .id("§aДостижения "+p.getName())

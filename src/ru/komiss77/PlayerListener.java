@@ -2,7 +2,6 @@ package ru.komiss77;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -17,33 +16,30 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import ru.komiss77.Enums.Data;
-import ru.komiss77.Events.BsignLocalArenaClick;
-import ru.komiss77.Events.BungeeStatRecieved;
-import ru.komiss77.Events.FriendTeleportEvent;
-import ru.komiss77.Managers.PM;
-import ru.komiss77.ProfileMenu.E_Stat;
 import ru.komiss77.utils.LocationUtil;
 import me.clip.deluxechat.DeluxeChat;
-import de.marcely.bedwars.api.Arena;
-import de.marcely.bedwars.api.ArenaStatus;
-import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.api.event.ArenaOutOfTimeEvent;
-import de.marcely.bedwars.api.event.BedBreakEvent;
-import de.marcely.bedwars.api.event.player.PlayerEarnAchievementEvent;
-import de.marcely.bedwars.api.event.PlayerJoinArenaSpectatorEvent;
-import de.marcely.bedwars.api.event.PlayerKillPlayerEvent;
-import de.marcely.bedwars.api.event.PlayerQuitArenaEvent;
-import de.marcely.bedwars.api.event.PlayerQuitArenaSpectatorEvent;
-import de.marcely.bedwars.api.event.PlayerRoundDeathEvent;
-import de.marcely.bedwars.api.event.PlayerUseExtraItemEvent;
-import de.marcely.bedwars.api.event.RoundEndEvent;
-import de.marcely.bedwars.api.event.TeamEliminateEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import de.marcely.bedwars.api.arena.Arena;
+import de.marcely.bedwars.api.arena.ArenaStatus;
+import de.marcely.bedwars.api.event.arena.ArenaBedBreakEvent;
+import de.marcely.bedwars.api.event.arena.ArenaOutOfTimeEvent;
+import de.marcely.bedwars.api.event.arena.RoundEndEvent;
+import de.marcely.bedwars.api.event.arena.TeamEliminateEvent;
+import de.marcely.bedwars.api.event.player.PlayerEarnAchievementEvent;
+import de.marcely.bedwars.api.event.player.PlayerIngameDeathEvent;
+import de.marcely.bedwars.api.event.player.PlayerKillPlayerEvent;
+import de.marcely.bedwars.api.event.player.PlayerQuitArenaEvent;
+import de.marcely.bedwars.api.event.player.PlayerUseSpecialItemEvent;
+import de.marcely.bedwars.api.event.player.SpectatorJoinArenaEvent;
+import de.marcely.bedwars.api.event.player.SpectatorQuitArenaEvent;
+import ru.komiss77.enums.Data;
+import ru.komiss77.enums.Stat;
+import ru.komiss77.events.BsignLocalArenaClick;
+import ru.komiss77.events.BungeeDataRecieved;
+import ru.komiss77.events.FriendTeleportEvent;
+import ru.komiss77.modules.player.PM;
 
 
 
@@ -99,7 +95,7 @@ class PlayerListener implements Listener {
     
     @EventHandler (ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBsignLocalArenaClick (final BsignLocalArenaClick e) {
-        if (BedwarsAPI.getArena(e.arenaName)!=null) {
+        if (de.marcely.bedwars.api.GameAPI.get().getArenaByName(e.arenaName)!=null) {
             e.player.performCommand("bw join "+e.arenaName);
         } else {
             e.player.sendMessage("§cНе найдена арена "+e.arenaName+" !");
@@ -113,10 +109,10 @@ class PlayerListener implements Listener {
     
     
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onBungeeStatRecieved(final BungeeStatRecieved e) {  
+    public void onBungeeStatRecieved(final BungeeDataRecieved e) {  
         //final Oplayer op = ru.komiss77.Managers.PM.getOplayer(e.getPlayer().getName());
 //System.out.println( "ArenaJoinEvent ->"+e.getOplayer().getBungeeData(Data.WANT_ARENA_JOIN) );
-        final String wantToArena = e.getOplayer().getBungeeData(Data.WANT_ARENA_JOIN);
+        final String wantToArena = e.getOplayer().getDataString(Data.WANT_ARENA_JOIN);
         if (wantToArena.isEmpty() || wantToArena.equals("any")) return;
         new BukkitRunnable() {
             @Override
@@ -163,8 +159,8 @@ class PlayerListener implements Listener {
         
         if (e.getClickedBlock()!=null && e.getClickedBlock().getType().toString().contains("_BED")) {
             if (e.getAction()==Action.LEFT_CLICK_BLOCK) {
-                final Arena arena = BedwarsAPI.getArena(player);
-                if (arena==null || arena.GetStatus()!=ArenaStatus.Running) return;
+                final Arena arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(player);
+                if (arena==null || arena.getStatus()!=ArenaStatus.RUNNING) return;
                 if (e.hasItem()) {
                     player.sendMessage("§cСломать цель можно только рукой!");
                     e.setCancelled(true);
@@ -188,17 +184,17 @@ class PlayerListener implements Listener {
 //System.out.println("onSpectatorInteract Next Arena");
             List<String> arenaInGame=new ArrayList();
             
-            for (Arena a:BedwarsAPI.getArenas()) {
-                if ( a.GetStatus()==ArenaStatus.Running) { //перебираем работающие арены
-                    if ( !a.getWorld().getName().equals(player.getWorld().getName()) ) continue; //перебираем до арены, на которой находимся
-                    if ( !a.getWorld().getName().equals(player.getWorld().getName()) ) arenaInGame.add(a.getName()); //добавляем остальные кроме текущей, что далее по списку
+            for (Arena a:de.marcely.bedwars.api.GameAPI.get().getArenas()) {
+                if ( a.getStatus()==ArenaStatus.RUNNING) { //перебираем работающие арены
+                    if ( !a.getGameWorldName().equals(player.getWorld().getName()) ) continue; //перебираем до арены, на которой находимся
+                    if ( !a.getGameWorldName().equals(player.getWorld().getName()) ) arenaInGame.add(a.getName()); //добавляем остальные кроме текущей, что далее по списку
                 }
             }
             
             if (arenaInGame.isEmpty()) {        //если далее по списку не найдено работающих арен, делаем еще один проход сначала
-                for (Arena a:BedwarsAPI.getArenas()) {
-                    if ( a.GetStatus()==ArenaStatus.Running) { //перебираем работающие арены
-                        if ( a.getWorld().getName().equals(player.getWorld().getName()) ) break; //если дошли до нашей, значит, больше не искать
+                for (Arena a:de.marcely.bedwars.api.GameAPI.get().getArenas()) {
+                    if ( a.getStatus()==ArenaStatus.RUNNING) { //перебираем работающие арены
+                        if ( a.getGameWorldName().equals(player.getWorld().getName()) ) break; //если дошли до нашей, значит, больше не искать
                         arenaInGame.add(a.getName()); //добавляем те, что найдены ДО нашей
                     }
                 }
@@ -280,23 +276,23 @@ class PlayerListener implements Listener {
         
 //эвенты игроков        
     @EventHandler (priority = EventPriority.MONITOR)
-    public void onBedBreakEvent (final BedBreakEvent e) {
-System.out.println("BedBreakEvent distance="+LocationUtil.getDistance( e.getPlayer().getLocation(), e.getLocation()));
-        ApiOstrov.addIntStat(e.getPlayer(), E_Stat.BW_bed);
+    public void onBedBreakEvent (final ArenaBedBreakEvent e) {
+System.out.println("BedBreakEvent distance="+LocationUtil.getDistance( e.getPlayer().getLocation(), e.getBedLocation()));
+        ApiOstrov.addStat(e.getPlayer(), Stat.BW_bed);
     }        
     
         
     @EventHandler (priority = EventPriority.MONITOR)//добавить проверку - если кровати уже нет, то BW_loose
     public void onPlayerKillPlayerEvent (final PlayerKillPlayerEvent e) {
 System.out.println("PlayerKillPlayerEvent ");
-        ApiOstrov.addIntStat(e.getDamager(), E_Stat.BW_kill);
+        ApiOstrov.addStat(e.getPlayer(), Stat.BW_kill);
     }   
     
     //VOID 1, после  PlayerTeleportEvent cause=PLUGIN from=lobby<>24<>71<>9 to=lobby<>24<>71<>9 canceled?false gamemode =SURVIVAL - подмена точки
     @EventHandler (priority = EventPriority.MONITOR)
-    public void onPlayerRoundDeathEvent (final PlayerRoundDeathEvent e) {
-        ApiOstrov.addIntStat(e.getPlayer(), E_Stat.BW_death);
-System.out.println("PlayerRoundDeathEvent RespawnLocation="+LocationUtil.StringFromLoc(e.getParentEvent().getRespawnLocation()));
+    public void onPlayerRoundDeathEvent (final PlayerIngameDeathEvent e) {
+        ApiOstrov.addStat(e.getPlayer(), Stat.BW_death);
+//System.out.println("PlayerRoundDeathEvent RespawnLocation="+LocationUtil.StringFromLoc(e.getPlayer().getRespawnLocation()));
             //final Player p = e.getPlayer();
             //if (e.getArena()!=null && e.getArena().GetStatus()==ArenaStatus.Running && e.getArena().getPlayers().contains(p)) {
             //    e.getParentEvent().setRespawnLocation(e.getArena().getWorld().getSpawnLocation());
@@ -403,10 +399,10 @@ System.out.println( "PERFORM_RESPAWN loc=" + LocationUtil.StringFromLoc(e.getEnt
     
     
     @EventHandler (priority = EventPriority.MONITOR)
-    public void onPlayerJoinArenaSpectatorEvent (final PlayerJoinArenaSpectatorEvent e) { //переход игрока арены в статус зрителя после гибели
+    public void onPlayerJoinArenaSpectatorEvent (final SpectatorJoinArenaEvent e) { //переход игрока арены в статус зрителя после гибели
         final Player p = e.getPlayer();
         p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10, 1), true);
-        final Arena arena = BedwarsAPI.getArena(e.getPlayer());
+        final Arena arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(e.getPlayer());
 //System.out.println(" ---- onPlayerJoinArenaSpectatorEvent --- "+e.getArena().getName()+" "+e.getPlayer().getName()+" arena="+(arena==null?"null": arena.getName()+" contains?"+e.getArena().getPlayers().contains(e.getPlayer()) ) );
         if (arena==null) { //только для чистого зрителя
             e.getPlayer().setPlayerListName("§8[Зритель] "+e.getPlayer().getName());
@@ -429,7 +425,7 @@ System.out.println( "PERFORM_RESPAWN loc=" + LocationUtil.StringFromLoc(e.getEnt
     
     
     @EventHandler (priority = EventPriority.MONITOR)
-    public void onPlayerQuitArenaSpectatorEvent (final PlayerQuitArenaSpectatorEvent e) {
+    public void onPlayerQuitArenaSpectatorEvent (final SpectatorQuitArenaEvent e) {
 //System.out.println(" ---- onPlayerQuitArenaSpectatorEvent --- "+e.getArena().getName()+" "+e.getPlayer().getName()+" arena contains?"+e.getArena().getPlayers().contains(e.getPlayer()));
         new BukkitRunnable() {
             final Player p = e.getPlayer();
@@ -455,7 +451,7 @@ System.out.println( "PERFORM_RESPAWN loc=" + LocationUtil.StringFromLoc(e.getEnt
     
     @EventHandler  //команда уничтожена
     public void onTeamEliminateEvent (final TeamEliminateEvent e) {
-System.out.println("TeamEliminateEvent getFinalPlayer="+e.getFinalPlayer().getName()+" isCausingEnd?"+e.isCausingEnd());
+System.out.println("TeamEliminateEvent getFinalPlayer="+e.getLastPlayer().getName()+" isCausingEnd?"+e.causesEnd());
 //System.out.println("");
     }        
 
@@ -480,16 +476,27 @@ System.out.println("TeamEliminateEvent getFinalPlayer="+e.getFinalPlayer().getNa
     public void onRoundEndEvent (final RoundEndEvent e) {  //вызывается если определилась команда-победители, после эвента выполняется ConfigValue.prize_commands
 //System.out.println("RoundEndEvent ");
 //System.out.println("");
-        for (Player p : e.getWinners()) {
-            ApiOstrov.addIntStat(p, E_Stat.BW_game);
-            ApiOstrov.addIntStat(p, E_Stat.BW_win);
+        for (Player p : e.getArena().getPlayers()) {
+            if (e.getWinners().contains(p)) {
+                ApiOstrov.addStat(p, Stat.BW_game);
+                ApiOstrov.addStat(p, Stat.BW_win);
+                Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "reward "+p.getName()+" money add rnd:500:1000 bedWars" );
+                Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "reward "+p.getName()+" exp add rnd:10:50 bedWars" );
+            } else {
+                ApiOstrov.addStat(p, Stat.BW_game);
+                ApiOstrov.addStat(p, Stat.BW_loose);
+            }
+        }
+       /* for (Player p : e.getWinners()) {
+            ApiOstrov.addStat(p, Stat.BW_game);
+            ApiOstrov.addStat(p, Stat.BW_win);
             Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "reward "+p.getName()+" money add rnd:500:1000 bedWars" );
             Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "reward "+p.getName()+" exp add rnd:10:50 bedWars" );
         }
         for (Player p : e.getLosers()) {
-            ApiOstrov.addIntStat(p, E_Stat.BW_game);
-            ApiOstrov.addIntStat(p, E_Stat.BW_loose);
-        }
+            ApiOstrov.addStat(p, Stat.BW_game);
+            ApiOstrov.addStat(p, Stat.BW_loose);
+        }*/
     }        
     
     
@@ -502,7 +509,7 @@ System.out.println("PlayerEarnAchievementEvent ");
     }
     
     @EventHandler
-    public void onPlayerUseExtraItemEvent (final PlayerUseExtraItemEvent e) {
+    public void onPlayerUseExtraItemEvent (final PlayerUseSpecialItemEvent e) {
 System.out.println("PlayerUseExtraItemEvent ");
         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "reward "+e.getPlayer().getName()+" exp add rnd:5:10 bedWars" );
     }        
@@ -555,8 +562,8 @@ System.out.println("PlayerUseExtraItemEvent ");
     
 @EventHandler
     public void FriendTeleport(FriendTeleportEvent e) {
-        Arena target_player_arena =BedwarsAPI.getArena(e.target);
-        if (target_player_arena != null && target_player_arena.GetStatus()!=ArenaStatus.Lobby) e.Set_canceled(true, "§eв игре!");
+        Arena target_player_arena =de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(e.target);
+        if (target_player_arena != null && target_player_arena.getStatus()!=ArenaStatus.LOBBY) e.Set_canceled(true, "§eв игре!");
     }
     
 

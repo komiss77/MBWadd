@@ -1,14 +1,13 @@
 package de.marcely.bedwarsaddon.kits115;
 
 import org.bukkit.Material;
-import de.marcely.bedwars.api.Util;
 import org.bukkit.inventory.ItemStack;
 
 
 
 
 public class AUtil {
-    
+    /*
     public static Kit getKit(final String name) {
         for (final Kit kit : BedwarsAddonKits.kits) {
             if (kit.getName().equalsIgnoreCase(name)) {
@@ -55,5 +54,5 @@ public class AUtil {
             }
         }
         return name;
-    }
+    }*/
 }

@@ -2,11 +2,11 @@ package de.marcely.bedwarsaddon.kits115;
 
 import com.meowj.langutils.lang.LanguageHelper;
 import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.api.CustomLobbyItem;
-import de.marcely.bedwars.api.Util;
-import de.marcely.bedwars.api.VersionAPI;
-import de.marcely.bedwars.api.gui.GUI;
-import de.marcely.bedwars.api.gui.GUIItem;
+import de.marcely.bedwars.api.arena.Arena;
+import de.marcely.bedwars.api.game.lobby.LobbyItem;
+import de.marcely.bedwars.api.game.lobby.LobbyItemHandler;
+import de.marcely.bedwars.tools.gui.GUI;
+import de.marcely.bedwars.tools.gui.GUIItem;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +21,7 @@ import ru.komiss77.BwAdd;
 
 
 public class BedwarsAddonKits {
-    
+    /*
     public static List<Kit> kits;
     public static String kitsGUITitle;
     public static CustomLobbyItem lobbyItem;
@@ -52,16 +52,7 @@ public class BedwarsAddonKits {
         Bukkit.getPluginManager().registerEvents(new Events(), BwAdd.instance);
         
         loadConfig();
-        /*
-        BwAdd.bedwarsAddon.registerCommand((BedwarsAddon.BedwarsAddonCommand)new BedwarsAddon.BedwarsAddonCommand("reload") {
-            @Override
-            public void onWrite(final CommandSender sender, final String[] args, final String fullUsage) {
-                final long startTime = System.currentTimeMillis();
-                sender.sendMessage(Language.Configurations_Reload_Start.getMessage());
-                loadConfig();
-                sender.sendMessage(Language.Configurations_Reload_End.getMessage().replace("{time}", new StringBuilder().append((System.currentTimeMillis() - startTime) / 1000.0).toString()));
-            }
-        });*/
+
     }
     
     
@@ -88,7 +79,20 @@ public class BedwarsAddonKits {
             kit.setIcon(VersionAPI.removeAttributes(is));
         }
         
-        BedwarsAPI.registerLobbyItem(new CustomLobbyItem("kits") {
+        de.marcely.bedwars.api.GameAPI.get().registerLobbyItemHandler(new LobbyItemHandler(kitsGUITitle, plugin) {
+            @Override
+            public void handleUse(Player player, Arena arena, LobbyItem li) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+            
+            @Override
+            public boolean isVisible(Player player, Arena arena, LobbyItem li) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+        
+        
+        de.marcely.bedwars.api.GameAPI.get().registerLobbyItemHandler(new CustomLobbyItem("kits") {
             @Override
             public void onUse(final Player player) {
                 final GUI gui = new GUI(BedwarsAddonKits.kitsGUITitle, 0);
@@ -122,7 +126,7 @@ public class BedwarsAddonKits {
             }
         });
     }
-    
+    */
     public static String getPermission(final String kit) {
         return "mbedwars.addon.kits." + kit;
     }

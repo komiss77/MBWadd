@@ -1,7 +1,5 @@
 package de.marcely.bedwarsaddon.multiplebeds115;
 
-import de.marcely.bedwars.api.Arena;
-import de.marcely.bedwars.api.BedwarsAPI;
 
 
 

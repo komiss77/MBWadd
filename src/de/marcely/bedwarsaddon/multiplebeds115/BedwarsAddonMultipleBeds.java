@@ -1,24 +1,5 @@
 package de.marcely.bedwarsaddon.multiplebeds115;
 
-import java.util.Collections;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.entity.Player;
-import org.bukkit.ChatColor;
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.command.CommandSender;
-
-import de.marcely.bedwars.config.ConfigValue;
-import de.marcely.bedwars.api.Team;
-import de.marcely.bedwars.api.Arena;
-import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.api.Util;
-import de.marcely.bedwars.api.BedwarsAddon;
-import ru.komiss77.BwAdd;
 
 
 public class BedwarsAddonMultipleBeds {

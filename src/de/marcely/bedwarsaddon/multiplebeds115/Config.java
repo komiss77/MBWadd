@@ -1,11 +1,6 @@
 package de.marcely.bedwarsaddon.multiplebeds115;
 
-import ru.komiss77.BwAdd;
-import de.marcely.bedwars.api.Arena;
-import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.game.location.XYZD;
-import de.marcely.bedwars.api.Util;
-import de.marcely.bedwars.api.Team;
+
 
 
 public class Config {

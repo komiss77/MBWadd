@@ -1,14 +1,5 @@
 package de.marcely.bedwarsaddon.deathmatch115;
 
-import java.util.Map;
-
-import org.bukkit.Location;
-import org.bukkit.Bukkit;
-import ru.komiss77.BwAdd;
-
-import de.marcely.bedwars.api.Arena;
-import de.marcely.bedwars.api.Util;
-import de.marcely.bedwars.api.BedwarsAPI;
 
 
 public class Config {

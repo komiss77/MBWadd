@@ -1,5 +1,5 @@
 package ru.komiss77;
-
+/*
 import de.marcely.bedwars.game.arena.Arena;
 import de.marcely.bedwars.game.spectator.item.SpectatorItem;
 import org.bukkit.entity.Player;
@@ -22,3 +22,4 @@ public class ChangeArenaItemHandler extends de.marcely.bedwars.game.spectator.it
 
 
 }
+*/

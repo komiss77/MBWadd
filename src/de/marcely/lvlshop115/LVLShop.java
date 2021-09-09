@@ -12,9 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.Listener;
 
-import de.marcely.bedwars.api.event.ShopBuyEvent;
-import de.marcely.bedwars.api.event.DropEvent;
-import de.marcely.bedwars.api.Spawner;
+
 import de.marcely.bedwars.api.BedwarsAPI;
 import ru.komiss77.BwAdd;
 
@@ -26,12 +24,12 @@ public class LVLShop {
     
     
     public static void load() {
-
+/*
         Bukkit.getPluginManager().registerEvents(new Listener() {
             @EventHandler
             public void onPlayerExpChangeEvent(final PlayerExpChangeEvent event) {
                 final Player player = event.getPlayer();
-                if (player.getExp() < event.getAmount() && BedwarsAPI.getArena(player) != null) {
+                if (player.getExp() < event.getAmount() && de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(player) != null) {
                     for (int i = 0; i < event.getAmount(); ++i) {
                         player.giveExp(player.getExpToLevel());
                     }
@@ -68,7 +66,7 @@ public class LVLShop {
                 }
             };
             BedwarsAPI.registerSpawner(spawner);
-
+*/
     }
     
     

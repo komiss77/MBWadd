@@ -2,6 +2,10 @@ package de.marcely.bedwarsaddon.kits115;
 
 
 
+import de.marcely.bedwars.api.arena.ArenaStatus;
+import de.marcely.bedwars.api.event.arena.ArenaStatusChangeEvent;
+import de.marcely.bedwars.api.event.player.PlayerJoinArenaEvent;
+import de.marcely.bedwars.api.event.player.PlayerQuitArenaEvent;
 import java.util.Random;
 
 import org.bukkit.inventory.ItemStack;
@@ -10,16 +14,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import de.marcely.bedwars.api.ArenaStatus;
-import de.marcely.bedwars.api.event.ArenaStatusUpdateEvent;
-import de.marcely.bedwars.api.event.PlayerQuitArenaEvent;
-import de.marcely.bedwars.api.event.PlayerJoinArenaEvent;
+
 import ru.komiss77.BwAdd;
 
 
 
 public class Events implements Listener {
-    public static Random rand;
+ /*   public static Random rand;
     
     static {
         Events.rand = new Random();
@@ -38,8 +39,8 @@ public class Events implements Listener {
     }
     
     @EventHandler
-    public void onArenaStatusUpdateEvent(final ArenaStatusUpdateEvent event) {
-        if (BedwarsAddonKits.kits.size() >= 1 && event.getStatusBefore() == ArenaStatus.Lobby && event.getStatus() == ArenaStatus.Running) {
+    public void onArenaStatusUpdateEvent(final ArenaStatusChangeEvent event) {
+        if (BedwarsAddonKits.kits.size() >= 1 && event.getOldStatus()== ArenaStatus.LOBBY && event.getNewStatus()== ArenaStatus.RUNNING) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -51,5 +52,5 @@ public class Events implements Listener {
                 }
             }.runTaskLater(BwAdd.instance, 20L);
         }
-    }
+    }*/
 }

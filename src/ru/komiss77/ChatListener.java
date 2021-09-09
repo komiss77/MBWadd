@@ -1,10 +1,10 @@
 package ru.komiss77;
 
 
-import de.marcely.bedwars.api.Arena;
-import de.marcely.bedwars.api.ArenaStatus;
 import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.api.Team;
+import de.marcely.bedwars.api.arena.Arena;
+import de.marcely.bedwars.api.arena.ArenaStatus;
+import de.marcely.bedwars.api.arena.Team;
 import java.util.Iterator;
 import me.clip.deluxechat.events.DeluxeChatEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -74,14 +74,14 @@ class ChatListener implements Listener  {
             return;
         }
         
-        final Arena arena = BedwarsAPI.getArena(p);
+        final Arena arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(p);
         //final ArenaStatus arenaStatus = arena.GetStatus();
 //System.out.println("---2 arena="+arena);
-        if (arena == null || arena.GetStatus()!=ArenaStatus.Running ) return; //арена не выбрана или не игра - делюксчат подставляет команду вместо префикса
+        if (arena == null || arena.getStatus()!=ArenaStatus.RUNNING ) return; //арена не выбрана или не игра - делюксчат подставляет команду вместо префикса
         
 //System.out.println("---2 getSpectators="+arena.getSpectators());
         
-        final Team team = arena.GetPlayerTeam(p);
+        final Team team = arena.getPlayerTeam(p);
 
         if (team == null) return; //нет команда - хз что делать? скорее всего это зритель
         
@@ -90,7 +90,7 @@ class ChatListener implements Listener  {
         
         if ( e.getMessage().startsWith("!") ) { //если всем
 //System.out.println("message.startsWith !");            
-            msg = new TextComponent( "§8[§fВсем§8] "+team.getChatColor()+"§8["+team.getName()+ "§8] §f"+p.getName()+" §o"+team.getChatColor()+"≫ §f"+e.getMessage().replaceFirst("!", "") );
+            msg = new TextComponent( "§8[§fВсем§8] "+team.getChatColor()+"§8["+team.getDisplayName()+ "§8] §f"+p.getName()+" §o"+team.getChatColor()+"≫ §f"+e.getMessage().replaceFirst("!", "") );
             he = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7Сообщение всем командам").create());
             msg.setHoverEvent( he );
             
@@ -120,10 +120,10 @@ class ChatListener implements Listener  {
             //msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ " ) );
             
             for (Player pl: e.getRecipients()) {
-                recipientArena =BedwarsAPI.getArena(pl);
+                recipientArena =de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(pl);
                     if (recipientArena!=null) {
-                        recipientTeam = recipientArena.GetPlayerTeam(pl);
-                            if (recipientTeam!=null && recipientTeam.getName().equalsIgnoreCase(team.getName())) {
+                        recipientTeam = recipientArena.getPlayerTeam(pl);
+                            if (recipientTeam!=null && recipientTeam.getDisplayName().equalsIgnoreCase(team.getDisplayName())) {
                             //e.setFormat ( "§f%1$s §o"+team.getChatColor()+"-> §f%2$s" );
                             //message = message.trim()+"§8 !-всем";
                             //e.setMessage(message);
@@ -244,7 +244,7 @@ class ChatListener implements Listener  {
         
         //далее определяем команду для отображения в чате лобби
         //final Arena arena = s.a(p);
-        final Arena arena = BedwarsAPI.getArena(p);
+        final Arena arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(p);
         if (arena!=null) {
 //System.out.println("Арена: " + arena.getName() + " статус:" + arena.GetStatus() + (team == null ? " команда не определена":"") );
 
@@ -256,7 +256,7 @@ class ChatListener implements Listener  {
             //}
 
             //далее - уже на арене
-            final Team team = arena.GetPlayerTeam(p);
+            final Team team = arena.getPlayerTeam(p);
             //DeluxeFormat df = e.getDeluxeFormat();
 
             if (team==null) {       //команда еще не выбрана
@@ -266,7 +266,7 @@ class ChatListener implements Listener  {
                 
             } else {//команда уже выбрана
                 
-                e.getDeluxeFormat().setPrefix( team.getChatColor()+"<"+team.getName()+"> §7" );
+                e.getDeluxeFormat().setPrefix( team.getChatColor()+"<"+team.getDisplayName()+"> §7" );
                 
             }
             

@@ -1,7 +1,6 @@
 package de.marcely.bedwarsaddon.kits115;
 
 
-import de.marcely.bedwars.api.Util;
 import de.marcely.bedwars.libraries.configmanager2.objects.Tree;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -12,7 +11,7 @@ import ru.komiss77.utils.ItemBuilder;
 
 
 public class Config {
-
+/*
     public static void load() {
         
         BwAdd.kitConfig.load();
@@ -177,5 +176,5 @@ public class Config {
         }
         BwAdd.kitConfig.save();
     }
-
+*/
 }

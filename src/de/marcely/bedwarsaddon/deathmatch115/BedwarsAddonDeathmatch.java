@@ -11,10 +11,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-import ru.komiss77.BwAdd;
-import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.api.Arena;
-import de.marcely.bedwars.api.BedwarsAddon;
 
 public class BedwarsAddonDeathmatch {
     

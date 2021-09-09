@@ -1,26 +1,23 @@
 package ru.komiss77;
 
 
-import de.marcely.bedwars.MBedwars;
-import de.marcely.bedwars.api.Arena;
-import de.marcely.bedwars.api.ArenaStatus;
-import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.api.BedwarsAddon;
-import de.marcely.bedwars.api.Team;
-import de.marcely.bedwars.config.ConfigValue;
-import de.marcely.bedwars.libraries.configmanager2.ConfigManager;
-import de.marcely.bedwarsaddon.deathmatch115.BedwarsAddonDeathmatch;
-import de.marcely.bedwarsaddon.kits115.BedwarsAddonKits;
-import de.marcely.bedwarsaddon.selectshopdesign.BedwarsAddonSelectShopDesign;
-import de.marcely.lvlshop115.LVLShop;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import ru.komiss77.Enums.UniversalArenaState;
-import ru.komiss77.Managers.PM;
+import net.md_5.bungee.api.ChatColor;
+import de.marcely.bedwars.MBedwars;
+import de.marcely.bedwars.api.BedwarsAddon;
+import de.marcely.bedwars.api.arena.Arena;
+import de.marcely.bedwars.api.arena.ArenaStatus;
+import de.marcely.bedwars.api.arena.Team;
+import de.marcely.bedwars.config.ConfigValue;
+import de.marcely.bedwars.libraries.configmanager2.ConfigManager;
+import de.marcely.bedwarsaddon.kits115.BedwarsAddonKits;
+import de.marcely.bedwarsaddon.selectshopdesign.BedwarsAddonSelectShopDesign;
+import ru.komiss77.enums.GameState;
+import ru.komiss77.modules.player.PM;
 
 
 
@@ -83,18 +80,16 @@ public class BwAdd extends JavaPlugin {
         //new BukkitRunnable() {
         //    @Override
         //    public void run() {
-                for (Arena a : BedwarsAPI.getArenas()) {
+                for (Arena a:de.marcely.bedwars.api.GameAPI.get().getArenas()) {
                     ApiOstrov.sendArenaData(
                             a.getName(),                        //arena name
+                            GameState.РАБОТАЕТ,
                             "§bBedWars §1",                        //line0
                             "§5Арена: §1"+a.getName(),                        //line1
                             "§2Заходите!",                        //line2
                             "",                        //line3
                             "§8включение сервера",                        //extra
-                            0,                     //players
-                            UniversalArenaState.РАБОТАЕТ,
-                            true,                       //mysql ?
-                            true                        //async ?
+                            0                     //players
                     );
                 }
         //    }
@@ -103,12 +98,12 @@ public class BwAdd extends JavaPlugin {
         
         startTimer();
         
-        bedwarsAddon = new BedwarsAddon(instance);
+       // bedwarsAddon = new BedwarsAddon(instance);
 
-        ssdConfig = new ConfigManager(this, "ssdConfig.cfg");
-        BedwarsAddonSelectShopDesign.load();
+      //  ssdConfig = new ConfigManager(this, "ssdConfig.cfg");
+      //  BedwarsAddonSelectShopDesign.load();
         
-        deadmatchConfig = new ConfigManager(this, "deadmatchConfig.cfg");
+      //  deadmatchConfig = new ConfigManager(this, "deadmatchConfig.cfg");
         //BedwarsAddonDeathmatch.load();
         
         //multibedConfig = new ConfigManager(this, "multibedConfig.cfg");
@@ -118,8 +113,8 @@ public class BwAdd extends JavaPlugin {
         //lvlshopConfig.load();
         //LVLShop.load();
         
-        kitConfig = new ConfigManager(this, "kitConfig.cfg");
-        BedwarsAddonKits.load();  //ava.lang.NullPointerException: null
+     //   kitConfig = new ConfigManager(this, "kitConfig.cfg");
+     //   BedwarsAddonKits.load();  //ava.lang.NullPointerException: null
         
 
     }    
@@ -147,19 +142,17 @@ public class BwAdd extends JavaPlugin {
     @Override
     public void onDisable() {
         
-        for (Arena a : BedwarsAPI.getArenas()) {
+        for (Arena a:de.marcely.bedwars.api.GameAPI.get().getArenas()) {
             
             ApiOstrov.sendArenaData(
                     a.getName(),                        //arena name
+                            GameState.ВЫКЛЮЧЕНА,
                     "§4█████████",                        //line0
-                    "§bBedWars §1"+a.GetTeamColors().GetEnabledTeams().size()+"x"+a.getPerTeamPlayers(),                        //line1
+                    "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),                        //line1
                     "§5Арена: §1"+a.getName(),                        //line2
                     "§4█████████",                        //line3
                     "§8выключение сервера",                        //extra
-                    0,                     //players
-                    UniversalArenaState.ВЫКЛЮЧЕНА,
-                    true,                       //mysql ?
-                    false                        //async ?
+                    0                     //players
             );
         }
         
@@ -186,30 +179,30 @@ public class BwAdd extends JavaPlugin {
             @Override
             public void run() {
                 
-                for (Arena a : BedwarsAPI.getArenas()) {
+                for (Arena a:de.marcely.bedwars.api.GameAPI.get().getArenas()) {
                     if (a.getPlayers().isEmpty()) continue;
 //System.out.println(" --tick "+a.getName()+" state="+a.GetStatus()+" getRunningTime="+a.getRunningTime()   +" getTeamPlayers="+a.getTeamPlayers()+" getPerTeamPlayers="+a.getPerTeamPlayers());
                     
-                    if (a.GetStatus()==ArenaStatus.Lobby) {
-                        if (a.getPlayers().get(0).getLevel()>0 && a.getPlayers().get(0).getLevel()<90) {
+                    if (a.getStatus()==ArenaStatus.LOBBY) {
+                        //if (a.getPlayers().get(0).getLevel()>0 && a.getPlayers().get(0).getLevel()<90) {
+                        if (a.getLobbyTimeRemaining()>0 && a.getLobbyTimeRemaining()<90) {
                             ApiOstrov.sendArenaData(
                                 a.getName(),                        //arena name
-                                "§bBedWars §1"+a.GetTeamColors().GetEnabledTeams().size()+"x"+a.getPerTeamPlayers(),                        //line0
+                            GameState.СТАРТ,
+                                "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),                        //line0
                                 "§5Арена: §1"+a.getName(),                       //line1
                                 "§1"+a.getPlayers().size()+" / "+a.getMaxPlayers(),                        //line2
-                                "§6§lДо Старта: §4"+a.getPlayers().get(0).getLevel(),                        //line3
+                                //"§6§lДо Старта: §4"+a.getPlayers().get(0).getLevel(),                        //line3
+                                "§6§lДо Старта: §4"+a.getLobbyTimeRemaining(),                        //line3
                                 "§8ожидание в лобби",                        //extra
-                                a.getPlayers().size(),                     //players
-                                UniversalArenaState.СТАРТ,
-                                false,                       //mysql ?
-                                true                        //async ?
+                                a.getPlayers().size()                     //players
                             );
                         }
                         
-                    } else if (a.GetStatus()==ArenaStatus.Running) {
+                    } else if (a.getStatus()==ArenaStatus.RUNNING) {
                         
                         String info = "";
-                        for (Team t : a.GetTeamColors().GetEnabledTeams()) { //getRemainingTeams ??
+                        for (Team t : a.getEnabledTeams()) { //getRemainingTeams ??
                             info = info + t.getChatColor() + ( a.getPlayersInTeam(t).isEmpty() ? "X" : a.getPlayersInTeam(t).size()+" ");
                         }
                         if (info.length()>15) info = info.substring(0,15);
@@ -233,30 +226,26 @@ public class BwAdd extends JavaPlugin {
                         
                         ApiOstrov.sendArenaData(
                                 a.getName(),                        //arena name
+                            GameState.ИГРА,
                                 "§f>Зритель<",                        //line0
                                 "§5Арена: §1"+a.getName(),                        //line1
                                 "§4Игра: §l"+getFormattedTimeLeft(getTimeLeft(a)),                        //line2
                                 info,                        //line3
                                 "идёт игра",                        //extra
-                                a.getPlayers().size(),                     //players
-                                UniversalArenaState.ИГРА,
-                                false,                       //mysql ?
-                                true                        //async ?
+                                a.getPlayers().size()                     //players
                         );
                         
-                    } else if (a.GetStatus()==ArenaStatus.EndLobby) {
+                    } else if (a.getStatus()==ArenaStatus.END_LOBBY) {
  
                         ApiOstrov.sendArenaData(
                             a.getName(),                        //arena name
-                            "§bBedWars §1"+a.GetTeamColors().GetEnabledTeams().size()+"x"+a.getPerTeamPlayers(),                        //line0
+                            GameState.ФИНИШ,
+                            "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),                        //line0
                             "§5Арена: §1"+a.getName(),                        //line1
                             "§5Заканчивается",                        //line2
-                            "§4"+(a.getPlayers().isEmpty()?"":a.getPlayers().get(0).getLevel()),                        //line3
+                            "§4"+(a.getPlayers().isEmpty()?"":a.getLobbyTimeRemaining()),                        //line3
                             "§8конец",                        //extra
-                            a.getPlayers().size(),                     //players
-                            UniversalArenaState.ФИНИШ,
-                            true,                       //mysql ?
-                            true                        //async ?
+                            a.getPlayers().size()                     //players
                         );
 
                     }
@@ -266,10 +255,10 @@ public class BwAdd extends JavaPlugin {
                 Arena arena;
                 Team team;
                 for (Player p : Bukkit.getWorld("lobby").getPlayers()) {
-                    arena = BedwarsAPI.getArena(p);
+                    arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(p);
                     if (arena != null) {
-                        team = arena.GetPlayerTeam(p);
-                        PM.nameTagManager.setNametag(p.getName(), "§3"+arena.getName()+" §f", (team==null ? " §8[Команда?]" : team.getChatColor()+" ["+team.getName()+ "]") );
+                        team = arena.getPlayerTeam(p);
+                        PM.nameTagManager.setNametag(p.getName(), "§3"+arena.getName()+" §f", (team==null ? " §8[Команда?]" : team.getChatColor()+" ["+team.getDisplayName()+ "]") );
                     } else {
                         PM.nameTagManager.setNametag(p.getName(), "", "");
                     }
@@ -300,7 +289,7 @@ public class BwAdd extends JavaPlugin {
     
     
     public static int getTimeLeft(final Arena arena) {
-        return ConfigValue.timer - (int) (( System.currentTimeMillis() - arena.getGameStartTime() ) /1000);
+        return ConfigValue.timer - (int) (( System.currentTimeMillis() - arena.getRoundStartTime()) /1000);
         //this.N = ConfigValue.timer;
         //int playTime = ConfigValue.timer;
         //int usedTime = (int) (( System.currentTimeMillis() - arena.getGameStartTime() ) /1000);
