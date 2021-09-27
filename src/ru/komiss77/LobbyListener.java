@@ -40,7 +40,7 @@ class LobbyListener implements Listener {
     private static ItemStack achivki;
     private static ItemStack profile;
     private static ItemStack exit;
-    public static ItemStack nextArenaSpectate;
+    //public static ItemStack nextArenaSpectate;
 
     public LobbyListener() {
         //executed = new HashSet<>();
@@ -49,7 +49,7 @@ class LobbyListener implements Listener {
         stat = new ItemBuilder(Material.END_CRYSTAL).setName("§6Статистика").build();
         profile = new ItemBuilder(Material.PLAYER_HEAD).setName("§bПрофиль").build();
         exit = new ItemBuilder(Material.MAGMA_CREAM).setName("§4Вернуться в лобби").build();
-        nextArenaSpectate = new ItemBuilder(Material.ELYTRA).setName("§6Следующая Арена").build();
+        //nextArenaSpectate = new ItemBuilder(Material.ELYTRA).setName("§6Следующая Арена").build();
     
     }
     
@@ -91,7 +91,7 @@ class LobbyListener implements Listener {
                 //player.resetPlayerTime();
                 //player.resetPlayerWeather();
                 player.getInventory().setItem(0, arenaSelector.clone());
-                //player.getInventory().setItem(2, achivki.clone());
+                player.getInventory().setItem(2, achivki.clone());
                 player.getInventory().setItem(4, stat.clone());
                 player.getInventory().setItem(6, profile.clone());
                 player.getInventory().setItem(8, exit.clone());
@@ -139,7 +139,8 @@ class LobbyListener implements Listener {
             switch (item.getType()) {
                 case CAMPFIRE:
                     player.playSound(player.getLocation(), Sound.BLOCK_PISTON_EXTEND , 20.0F, 20.0F);
-                    player.performCommand("mbedwars arenasgui");
+                    //player.performCommand("mbedwars arenasgui");
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mbedwars arenasgui open default_basic "+player.getName());
                     return;
                     
                 case EMERALD:
@@ -194,7 +195,7 @@ class LobbyListener implements Listener {
             switch (item.getType()) {
                 case CAMPFIRE:
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP , 20.0F, 20.0F);
-                    player.performCommand("mbedwars arenasgui");
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mbedwars arenasgui open default_basic "+player.getName());
                     return;
                     
                 case EMERALD:
@@ -225,10 +226,10 @@ class LobbyListener implements Listener {
     
     private void openAchivInv(final Player p) {
         
-        //BedwarsAPI.getEntityAPI().
+        //BedwarsAPI.getGameAPI().
         de.marcely.bedwars.api.BedwarsAPI.getPlayerDataAPI().getAchievements(p.getUniqueId() , acm -> {
-            System.out.println("++ acm"+acm);
-                SmartInventory.builder()
+//System.out.println("++ acm"+acm);
+            SmartInventory.builder()
                 .id("§aДостижения "+p.getName())
                 .provider(new AchivMenu(acm))
                 .size(6, 9)
@@ -369,28 +370,28 @@ class LobbyListener implements Listener {
     
 
     
-@EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
-        public void onPlayerDamage(EntityDamageEvent e) { 
-        
-            if ( e.getEntityType()!=EntityType.PLAYER ) return;
-            
-            final Player p = (Player) e.getEntity();
-            
-            if (p.getWorld().getName().equals("lobby")) {
-                e.setDamage(0);
-                if (e.getCause()==EntityDamageEvent.DamageCause.VOID) {
-                    p.setFallDistance(0);
-                    p.teleport(Bukkit.getServer().getWorlds().get(0).getSpawnLocation(), PlayerTeleportEvent.TeleportCause.COMMAND); //от PLUGIN блокируются
-                    return;
-                }
-                e.setCancelled(true);
+    @EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onPlayerDamage(EntityDamageEvent e) { 
+
+        if ( e.getEntityType()!=EntityType.PLAYER ) return;
+
+        final Player p = (Player) e.getEntity();
+
+        if (p.getWorld().getName().equals("lobby")) {
+            e.setDamage(0);
+            if (e.getCause()==EntityDamageEvent.DamageCause.VOID) {
+                p.setFallDistance(0);
+                p.teleport(Bukkit.getServer().getWorlds().get(0).getSpawnLocation(), PlayerTeleportEvent.TeleportCause.COMMAND); //от PLUGIN блокируются
                 return;
             }
+            e.setCancelled(true);
+            return;
+        }
             
         if (e.getCause()==EntityDamageEvent.DamageCause.VOID) { //падение в бездну - сразу гибель
            if (p.getGameMode()==GameMode.SURVIVAL) {
                e.setDamage(21);
-               System.out.println("onPlayerDamage  DamageCause.VOID "+p.getName());        
+//System.out.println("onPlayerDamage  DamageCause.VOID "+p.getName());        
            }
             //p.playSound(p.getLocation(), Sound.ENTITY_PARROT_IMITATE_SKELETON , 20.0F, 20.0F);
         }
@@ -404,15 +405,15 @@ class LobbyListener implements Listener {
     
      
     @EventHandler(ignoreCancelled = true,priority = EventPriority.LOWEST)    
-	public void onPlace(BlockPlaceEvent e) {
-            //PM.getOplayer(e.getPlayer().getName()).last_breack=Timer.Единое_время();
-            if ( !ApiOstrov.isLocalBuilder(e.getPlayer(), false) && e.getPlayer().getWorld().getName().equals("lobby") ) e.setCancelled(true);
-        }
+    public void onPlace(BlockPlaceEvent e) {
+        //PM.getOplayer(e.getPlayer().getName()).last_breack=Timer.Единое_время();
+        if ( !ApiOstrov.isLocalBuilder(e.getPlayer(), false) && e.getPlayer().getWorld().getName().equals("lobby") ) e.setCancelled(true);
+    }
     
     @EventHandler(ignoreCancelled = true,priority = EventPriority.LOWEST)    
-	public void onBreak(BlockBreakEvent e) {
-            if ( !ApiOstrov.isLocalBuilder(e.getPlayer(), false) && e.getPlayer().getWorld().getName().equals("lobby") ) e.setCancelled(true);
-        }
+    public void onBreak(BlockBreakEvent e) {
+        if ( !ApiOstrov.isLocalBuilder(e.getPlayer(), false) && e.getPlayer().getWorld().getName().equals("lobby") ) e.setCancelled(true);
+    }
  
    
    

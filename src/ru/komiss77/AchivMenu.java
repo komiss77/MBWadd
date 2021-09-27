@@ -5,10 +5,10 @@ import de.marcely.bedwars.api.player.DefaultPlayerAchievement;
 import de.marcely.bedwars.api.player.PlayerAchievement;
 import de.marcely.bedwars.api.player.PlayerAchievements;
 import java.util.ArrayList;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import ru.komiss77.utils.ItemBuilder;
 import ru.komiss77.utils.ItemUtils;
@@ -41,7 +41,7 @@ public class AchivMenu implements InventoryProvider {
     @Override
     public void init(final Player p, final InventoryContent contents) {
         p.playSound(p.getLocation(), Sound.BLOCK_COMPARATOR_CLICK, 5, 5);
-        contents.fillRect(0,0,  4,8, ClickableItem.empty(fill));
+        contents.fillRect(0,0,  5,8, ClickableItem.empty(fill));
         final Pagination pagination = contents.pagination();
         
         
@@ -54,15 +54,23 @@ public class AchivMenu implements InventoryProvider {
         
         //final PlayerAchievements pac = BedwarsAPIa.getPlayerDataAPI().getAchievements(p.getUniqueId()).get();
         
+        
+        
+        
+        
+        
         PlayerAchievement pa;
         for (int i=1; i<=28; i++) {
             pa = get(i);
             
             //if (pac.has(pa)) {
                 
-            menuEntry.add(ClickableItem.empty(new ItemBuilder(acm.has(pa) ? Material.TURTLE_HELMET : Material.CLAY_BALL)
-                .name(pa.getName() )
+            menuEntry.add(ClickableItem.empty(new ItemBuilder(acm.has(pa) ? Material.TURTLE_HELMET : Material.FIREWORK_STAR)
+                .name("§b"+pa.getName() )
+                .addFlags(ItemFlag.HIDE_ATTRIBUTES)
+                .lore("")
                 .lore(pa.getDescription())
+                .lore("")
                 .build()));            
                 
            // }
@@ -92,16 +100,16 @@ public class AchivMenu implements InventoryProvider {
         
         
         pagination.setItems(menuEntry.toArray(new ClickableItem[menuEntry.size()]));
-        pagination.setItemsPerPage(21);
+        pagination.setItemsPerPage(29);
         
 
         
 
         
         
-        contents.set( 5, 4, ClickableItem.of( new ItemBuilder(Material.OAK_DOOR).name("закрыть").build(), e -> 
-            p.closeInventory()
-        ));
+      //  contents.set( 5, 4, ClickableItem.of( new ItemBuilder(Material.OAK_DOOR).name("закрыть").build(), e -> 
+       //     p.closeInventory()
+      //  ));
         
 
         
@@ -127,74 +135,7 @@ public class AchivMenu implements InventoryProvider {
     
     
     
-    
-    
-    public static class SelectPlayer implements InventoryProvider {
 
-
-
-        private static final ItemStack fill = new ItemBuilder(Material.YELLOW_STAINED_GLASS_PANE).name("§8.").build();;
-
-
-
-        public SelectPlayer() {
-        }
-
-
-
-        @Override
-        public void init(final Player p, final InventoryContent contents) {
-            p.playSound(p.getLocation(), Sound.BLOCK_COMPARATOR_CLICK, 5, 5);
-            contents.fillRect(0,0,  4,8, ClickableItem.empty(fill));
-            final Pagination pagination = contents.pagination();
-
-            final ArrayList<ClickableItem> menuEntry = new ArrayList<>();
-
-
-
-            for (Player target : Bukkit.getOnlinePlayers()) {
-
-                menuEntry.add(ClickableItem.of(new ItemBuilder( Material.PLAYER_HEAD )
-                    .name("§7"+target.getName() )
-                    .build(), e -> {
-                        p.performCommand("operm "+target.getName());
-                    }));            
-
-            }
-
-
-            pagination.setItems(menuEntry.toArray(new ClickableItem[menuEntry.size()]));
-            pagination.setItemsPerPage(21);
-
-
-            contents.set( 5, 4, ClickableItem.of( new ItemBuilder(Material.OAK_DOOR).name("закрыть").build(), e -> 
-                p.closeInventory()
-            ));
-
-
-
-            if (!pagination.isLast()) {
-                contents.set(5, 8, ClickableItem.of(ItemUtils.nextPage, e 
-                        -> contents.getHost().open(p, pagination.next().getPage()) )
-                );
-            }
-
-            if (!pagination.isFirst()) {
-                contents.set(5, 0, ClickableItem.of(ItemUtils.previosPage, e 
-                        -> contents.getHost().open(p, pagination.previous().getPage()) )
-                );
-            }
-
-            pagination.addToIterator(contents.newIterator(SlotIterator.Type.HORIZONTAL, SlotPos.of(1, 1)).allowOverride(false));
-
-
-        }
-
-
-    }
-
-    
-    
     
     
     

@@ -45,7 +45,7 @@ class GameListener implements Listener {
     
     
     
-@EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
+    @EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onCreatureSpawnEvent(CreatureSpawnEvent e) {
         if (e.getSpawnReason()==CreatureSpawnEvent.SpawnReason.NATURAL) {
             e.getEntity().remove();
@@ -67,10 +67,10 @@ class GameListener implements Listener {
             @Override
             public void run() {
                 ApiOstrov.sendArenaData(
-                    arena.getName(),                        //arena name
+                    arena.getDisplayName(),                        //arena name
                     GameState.ОЖИДАНИЕ,
                     "§bBedWars §1"+ (arena.getEnabledTeams().isEmpty() ? "" : arena.getEnabledTeams().size()+"x"+arena.getPlayersPerTeam()),                        //line0
-                    "§5Арена: §1"+arena.getName(),                       //line1
+                    "§5Арена: §1"+arena.getDisplayName(),                       //line1
                     "§2Заходите!",                        //line2
                     "§1"+arena.getPlayers().size()+" / "+arena.getMaxPlayers(),                        //line3
                     "§8ожидание в лобби",                        //extra
@@ -93,10 +93,10 @@ class GameListener implements Listener {
 
                     case END_LOBBY:
                         ApiOstrov.sendArenaData(
-                            e.getArena().getName(),                        //arena name
+                            e.getArena().getDisplayName(),                        //arena name
                             GameState.ОЖИДАНИЕ,
                             "§bBedWars §1"+e.getArena().getEnabledTeams().size()+"x"+e.getArena().getPlayersPerTeam(),                         //line0
-                            "§5Арена: §1"+e.getArena().getName(),                        //line1
+                            "§5Арена: §1"+e.getArena().getDisplayName(),                        //line1
                             "§5Заканчивается",                        //line2
                             "",                        //line3
                             "§8конец",                        //extra
@@ -107,10 +107,10 @@ class GameListener implements Listener {
 
                     case RESETTING:
                         ApiOstrov.sendArenaData(
-                            e.getArena().getName(),                        //arena name
+                            e.getArena().getDisplayName(),                        //arena name
                             GameState.ОЖИДАНИЕ,
                             "§bBedWars",                        //line0
-                            "§5Арена: §1"+e.getArena().getName(),                        //line1
+                            "§5Арена: §1"+e.getArena().getDisplayName(),                        //line1
                             "§eРегенерация",                        //line2
                             "",                        //line3
                             "§8реген",                        //extra
@@ -121,10 +121,10 @@ class GameListener implements Listener {
 
                     case STOPPED:
                         ApiOstrov.sendArenaData(
-                            e.getArena().getName(),                        //arena name
+                            e.getArena().getDisplayName(),                        //arena name
                             GameState.ОЖИДАНИЕ,
                             "§bBedWars §1"+e.getArena().getEnabledTeams().size()+"x"+e.getArena().getPlayersPerTeam(),                        //line0
-                            "§5Арена: §1"+e.getArena().getName(),                        //line1
+                            "§5Арена: §1"+e.getArena().getDisplayName(),                        //line1
                             "§4Выключена",                        //line2
                             "",                        //line3
                             "§8off",                        //extra

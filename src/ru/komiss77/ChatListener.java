@@ -246,7 +246,7 @@ class ChatListener implements Listener  {
         //final Arena arena = s.a(p);
         final Arena arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(p);
         if (arena!=null) {
-//System.out.println("Арена: " + arena.getName() + " статус:" + arena.GetStatus() + (team == null ? " команда не определена":"") );
+//System.out.println("Арена: " + arena.getDisplayName() + " статус:" + arena.GetStatus() + (team == null ? " команда не определена":"") );
 
             //String msg = e.getChatMessage();
             //String dfPrefix = df.getPrefix();

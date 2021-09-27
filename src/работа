@@ -1,17 +1,11 @@
 
 
 
-
-
-
-
-
-
+зритель при конце игры дёргается в энд лобби
+"reward "+p.getName()+" money add rnd:500:1000 bedWars" - не работает
 
 зрителей тп вверх при воид дамаж
 
-+лобби - наметаг не гаснет
-достижения??
 
 
 1. Взрыв кровати тнт овцой
@@ -24,34 +18,6 @@
 6. ломание блоков в лобби тоже легко исправлю, просто блочить ломание в мире лобби. 
 
 
-java.lang.NullPointerException: null
-	at de.marcely.bedwarsaddon.kits.BedwarsAddonKits.loadConfig(BedwarsAddonKits.java:84) ~[?:?]
-	at de.marcely.bedwarsaddon.kits.BedwarsAddonKits.load(BedwarsAddonKits.java:55) ~[?:?]
-	at ru.komiss77.BwAdd.onEnable(BwAdd.java:108) ~[?:?]
-	at org.bukkit.plugin.java.JavaPlugin.setEnabled(JavaPlugin.java:263) ~[bw01.jar:git-Spigot-492a779-83af86d]
-	at org.bukkit.plugin.java.JavaPluginLoader.enablePlugin(JavaPluginLoader.java:352) [bw01.jar:git-Spigot-492a779-83af86d]
-	at org.bukkit.plugin.SimplePluginManager.enablePlugin(SimplePluginManager.java:417) [bw01.jar:git-Spigot-492a779-83af86d]
-	at org.bukkit.craftbukkit.v1_15_R1.CraftServer.enablePlugin(CraftServer.java:462) [bw01.jar:git-Spigot-492a779-83af86d]
-	at org.bukkit.craftbukkit.v1_15_R1.CraftServer.enablePlugins(CraftServer.java:376) [bw01.jar:git-Spigot-492a779-83af86d]
-	at net.minecraft.server.v1_15_R1.MinecraftServer.a(MinecraftServer.java:456) [bw01.jar:git-Spigot-492a779-83af86d]
-	at net.minecraft.server.v1_15_R1.DedicatedServer.init(DedicatedServer.java:266) [bw01.jar:git-Spigot-492a779-83af86d]
-	at net.minecraft.server.v1_15_R1.MinecraftServer.run(MinecraftServer.java:783) [bw01.jar:git-Spigot-492a779-83af86d]
-
-
-
-BedwarsAddonKits.load();  ava.lang.NullPointerException: null
-
-
-
-
-+гибель в пустоту - зрителем не тп наверх
-+кровать не ломается, ломать если стоит рядом!
-+PlayerEarnAchievementEvent PlayerUseExtraItemEvent - давать опыт
-+зритель лодка смена арены - перешел на незапущеную и присоединился с предметами лобби
-+deathmessage ?
-+звук при гибели
-+выдать предметы, обрабатывать их
-+после регена арены гуи выбор накрывается ? если был корявый выход игрока
 
 
 ---БАГИ---
