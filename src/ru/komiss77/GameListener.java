@@ -70,7 +70,7 @@ class GameListener implements Listener {
                     arena.getDisplayName(),                        //arena name
                     GameState.ОЖИДАНИЕ,
                     "§bBedWars §1"+ (arena.getEnabledTeams().isEmpty() ? "" : arena.getEnabledTeams().size()+"x"+arena.getPlayersPerTeam()),                        //line0
-                    "§5Арена: §1"+arena.getDisplayName(),                       //line1
+                    "§5"+arena.getDisplayName(),                       //line1
                     "§2Заходите!",                        //line2
                     "§1"+arena.getPlayers().size()+" / "+arena.getMaxPlayers(),                        //line3
                     "§8ожидание в лобби",                        //extra
@@ -96,7 +96,7 @@ class GameListener implements Listener {
                             e.getArena().getDisplayName(),                        //arena name
                             GameState.ОЖИДАНИЕ,
                             "§bBedWars §1"+e.getArena().getEnabledTeams().size()+"x"+e.getArena().getPlayersPerTeam(),                         //line0
-                            "§5Арена: §1"+e.getArena().getDisplayName(),                        //line1
+                            "§5"+e.getArena().getDisplayName(),                        //line1
                             "§5Заканчивается",                        //line2
                             "",                        //line3
                             "§8конец",                        //extra
@@ -110,7 +110,7 @@ class GameListener implements Listener {
                             e.getArena().getDisplayName(),                        //arena name
                             GameState.ОЖИДАНИЕ,
                             "§bBedWars",                        //line0
-                            "§5Арена: §1"+e.getArena().getDisplayName(),                        //line1
+                            "§5"+e.getArena().getDisplayName(),                        //line1
                             "§eРегенерация",                        //line2
                             "",                        //line3
                             "§8реген",                        //extra
@@ -124,7 +124,7 @@ class GameListener implements Listener {
                             e.getArena().getDisplayName(),                        //arena name
                             GameState.ОЖИДАНИЕ,
                             "§bBedWars §1"+e.getArena().getEnabledTeams().size()+"x"+e.getArena().getPlayersPerTeam(),                        //line0
-                            "§5Арена: §1"+e.getArena().getDisplayName(),                        //line1
+                            "§5"+e.getArena().getDisplayName(),                        //line1
                             "§4Выключена",                        //line2
                             "",                        //line3
                             "§8off",                        //extra

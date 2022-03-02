@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.Bukkit;
 import java.util.HashMap;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -37,7 +36,7 @@ public class CustomScoreboard {
         if (showHealth) {
             final Objective registerNewObjective = this.scoreboard.registerNewObjective("SW_HEALTH", "health");
             registerNewObjective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-            registerNewObjective.setDisplayName(ChatColor.DARK_RED + StringEscapeUtils.unescapeJava("\u2764"));
+            registerNewObjective.setDisplayName(ChatColor.DARK_RED + "\u2764");
         }
     }
     

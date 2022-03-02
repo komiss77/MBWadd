@@ -89,10 +89,10 @@ public class BwAdd extends JavaPlugin {
         //    public void run() {
                 for (Arena a:BedwarsAPI.getGameAPI().getArenas()) {
                     ApiOstrov.sendArenaData(
-                            a.getDisplayName(),                        //arena name
+                            org.bukkit.ChatColor.stripColor(a.getDisplayName()),                        //arena name
                             GameState.РАБОТАЕТ,
                             "§bBedWars §1",                        //line0
-                            "§5Арена: §1"+a.getDisplayName(),                        //line1
+                            "§5"+a.getDisplayName(),                        //line1
                             "§2Заходите!",                        //line2
                             "",                        //line3
                             "§8включение сервера",                        //extra
@@ -215,7 +215,7 @@ public class BwAdd extends JavaPlugin {
                     GameState.ВЫКЛЮЧЕНА,
                     "§4█████████",                        //line0
                     "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),                        //line1
-                    "§5Арена: §1"+a.getDisplayName(),                        //line2
+                    "§5"+a.getDisplayName(),                        //line2
                     "§4█████████",                        //line3
                     "§8выключение сервера",                        //extra
                     0                     //players
@@ -258,7 +258,7 @@ public class BwAdd extends JavaPlugin {
                                     a.getDisplayName(),                        //arena name
                                     GameState.СТАРТ,
                                     "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),                        //line0
-                                    "§5Арена: §1"+a.getDisplayName(),                       //line1
+                                    "§5"+a.getDisplayName(),                       //line1
                                     "§1"+a.getPlayers().size()+" / "+a.getMaxPlayers(),                        //line2
                                     //"§6§lДо Старта: §4"+a.getPlayers().get(0).getLevel(),                        //line3
                                     "§6§lДо Старта: §4"+a.getLobbyTimeRemaining(),                        //line3
@@ -293,7 +293,7 @@ public class BwAdd extends JavaPlugin {
                                     a.getDisplayName(),                        //arena name
                                     GameState.ИГРА,
                                     "§f>Зритель<",                        //line0
-                                    "§5Арена: §1"+a.getDisplayName(),                        //line1
+                                    "§5"+a.getDisplayName(),                        //line1
                                     "§4Игра: §l"+getFormattedTimeLeft(getTimeLeft(a)),                        //line2
                                     info,                        //line3
                                     "идёт игра",                        //extra
@@ -306,7 +306,7 @@ public class BwAdd extends JavaPlugin {
                                     a.getDisplayName(),                        //arena name
                                     GameState.ФИНИШ,
                                     "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),                        //line0
-                                    "§5Арена: §1"+a.getDisplayName(),                        //line1
+                                    "§5"+a.getDisplayName(),                        //line1
                                     "§5Заканчивается",                        //line2
                                     "§4"+(a.getPlayers().isEmpty()?"":a.getLobbyTimeRemaining()),                        //line3
                                     "§8конец",                        //extra
@@ -327,9 +327,9 @@ public class BwAdd extends JavaPlugin {
                     arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(p);
                     if (arena != null) {
                         team = arena.getPlayerTeam(p);
-                        PM.nameTagManager.setNametag(p.getName(), "§3"+arena.getDisplayName()+" §f", (team==null ? " §8[Команда?]" : team.getChatColor()+" ["+team.getDisplayName()+ "]") );
+                        PM.nameTagManager.setNametag(p, "§3"+arena.getDisplayName()+" §f", (team==null ? " §8[Команда?]" : team.getChatColor()+" ["+team.getDisplayName()+ "]") );
                     } else {
-                        PM.nameTagManager.setNametag(p.getName(), "", "");
+                        PM.nameTagManager.setNametag(p, "", "");
                     }
                 }
             }
