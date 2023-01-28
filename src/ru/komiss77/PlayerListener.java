@@ -648,7 +648,8 @@ class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerEarnAchievementEvent (final PlayerEarnAchievementEvent e) {
 //System.out.println("PlayerEarnAchievementEvent ");
-        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "reward "+e.getPlayer().getName()+" exp add rnd:5:10 bedWars" );
+        Ostrov.sync( ()->Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "reward "+e.getPlayer().getName()+" exp add rnd:5:10 bedWars" ), 0);
+        //Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "reward "+e.getPlayer().getName()+" exp add rnd:5:10 bedWars" );
     }
     
     @EventHandler
