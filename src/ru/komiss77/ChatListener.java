@@ -1,21 +1,21 @@
 package ru.komiss77;
 
 
-import de.marcely.bedwars.api.BedwarsAPI;
 import de.marcely.bedwars.api.arena.Arena;
 import de.marcely.bedwars.api.arena.ArenaStatus;
 import de.marcely.bedwars.api.arena.Team;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import java.util.Iterator;
-import me.clip.deluxechat.events.DeluxeChatEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import ru.komiss77.events.ChatPrepareEvent;
+import ru.komiss77.utils.TCUtils;
 
 
 
@@ -31,7 +31,7 @@ class ChatListener implements Listener  {
 //            }
 
             AsyncPlayerChatEvent.getHandlerList().unregister(BwAdd.marcelyBWplugin);
-            
+            AsyncChatEvent.getHandlerList().unregister(BwAdd.marcelyBWplugin);
           //  for (RegisteredListener listener : AsyncPlayerChatEvent.getHandlerList().getRegisteredListeners()) {
           //      if (listener.getPlugin().getName().equalsIgnoreCase("DeluxeChat")) {
            //         listener.getPriority().NORMAL;
@@ -49,92 +49,114 @@ class ChatListener implements Listener  {
 
     
     @EventHandler(priority = EventPriority.HIGHEST,ignoreCancelled = true)
-    public void onChat(AsyncPlayerChatEvent e) {
+    public void onChat(ChatPrepareEvent e) {
 //System.out.println("---AsyncPlayerChatEvent sender="+e.getPlayer().getName()+" msg="+e.getMessage()+" reciep="+e.getRecipients());
 
         final Player p = e.getPlayer();
-        Player recipient;
-        Iterator<Player> recipients;
         
-        //разделяем по мирам - делюксчат не пропускает глобальный, но если в игре и кто-то зашел в лобби, то пишет
-        recipients = e.getRecipients().iterator();
-        while (recipients.hasNext()) {
-            recipient = recipients.next(); //если получатель в другом мире, ему не отправляем
-            if ( !recipient.getWorld().getName().equalsIgnoreCase(p.getWorld().getName()) ) {
-                recipients.remove();
-            }
-        }
-            
-        if (p.getWorld().getName().equalsIgnoreCase("lobby")) return; //если в лобби - на обработку делюксчата
-        
-        
-        //if ( arena.getSpectators().contains(p) ) {  //не работает!! у зрителя arena == null //если пишет зритель, получают все игроки в мире
-        if ( p.getGameMode() == GameMode.SPECTATOR ) {  
-            e.setFormat("§8[Зритель] %1$s §f§o≫§f %2$s");
+        if ( p.getGameMode() == GameMode.SPECTATOR ) {
             return;
         }
         
         final Arena arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(p);
-        //final ArenaStatus arenaStatus = arena.GetStatus();
-//System.out.println("---2 arena="+arena);
-        if (arena == null || arena.getStatus()!=ArenaStatus.RUNNING ) return; //арена не выбрана или не игра - делюксчат подставляет команду вместо префикса
         
-//System.out.println("---2 getSpectators="+arena.getSpectators());
-        
-        final Team team = arena.getPlayerTeam(p);
-
-        if (team == null) return; //нет команда - хз что делать? скорее всего это зритель
-        
-        TextComponent msg;
-        HoverEvent he;
-        
-        if ( e.getMessage().startsWith("!") ) { //если всем
-//System.out.println("message.startsWith !");            
-            msg = new TextComponent( "§8[§fВсем§8] "+team.getChatColor()+"§8["+team.getDisplayName()+ "§8] §f"+p.getName()+" §o"+team.getChatColor()+"≫ §f"+e.getMessage().replaceFirst("!", "") );
-            he = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7Сообщение всем командам").create());
-            msg.setHoverEvent( he );
+        if (p.getWorld().getName().equalsIgnoreCase("lobby")) {
             
-            for (Player pl: e.getRecipients()) {
-//System.out.println("---> ! "+pl.getName()+" [Всем] "+e.getMessage());            
-                //if (arena.getPlayers().contains(pl)) pl.spigot().sendMessage(msg);
-                pl.spigot().sendMessage(msg);
+            Component c;
+             
+            if (arena!=null) {
+    //System.out.println("Арена: " + arena.getDisplayName() + " статус:" + arena.GetStatus() + (team == null ? " команда не определена":"") );
+
+                //далее - уже на арене
+                final Team team = arena.getPlayerTeam(p);
+                //DeluxeFormat df = e.getDeluxeFormat();
+
+                if (team==null) {       //команда еще не выбрана
+    //System.out.println("Команда: " + team.getChatColor() + team.getName() + " игроки:" + arena.getPlayersInTeam(team));
+                    //e.setChatMessage( team.getChatColor()+"<"+team.getName()+"> §7"+msg);
+                    c = TCUtils.format("§7<"+arena.getDisplayName()+"§8:команда?§7> §7");
+
+                } else {//команда уже выбрана
+
+                    c = TCUtils.format( team.getBukkitColor()+"<"+team.getDisplayName()+"> §7" );
+
+                }
+
+            } else {
+                c = TCUtils.format("§8<карта?> §7");
             }
-            e.getRecipients().clear();
-            //e.setFormat("§e[Всем] "+team.getChatColor()+"["+team.getName()+ "] §f%1$s §o≫ %2$s");
-            //e.setMessage(message.trim().replaceFirst("!", ""));
+           
+            e.setSenderGameInfo(c);
+            e.setViewerGameInfo(c);
+            //return;
+            
+            
+        } else {  //не в мире лобби
+            
+            if (arena == null) return;
+       
+            final Team team = arena.getPlayerTeam(p);
 
-        } else { //только в команде
-           // if (e.getMessage().startsWith("§e[Всем]")) return; //pl.spigot().sendMessage вызывает эвент еще раз когда для всех, пропускам.
-            //e.setFormat( team.getChatColor()+ " %1$s §f§o≫§f %2$s");
-            
-            Arena recipientArena;
-            Team recipientTeam;
-            
-            msg = new TextComponent( "§f"+p.getName()+"§o"+team.getChatColor()+"≫ §f"+e.getMessage());
-            he = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
-                    "§7Сообщение видно только вашей команде.\n"
-                    + "§7Чтобы сказать всем командам,\n"
-                    + "§7в начале сообщения добавьте !"
-            ).create());
-            msg.setHoverEvent( he );
-            //msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ " ) );
-            
-            for (Player pl: e.getRecipients()) {
-                recipientArena =de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(pl);
+            if (team == null) return; //нет команда - хз что делать? скорее всего это зритель или билдер
+
+            Component msg;
+        
+            if ( e.getMessage().startsWith("!") ) { //если всем
+    //System.out.println("message.startsWith !");            
+                msg = TCUtils.format("§8[§fВсем§8] §8["+team.getDisplayName()+ "§8] §f"+p.getName()+" §o"+team.getBukkitColor()+"≫ §f"+e.getMessage().replaceFirst("!", "") )
+                        .hoverEvent(HoverEvent.showText(Component.text("§7Сообщение всем командам")));
+
+                for (Player pl: e.viewers()) {
+    //System.out.println("---> ! "+pl.getName()+" [Всем] "+e.getMessage());            
+                    pl.sendMessage(msg);
+                }
+                e.viewers().clear();
+
+            } else { //только в команде
+
+                Arena recipientArena;
+                Team recipientTeam;
+
+                msg = TCUtils.format("§f"+p.getName()+"§o"+team.getBukkitColor()+"≫ §f"+e.getMessage() )
+                        .hoverEvent(HoverEvent.showText(Component.text("§7Сообщение видно только вашей команде.\n"
+                        + "§7Чтобы сказать всем командам,\n"
+                        + "§7в начале сообщения добавьте !")));
+
+                //msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ " ) );
+
+                for (Player pl: e.viewers()) {
+                    recipientArena =de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(pl);
                     if (recipientArena!=null) {
                         recipientTeam = recipientArena.getPlayerTeam(pl);
                             if (recipientTeam!=null && recipientTeam.getDisplayName().equalsIgnoreCase(team.getDisplayName())) {
-                            //e.setFormat ( "§f%1$s §o"+team.getChatColor()+"-> §f%2$s" );
-                            //message = message.trim()+"§8 !-всем";
-                            //e.setMessage(message);
-                                pl.spigot().sendMessage(msg);
+                                pl.sendMessage(msg);
                             }
-                            
-                    }
-            }
-            e.getRecipients().clear();
 
-           /* recipients = e.getRecipients().iterator();
+                    }
+                }
+                e.viewers().clear();
+            }
+       // Component c = Component.text("§8[§3"+PlayerLevel.fromPlayer(p)+ "§8");
+        //e.setSenderGameInfo(c);
+       // e.setViewerGameInfo(c);
+        
+        //if ( arena.getSpectators().contains(p) ) {  //не работает!! у зрителя arena == null //если пишет зритель, получают все игроки в мире
+        //if ( p.getGameMode() == GameMode.SPECTATOR ) {  
+       //     e.setFormat("§8[Зритель] %1$s §f§o≫§f %2$s");
+        //    return;
+       // }
+        
+        //final ArenaStatus arenaStatus = arena.GetStatus();
+//System.out.println("---2 arena="+arena);
+        //if (arena == null || arena.getStatus()!=ArenaStatus.RUNNING ) return; //арена не выбрана или не игра - делюксчат подставляет команду вместо префикса
+        
+//System.out.println("---2 getSpectators="+arena.getSpectators());
+      //  if ( p.getGameMode() == GameMode.SPECTATOR ) {
+            
+        /////    e.setFormat("§8[Зритель] %1$s §f§o≫§f %2$s");
+      //      return;
+      //  }
+                  /* recipients = e.getRecipients().iterator();
                 while (recipients.hasNext()) {
                     recipient = recipients.next();
                     recipientArena = s.a(recipient);
@@ -220,7 +242,7 @@ class ChatListener implements Listener  {
     // 1
     //dchat получает AsyncPlayerChatEvent и создаёт DeluxeChatEvent, отмена делает return из AsyncPlayerChatEvent
     //можно играть getRecipients
-    @EventHandler 
+    /*@EventHandler 
     public void chat(DeluxeChatEvent e) {
         final Player p = e.getPlayer();
 //System.out.println("1 DeluxeChatEvent name="+p.getName()+" local?"+DeluxeChat.isLocal(p.getUniqueId().toString())+" arena="+arena);
@@ -274,7 +296,7 @@ class ChatListener implements Listener  {
         
         
     }
-  
+  */
     
     
     // 2

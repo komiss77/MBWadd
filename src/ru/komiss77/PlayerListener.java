@@ -20,9 +20,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.event.player.PlayerQuitEvent;
-import me.clip.deluxechat.DeluxeChat;
 import de.marcely.bedwars.api.arena.Arena;
 import de.marcely.bedwars.api.arena.ArenaStatus;
+import de.marcely.bedwars.api.arena.Team;
 import de.marcely.bedwars.api.event.arena.ArenaBedBreakEvent;
 import de.marcely.bedwars.api.event.arena.ArenaOutOfTimeEvent;
 import de.marcely.bedwars.api.event.arena.ArenaStatusChangeEvent;
@@ -34,7 +34,6 @@ import de.marcely.bedwars.api.event.player.PlayerJoinArenaEvent;
 import de.marcely.bedwars.api.event.player.PlayerKillPlayerEvent;
 import de.marcely.bedwars.api.event.player.PlayerOpenShopEvent;
 import de.marcely.bedwars.api.event.player.PlayerQuitArenaEvent;
-import de.marcely.bedwars.api.event.player.PlayerStatChangeEvent;
 import de.marcely.bedwars.api.event.player.PlayerUseSpecialItemEvent;
 import de.marcely.bedwars.api.event.player.SpectatorJoinArenaEvent;
 import de.marcely.bedwars.api.event.player.SpectatorQuitArenaEvent;
@@ -114,9 +113,6 @@ class PlayerListener implements Listener {
         
         LobbyListener.lobbyJoin(e.getPlayer());
         
-        
-        
-        
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -169,7 +165,7 @@ class PlayerListener implements Listener {
         
         final Oplayer op = PM.getOplayer(e.getPlayer());
 //System.out.println(" ---- PlayerJoinArenaEvent --- "+e.getArena().getDisplayName()+"("+e.getArena().getName()+") lvl="+op.getStat(Stat.LEVEL)+" rep="+op.getStat(Stat.REPUTATION));
-        final ArenaInfo ai = GM.getGameInfo(GM.thisServerGame).getArena(GM.this_server_name, e.getArena().getDisplayName());
+        final ArenaInfo ai = GM.getGameInfo(GM.GAME).getArena(Ostrov.MOT_D, e.getArena().getDisplayName());
         //if (ai==null) { //багает при отсутствии связи с островом, лучше без него
         //    BwAdd.log_err("нет ArenaInfo для арены "+e.getArena().getName());
         //    e.addIssue(AddPlayerIssue.PLUGIN);
@@ -360,8 +356,8 @@ class PlayerListener implements Listener {
             public void run() {
                     switchLocalGlobal(p, true);
                     LobbyListener.perWorldTabList(e.getPlayer());
-                    if (PM.nameTagManager!=null && !e.getPlayer().getWorld().getName().equals("lobby")) {   
-                        PM.nameTagManager.setNametag(e.getPlayer(), "", "");
+                    if (!e.getPlayer().getWorld().getName().equals("lobby")) {   
+                        PM.getOplayer(p).tag("", "");
                     }
                 //if (p.isOnline() && p.getWorld().getName().equals("lobby")) {
                 //    LobbyListener.lobbyJoin(p);
@@ -425,7 +421,13 @@ class PlayerListener implements Listener {
     @EventHandler (priority = EventPriority.MONITOR)//добавить проверку - если кровати уже нет, то BW_loose
     public void onPlayerKillPlayerEvent (final PlayerKillPlayerEvent e) {
 //System.out.println("PlayerKillPlayerEvent ");
-        //ApiOstrov.addStat(e.getPlayer(), Stat.BW_kill); !!косяк начисляет наоборот
+        final Arena a = e.getArena();
+        final Team t = a.getPlayerTeam(e.getPlayer());
+        if (a.isBedDestroyed(t)) {
+            ApiOstrov.addCustomStat(e.getKiller(), "Убийство безкроватного");
+        } else {
+            ApiOstrov.addStat(e.getKiller(), Stat.BW_kill);
+        }
 //Bukkit.broadcastMessage("PlayerKillPlayerEvent "+e.getPlayer().getName()+" damaged="+e.getDamaged().getName());
         //ApiOstrov.addStat(e.getDamaged(), Stat.BW_kill);
     }   
@@ -623,8 +625,8 @@ class PlayerListener implements Listener {
             if (e.getWinners().contains(p)) {
                 ApiOstrov.addStat(p, Stat.BW_game);
                 ApiOstrov.addStat(p, Stat.BW_win);
-                Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "reward "+p.getName()+" loni add rnd:500:1000 bedWars" );
-                Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "reward "+p.getName()+" exp add rnd:10:50 bedWars" );
+                //Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "reward "+p.getName()+" loni add rnd:500:1000 bedWars" );
+                //Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "reward "+p.getName()+" exp add rnd:10:50 bedWars" );
             } else {
                 ApiOstrov.addStat(p, Stat.BW_game);
                 ApiOstrov.addStat(p, Stat.BW_loose);
@@ -686,16 +688,18 @@ class PlayerListener implements Listener {
     
     
     
+    
     public static void switchLocalGlobal(final Player p, final boolean notify) {
+        final Oplayer op = PM.getOplayer(p);
         if (p.getWorld().getName().equalsIgnoreCase("lobby")) { //оказались в лобби, делаем глобальный
-            if ( DeluxeChat.isLocal(p.getUniqueId().toString()) ){
+            if (op.isLocalChat() ){
                 if (notify) p.sendMessage("§fЧат переключен на глобальный");
-                Ostrov.deluxechatPlugin.setGlobal(p.getUniqueId().toString());
+                op.setLocalChat(false);
             }
         } else {
-            if ( !DeluxeChat.isLocal(p.getUniqueId().toString()) )  {
+            if ( !op.isLocalChat() )  {
                 if (notify) p.sendMessage("§fЧат переключен на Игровой");
-                Ostrov.deluxechatPlugin.setLocal(p.getUniqueId().toString());
+                 op.setLocalChat(true);
             }
         }
     }

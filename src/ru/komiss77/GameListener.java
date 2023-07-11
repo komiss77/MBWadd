@@ -13,8 +13,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-import me.clip.deluxechat.DeluxeChat;
 import ru.komiss77.enums.GameState;
+import ru.komiss77.modules.player.Oplayer;
+import ru.komiss77.modules.player.PM;
+import ru.komiss77.utils.TCUtils;
 
 
 
@@ -85,64 +87,79 @@ class GameListener implements Listener {
     @EventHandler (priority = EventPriority.MONITOR)
     public void onArenaStatusUpdateEvent (final ArenaStatusChangeEvent e) {
 //System.out.println(" ---- onArenaStatusUpdateEvent --- "+e.getArena().getName()+" "+e.getStatusBefore()+" -> "+e.getStatus());
-                switch (e.getNewStatus()) {
+        
+        
+        if (e.getOldStatus()==ArenaStatus.LOBBY) {
+            Oplayer op;
+            for (Player p : e.getArena().getPlayers()) {
+                op = PM.getOplayer(p);
+                op.tag("", "");
+            }
+        }
 
-                    case LOBBY:
-                        sendLobbyState(e.getArena());
-                        return;
+        switch (e.getNewStatus()) {
 
-                    case END_LOBBY:
-                        ApiOstrov.sendArenaData(
-                            e.getArena().getDisplayName(),                        //arena name
-                            GameState.ОЖИДАНИЕ,
-                            "§bBedWars §1"+e.getArena().getEnabledTeams().size()+"x"+e.getArena().getPlayersPerTeam(),                         //line0
-                            "§5"+e.getArena().getDisplayName(),                        //line1
-                            "§5Заканчивается",                        //line2
-                            "",                        //line3
-                            "§8конец",                        //extra
-                            e.getArena().getPlayers().size()                     //players
-                        );
-                        return;
+            case LOBBY -> {
+                sendLobbyState(e.getArena());
+                return;
+            }
 
-
-                    case RESETTING:
-                        ApiOstrov.sendArenaData(
-                            e.getArena().getDisplayName(),                        //arena name
-                            GameState.ОЖИДАНИЕ,
-                            "§bBedWars",                        //line0
-                            "§5"+e.getArena().getDisplayName(),                        //line1
-                            "§eРегенерация",                        //line2
-                            "",                        //line3
-                            "§8реген",                        //extra
-                            e.getArena().getPlayers().size()                     //players
-                        );
-                        return;
+            case END_LOBBY -> {
+                ApiOstrov.sendArenaData(
+                        e.getArena().getDisplayName(),                        //arena name
+                        GameState.ОЖИДАНИЕ,
+                        "§bBedWars §1"+e.getArena().getEnabledTeams().size()+"x"+e.getArena().getPlayersPerTeam(),                         //line0
+                        "§5"+e.getArena().getDisplayName(),                        //line1
+                        "§5Заканчивается",                        //line2
+                        "",                        //line3
+                        "§8конец",                        //extra
+                        e.getArena().getPlayers().size()                     //players
+                );
+                return;
+            }
 
 
-                    case STOPPED:
-                        ApiOstrov.sendArenaData(
-                            e.getArena().getDisplayName(),                        //arena name
-                            GameState.ОЖИДАНИЕ,
-                            "§bBedWars §1"+e.getArena().getEnabledTeams().size()+"x"+e.getArena().getPlayersPerTeam(),                        //line0
-                            "§5"+e.getArena().getDisplayName(),                        //line1
-                            "§4Выключена",                        //line2
-                            "",                        //line3
-                            "§8off",                        //extra
-                            e.getArena().getPlayers().size()                     //players
-                        );
-                        return;
-                        
-                    case RUNNING:
-                        for (Team team : e.getArena().getRemainingTeams()) {
-                            for (Player p : e.getArena().getPlayersInTeam(team)) {
-                                p.setPlayerListName("§8["+team.getChatColor()+team.getDisplayName()+"§8] §f"+p.getName());
-                            }
-                        }
-                        e.getArena().getGameWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-                        e.getArena().getGameWorld().setTime(1000);
-                        return;
+            case RESETTING -> {
+                ApiOstrov.sendArenaData(
+                        e.getArena().getDisplayName(),                        //arena name
+                        GameState.ОЖИДАНИЕ,
+                        "§bBedWars",                        //line0
+                        "§5"+e.getArena().getDisplayName(),                        //line1
+                        "§eРегенерация",                        //line2
+                        "",                        //line3
+                        "§8реген",                        //extra
+                        e.getArena().getPlayers().size()                     //players
+                );
+                return;
+            }
 
+
+            case STOPPED -> {
+                ApiOstrov.sendArenaData(
+                        e.getArena().getDisplayName(),                        //arena name
+                        GameState.ОЖИДАНИЕ,
+                        "§bBedWars §1"+e.getArena().getEnabledTeams().size()+"x"+e.getArena().getPlayersPerTeam(),                        //line0
+                        "§5"+e.getArena().getDisplayName(),                        //line1
+                        "§4Выключена",                        //line2
+                        "",                        //line3
+                        "§8off",                        //extra
+                        e.getArena().getPlayers().size()                     //players
+                );
+                return;
+            }
+
+            case RUNNING -> {
+                for (Team team : e.getArena().getAliveTeams()) {
+                    for (Player p : e.getArena().getPlayersInTeam(team)) {
+                        p.playerListName( TCUtils.format("§8["+team.getBukkitColor()+team.getDisplayName()+"§8] §f"+p.getName()) );
+                    }
                 }
+                e.getArena().getGameWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+                e.getArena().getGameWorld().setTime(1000);
+                return;
+            }
+
+        }
 
     }
     
@@ -151,7 +168,12 @@ class GameListener implements Listener {
     @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerJoinArenaEvent (final PlayerJoinArenaEvent e) {
 //System.out.println(" ---- onPlayerJoinArenaEvent --- "+e.getArena().getName()+" "+e.getPlayer().getName());
-        if (e.getArena().getStatus()==ArenaStatus.LOBBY) sendLobbyState(e.getArena());
+        final Player p = e.getPlayer();
+        if (e.getArena().getStatus()==ArenaStatus.LOBBY) {
+            sendLobbyState(e.getArena());
+            final Oplayer op = PM.getOplayer(p);
+            op.tag(e.getArena().getDisplayName()+" ", "");
+        }
         e.getPlayer().resetPlayerTime();
         e.getPlayer().resetPlayerWeather();
     }
@@ -160,7 +182,12 @@ class GameListener implements Listener {
     @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerQuitArenaEvent (final PlayerQuitArenaEvent e) {
 //System.out.println(" ---- onPlayerQuitArenaEvent --- "+e.getArena().getName()+" "+e.getPlayer().getName());
-        if (e.getArena().getStatus()==ArenaStatus.LOBBY)  sendLobbyState(e.getArena());
+        final Player p = e.getPlayer();
+        if (e.getArena().getStatus()==ArenaStatus.LOBBY)  {
+            sendLobbyState(e.getArena());
+            final Oplayer op = PM.getOplayer(p);
+            op.tag("", "");
+        }
     }
  
     
@@ -203,21 +230,7 @@ class GameListener implements Listener {
     
     
     
-    
-    
-    public static void switchLocalGlobal(final Player p, final boolean notify) {
-        if (p.getWorld().getName().equalsIgnoreCase("lobby")) { //оказались в лобби, делаем глобальный
-            if ( DeluxeChat.isLocal(p.getUniqueId().toString()) ){
-                if (notify) p.sendMessage("§fЧат переключен на глобальный");
-                Ostrov.deluxechatPlugin.setGlobal(p.getUniqueId().toString());
-            }
-        } else {
-            if ( !DeluxeChat.isLocal(p.getUniqueId().toString()) )  {
-                if (notify) p.sendMessage("§fЧат переключен на Игровой");
-                Ostrov.deluxechatPlugin.setLocal(p.getUniqueId().toString());
-            }
-        }
-    }
+
     
     
     

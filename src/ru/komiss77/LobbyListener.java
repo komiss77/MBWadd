@@ -44,12 +44,12 @@ class LobbyListener implements Listener {
 
     public LobbyListener() {
         //executed = new HashSet<>();
-        arenaSelector = new ItemBuilder(Material.CAMPFIRE).setName("§aВыбор Арены").build();
-        achivki = new ItemBuilder(Material.EMERALD).setName("§5Достижения").build();
-        stat = new ItemBuilder(Material.END_CRYSTAL).setName("§6Статистика").build();
-        profile = new ItemBuilder(Material.PLAYER_HEAD).setName("§bПрофиль").build();
-        exit = new ItemBuilder(Material.MAGMA_CREAM).setName("§4Вернуться в лобби").build();
-        //nextArenaSpectate = new ItemBuilder(Material.ELYTRA).setName("§6Следующая Арена").build();
+        arenaSelector = new ItemBuilder(Material.CAMPFIRE).name("§aВыбор Арены").build();
+        achivki = new ItemBuilder(Material.EMERALD).name("§5Достижения").build();
+        stat = new ItemBuilder(Material.END_CRYSTAL).name("§6Статистика").build();
+        profile = new ItemBuilder(Material.PLAYER_HEAD).name("§bПрофиль").build();
+        exit = new ItemBuilder(Material.MAGMA_CREAM).name("§4Вернуться в лобби").build();
+        //nextArenaSpectate = new ItemBuilder(Material.ELYTRA).name("§6Следующая Арена").build();
     
     }
     

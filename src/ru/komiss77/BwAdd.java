@@ -23,6 +23,7 @@ import de.marcely.bedwars.libraries.configmanager2.ConfigManager;
 import java.util.ArrayList;
 import java.util.List;
 import ru.komiss77.enums.GameState;
+import ru.komiss77.modules.player.Oplayer;
 import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.inventory.SmartInventory;
 
@@ -55,13 +56,9 @@ public class BwAdd extends JavaPlugin {
         //bwaddConfig = new ConfigManager(this, "bwaddConfig.cfg");
         //bwaddConfig.load();
         
-        if (Ostrov.deluxechatPlugin!=null) {
 
-            Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
-            log_ok("Подключен DeluxeChat");
-        } else {
-            log_ok("DeluxeChat не найден!");
-        }
+        Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
+
         
         
         scoreboard = new CustomScoreboard(this, false, 
@@ -320,19 +317,20 @@ public class BwAdd extends JavaPlugin {
                     }
                 }
                 
-            if (PM.nameTagManager!=null) {
+            //if (PM.nameTagManager!=null) {
                 Arena arena;
                 Team team;
                 for (Player p : Bukkit.getWorld("lobby").getPlayers()) {
+                    final Oplayer op = PM.getOplayer(p);
                     arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(p);
                     if (arena != null) {
                         team = arena.getPlayerTeam(p);
-                        PM.nameTagManager.setNametag(p, "§3"+arena.getDisplayName()+" §f", (team==null ? " §8[Команда?]" : team.getChatColor()+" ["+team.getDisplayName()+ "]") );
+                        op.tag("§3"+arena.getDisplayName()+" §f", (team==null ? " §8[Команда?]" : team.getChatColor()+" ["+team.getDisplayName()+ "]") );
                     } else {
-                        PM.nameTagManager.setNametag(p, "", "");
+                        op.tag("", "");
                     }
                 }
-            }
+           // }
             
             sec++;
             if (sec%60==0) {
