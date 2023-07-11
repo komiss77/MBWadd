@@ -125,7 +125,7 @@ class LobbyListener implements Listener {
     }
     
     
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent e) {
         
         Player player = (Player) e.getWhoClicked();

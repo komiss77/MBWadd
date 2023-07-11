@@ -23,6 +23,7 @@ import de.marcely.bedwars.libraries.configmanager2.ConfigManager;
 import java.util.ArrayList;
 import java.util.List;
 import ru.komiss77.enums.GameState;
+import ru.komiss77.modules.games.GM;
 import ru.komiss77.modules.player.Oplayer;
 import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.inventory.SmartInventory;
@@ -343,6 +344,8 @@ public class BwAdd extends JavaPlugin {
     //System.out.println(" ---- p.setPlayerTime(1000, true);");
                     }
                 }
+                //перезагрузить таблички
+                GM.OnWorldsLoadDone();
             }
             
             }

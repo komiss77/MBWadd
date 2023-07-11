@@ -5,5 +5,5 @@ version: 2.0
 load: POSTWORLD
 author: Komiss77
 
-depend: [Ostrov, MBedwars, LangUtils]
+depend: [Ostrov, MBedwars]
 

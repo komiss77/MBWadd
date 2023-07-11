@@ -8,6 +8,7 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import java.util.Iterator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
+import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -74,16 +75,22 @@ class ChatListener implements Listener  {
                 if (team==null) {       //команда еще не выбрана
     //System.out.println("Команда: " + team.getChatColor() + team.getName() + " игроки:" + arena.getPlayersInTeam(team));
                     //e.setChatMessage( team.getChatColor()+"<"+team.getName()+"> §7"+msg);
-                    c = TCUtils.format("§7<"+arena.getDisplayName()+"§8:команда?§7> §7");
+                    c = TCUtils.format("§7<"+arena.getDisplayName()+"§8:команда?§7> §7")
+                    .hoverEvent(HoverEvent.showText(TCUtils.format("§bBedWars \n§77Арена: §e"+arena.getDisplayName())))
+                    ;
 
                 } else {//команда уже выбрана
 
-                    c = TCUtils.format( team.getBukkitColor()+"<"+team.getDisplayName()+"> §7" );
+                    c = TCUtils.format( TCUtils.getTextColor(team.getDyeColor())+"<"+team.getDisplayName()+"> §7" )
+                    .hoverEvent(HoverEvent.showText(TCUtils.format("§bBedWars \n§7Арена : §e"+arena.getDisplayName()+"\n§7Команда : "+team.getDisplayName())))
+                    ;
 
                 }
 
             } else {
-                c = TCUtils.format("§8<карта?> §7");
+                c = TCUtils.format("§8<карта?> §7")
+                    .hoverEvent(HoverEvent.showText(TCUtils.format("§bBedWars \n§7Арена не выбрана")))
+                ;
             }
            
             e.setSenderGameInfo(c);
@@ -103,7 +110,7 @@ class ChatListener implements Listener  {
         
             if ( e.getMessage().startsWith("!") ) { //если всем
     //System.out.println("message.startsWith !");            
-                msg = TCUtils.format("§8[§fВсем§8] §8["+team.getDisplayName()+ "§8] §f"+p.getName()+" §o"+team.getBukkitColor()+"≫ §f"+e.getMessage().replaceFirst("!", "") )
+                msg = TCUtils.format("§8[§fВсем§8] §8["+team.getDisplayName()+ "§8] §f"+p.getName()+" §o"+TCUtils.getTextColor(team.getDyeColor())+"≫ §f"+e.getMessage().replaceFirst("!", "") )
                         .hoverEvent(HoverEvent.showText(Component.text("§7Сообщение всем командам")));
 
                 for (Player pl: e.viewers()) {
@@ -117,7 +124,7 @@ class ChatListener implements Listener  {
                 Arena recipientArena;
                 Team recipientTeam;
 
-                msg = TCUtils.format("§f"+p.getName()+"§o"+team.getBukkitColor()+"≫ §f"+e.getMessage() )
+                msg = TCUtils.format("§f"+p.getName()+"§o"+TCUtils.getTextColor(team.getDyeColor())+"≫ §f"+e.getMessage() )
                         .hoverEvent(HoverEvent.showText(Component.text("§7Сообщение видно только вашей команде.\n"
                         + "§7Чтобы сказать всем командам,\n"
                         + "§7в начале сообщения добавьте !")));
