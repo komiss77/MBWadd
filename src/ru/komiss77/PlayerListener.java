@@ -692,14 +692,14 @@ class PlayerListener implements Listener {
     public static void switchLocalGlobal(final Player p, final boolean notify) {
         final Oplayer op = PM.getOplayer(p);
         if (p.getWorld().getName().equalsIgnoreCase("lobby")) { //оказались в лобби, делаем глобальный
-            if (op.isLocalChat() ){
-                if (notify) p.sendMessage("§fЧат переключен на глобальный");
-                op.setLocalChat(false);
+            if ( op.isLocalChat()){
+                if (notify) p.sendMessage("§8Чат переключен на Общий");
+                op.setLocalChat(false);//Ostrov.deluxechatPlugin.setGlobal(p.getUniqueId().toString());
             }
         } else {
             if ( !op.isLocalChat() )  {
-                if (notify) p.sendMessage("§fЧат переключен на Игровой");
-                 op.setLocalChat(true);
+                if (notify) p.sendMessage("§8Чат переключен на Арену");
+                op.setLocalChat(true);//Ostrov.deluxechatPlugin.setLocal(p.getUniqueId().toString());
             }
         }
     }
