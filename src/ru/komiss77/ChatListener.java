@@ -81,7 +81,7 @@ class ChatListener implements Listener  {
 
                 } else {//команда уже выбрана
 
-                    c = TCUtils.format( TCUtils.getTextColor(team.getDyeColor())+"<"+team.getDisplayName()+"> §7" )
+                    c = TCUtils.format( TCUtils.toChat(team.getDyeColor())+"<"+team.getDisplayName()+"> §7" )
                     .hoverEvent(HoverEvent.showText(TCUtils.format("§bBedWars \n§7Арена : §e"+arena.getDisplayName()+"\n§7Команда : "+team.getDisplayName())))
                     ;
 
@@ -110,7 +110,7 @@ class ChatListener implements Listener  {
         
             if ( e.getMessage().startsWith("!") ) { //если всем
     //System.out.println("message.startsWith !");            
-                msg = TCUtils.format("§8[§fВсем§8] §8["+team.getDisplayName()+ "§8] §f"+p.getName()+" §o"+TCUtils.getTextColor(team.getDyeColor())+"≫ §f"+e.getMessage().replaceFirst("!", "") )
+                msg = TCUtils.format("§8[§fВсем§8] §8["+team.getDisplayName()+ "§8] §f"+p.getName()+" §o"+TCUtils.toChat(team.getDyeColor())+"≫ §f"+e.getMessage().replaceFirst("!", "") )
                         .hoverEvent(HoverEvent.showText(Component.text("§7Сообщение всем командам")));
 
                 for (Player pl: e.viewers()) {
@@ -124,7 +124,7 @@ class ChatListener implements Listener  {
                 Arena recipientArena;
                 Team recipientTeam;
 
-                msg = TCUtils.format("§f"+p.getName()+"§o"+TCUtils.getTextColor(team.getDyeColor())+"≫ §f"+e.getMessage() )
+                msg = TCUtils.format("§f"+p.getName()+"§o"+TCUtils.toChat(team.getDyeColor())+"≫ §f"+e.getMessage() )
                         .hoverEvent(HoverEvent.showText(Component.text("§7Сообщение видно только вашей команде.\n"
                         + "§7Чтобы сказать всем командам,\n"
                         + "§7в начале сообщения добавьте !")));

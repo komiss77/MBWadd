@@ -6,7 +6,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import net.md_5.bungee.api.ChatColor;
 import de.marcely.bedwars.MBedwars;
 import de.marcely.bedwars.api.BedwarsAPI;
 import de.marcely.bedwars.api.BedwarsAddon;
@@ -22,10 +21,13 @@ import de.marcely.bedwars.config.ConfigValue;
 import de.marcely.bedwars.libraries.configmanager2.ConfigManager;
 import java.util.ArrayList;
 import java.util.List;
+import net.kyori.adventure.text.Component;
 import ru.komiss77.enums.GameState;
+import ru.komiss77.enums.Stat;
 import ru.komiss77.modules.games.GM;
 import ru.komiss77.modules.player.Oplayer;
 import ru.komiss77.modules.player.PM;
+import ru.komiss77.utils.TCUtils;
 import ru.komiss77.utils.inventory.SmartInventory;
 
 
@@ -45,8 +47,16 @@ public class BwAdd extends JavaPlugin {
     public static ConfigManager multibedConfig;    
     public static ConfigManager kitConfig;    
     //public static ConfigManager lvlshopConfig;    
-    public static CustomScoreboard scoreboard;
+    //public static CustomScoreboard scoreboard;
     
+    
+    private static final Component helpRu;
+    private static final Component helpEn;
+
+    static {
+        helpRu = TCUtils.format("§7Суть Игры §8: §eВы должны защищать свою кровать. На всех базах есть специальный торговец, который снабжает бойцов экипировкой, броней, едой, блоками и другими важными вещами. Победу одержат игроки, разрушившие кровать и перебившие соперников.");
+        helpEn = TCUtils.format("§7Essence of the Game §8: §eYou must protect your bed. All bases have a special merchant who supplies fighters with equipment, armor, food, blocks and other important things. The victory will be won by the players who destroy the bed and kill their opponents.");
+    }
     
     @Override
     public void onEnable() {
@@ -62,7 +72,7 @@ public class BwAdd extends JavaPlugin {
 
         
         
-        scoreboard = new CustomScoreboard(this, false, 
+        /*scoreboard = new CustomScoreboard(this, false, 
                     "§eBW",
                     new String[] {
                         "§6§m-----------",
@@ -70,7 +80,7 @@ public class BwAdd extends JavaPlugin {
                         "",
                         "§6§m-----------",
                     }
-            );
+            );*/
         
         //scoreboard.update("§7Прячутся:", "§5"+hidersTotal, true);
         
@@ -87,7 +97,7 @@ public class BwAdd extends JavaPlugin {
         //    public void run() {
                 for (Arena a:BedwarsAPI.getGameAPI().getArenas()) {
                     ApiOstrov.sendArenaData(
-                            org.bukkit.ChatColor.stripColor(a.getDisplayName()),                        //arena name
+                            TCUtils.stripColor(a.getDisplayName()),                        //arena name
                             GameState.РАБОТАЕТ,
                             "§bBedWars §1",                        //line0
                             "§5"+a.getDisplayName(),                        //line1
@@ -187,13 +197,13 @@ public class BwAdd extends JavaPlugin {
     
     
     
-    public static String stringToChatColor(String msg) {
-        return msg.replaceAll("&", "§");
-    }
+   // public static String stringToChatColor(String msg) {
+   //     return msg.replaceAll("&", "§");
+    //}
     
-    public static String chatColorToString(String msg) {
-        return ChatColor.translateAlternateColorCodes('&', msg);
-    }
+   // public static String chatColorToString(String msg) {
+   //     return ChatColor.translateAlternateColorCodes('&', msg);
+  //  }
     
     
     
@@ -259,7 +269,7 @@ public class BwAdd extends JavaPlugin {
                                     "§5"+a.getDisplayName(),                       //line1
                                     "§1"+a.getPlayers().size()+" / "+a.getMaxPlayers(),                        //line2
                                     //"§6§lДо Старта: §4"+a.getPlayers().get(0).getLevel(),                        //line3
-                                    "§6§lДо Старта: §4"+a.getLobbyTimeRemaining(),                        //line3
+                                    "§6До Старта: §4"+a.getLobbyTimeRemaining(),                        //line3
                                     "§8ожидание в лобби",                        //extra
                                     a.getPlayers().size()                     //players
                                 );
@@ -269,9 +279,28 @@ public class BwAdd extends JavaPlugin {
                         case RUNNING:
                             String info = "";
                             for (Team t : a.getEnabledTeams()) { //getRemainingTeams ??
-                                info = info + t.getChatColor() + ( a.getPlayersInTeam(t).isEmpty() ? "X" : a.getPlayersInTeam(t).size()+" ");
-                            }   if (info.length()>15) info = info.substring(0,15);
-                            /*
+                                info = info + TCUtils.toChat(t.getDyeColor()) + ( a.getPlayersInTeam(t).isEmpty() ? "X" : a.getPlayersInTeam(t).size()+" ");
+                            }   
+                            if (info.length()>15) info = info.substring(0,15);
+                            
+//Ostrov.log(" time="+a.getRunningTime());
+                            if (a.getRunningTime() < 1200) {
+                                for (Team team : a.getAliveTeams()) {
+                                    Oplayer op;
+                                    for (Player p : a.getPlayersInTeam(team)) {
+                                        p.playerListName( TCUtils.format("§8["+TCUtils.toChat(team.getDyeColor())+team.getDisplayName()+"§8] §f"+p.getName() ) );
+                                        op = PM.getOplayer(p);
+                                        if (op.getStat(Stat.BW_game)<5) {
+                                            if (op.eng) {
+                                                p.sendMessage(helpEn);
+                                            } else {
+                                                p.sendMessage(helpRu);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                                /*
                             game.getRealTeams().stream().forEach((t) -> {
                             if (t.getPlayers().isEmpty()) Main.InfoLine= Main.InfoLine+t.getChatColor()+"X ";
                             else Main.InfoLine= Main.InfoLine+t.getChatColor()+t.getPlayers().size()+" ";

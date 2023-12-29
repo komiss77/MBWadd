@@ -1,5 +1,5 @@
 package ru.komiss77;
-
+/*
 import org.bukkit.entity.Player;
 import java.util.Set;
 import org.bukkit.scoreboard.Team;
@@ -90,3 +90,4 @@ public class CustomScoreboard {
     
     
 }
+*/

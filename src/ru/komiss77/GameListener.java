@@ -2,7 +2,6 @@ package ru.komiss77;
 
 import de.marcely.bedwars.api.arena.Arena;
 import de.marcely.bedwars.api.arena.ArenaStatus;
-import de.marcely.bedwars.api.arena.Team;
 import de.marcely.bedwars.api.event.arena.ArenaStatusChangeEvent;
 import de.marcely.bedwars.api.event.player.PlayerJoinArenaEvent;
 import de.marcely.bedwars.api.event.player.PlayerQuitArenaEvent;
@@ -16,7 +15,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import ru.komiss77.enums.GameState;
 import ru.komiss77.modules.player.Oplayer;
 import ru.komiss77.modules.player.PM;
-import ru.komiss77.utils.TCUtils;
 
 
 
@@ -148,12 +146,15 @@ class GameListener implements Listener {
                 return;
             }
 
-            case RUNNING -> {
-                for (Team team : e.getArena().getAliveTeams()) {
+            case RUNNING -> { //хз, не работает
+                
+              /*  for (Team team : e.getArena().getAliveTeams()) {
                     for (Player p : e.getArena().getPlayersInTeam(team)) {
-                        p.playerListName( TCUtils.format("§8["+team.getBukkitColor()+team.getDisplayName()+"§8] §f"+p.getName()) );
+Ostrov.log(p.getName()+" time="+e.getArena().getRunningTime()+" team="+team.getDisplayName());
+p.sendMessage(TCUtils.format("§8["+TCUtils.toChat(team.getDyeColor())+team.getDisplayName()+"§8] §f"+p.getName() ));
+                        p.playerListName( TCUtils.format("§8["+TCUtils.toChat(team.getDyeColor())+team.getDisplayName()+"§8] §f"+p.getName() ) );
                     }
-                }
+                }*/
                 e.getArena().getGameWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
                 e.getArena().getGameWorld().setTime(1000);
                 return;

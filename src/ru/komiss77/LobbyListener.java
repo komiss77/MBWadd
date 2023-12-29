@@ -26,7 +26,6 @@ import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import ru.komiss77.utils.ItemBuilder;
-import ru.komiss77.utils.inventory.SmartInventory;
 
 
 
@@ -47,7 +46,7 @@ class LobbyListener implements Listener {
         arenaSelector = new ItemBuilder(Material.CAMPFIRE).name("§aВыбор Арены").build();
         achivki = new ItemBuilder(Material.EMERALD).name("§5Достижения").build();
         stat = new ItemBuilder(Material.END_CRYSTAL).name("§6Статистика").build();
-        profile = new ItemBuilder(Material.PLAYER_HEAD).name("§bПрофиль").build();
+        profile = new ItemBuilder(Material.WARD_ARMOR_TRIM_SMITHING_TEMPLATE).name("§bПрофиль").build();
         exit = new ItemBuilder(Material.MAGMA_CREAM).name("§4Вернуться в лобби").build();
         //nextArenaSpectate = new ItemBuilder(Material.ELYTRA).name("§6Следующая Арена").build();
     
@@ -128,9 +127,9 @@ class LobbyListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent e) {
         
-        Player player = (Player) e.getWhoClicked();
-        if (!player.getWorld().getName().equals("lobby")) return;
-        Arena arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(player);
+        Player p = (Player) e.getWhoClicked();
+        if (!p.getWorld().getName().equals("lobby")) return;
+        Arena arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(p);
         if (arena==null) {
             ItemStack item = e.getCurrentItem();
             if ( item == null || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName() ) return;
@@ -138,29 +137,30 @@ class LobbyListener implements Listener {
 
             switch (item.getType()) {
                 case CAMPFIRE:
-                    player.playSound(player.getLocation(), Sound.BLOCK_PISTON_EXTEND , 20.0F, 20.0F);
+                    p.playSound(p.getLocation(), Sound.BLOCK_PISTON_EXTEND , 20.0F, 20.0F);
                     //player.performCommand("mbedwars arenasgui");
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mbedwars arenasgui open default_basic "+player.getName());
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mbedwars arenasgui open default_basic "+p.getName());
                     return;
                     
                 case EMERALD:
+                    p.performCommand("bw achievements");
                     //player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST , 20.0F, 20.0F);
-                    openAchivInv(player);
+                    //openAchivInv(player);
                     return;
                     
                 case END_CRYSTAL:
-                    player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST , 20.0F, 20.0F);
-                    player.performCommand("mbedwars stats");
+                    p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST , 20.0F, 20.0F);
+                    p.performCommand("mbedwars stats");
                     return;
                     
-                case PLAYER_HEAD:
-                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP , 20.0F, 20.0F);
-                    player.performCommand("profile");
+                case WARD_ARMOR_TRIM_SMITHING_TEMPLATE:
+                    p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP , 20.0F, 20.0F);
+                    p.performCommand("profile");
                     return;
                     
                 case MAGMA_CREAM:
-                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP , 20.0F, 20.0F);
-                    ApiOstrov.sendToServer(player, "lobby0", "");
+                    p.playSound(p.getLocation(), Sound.ENTITY_ITEM_PICKUP , 20.0F, 20.0F);
+                    ApiOstrov.sendToServer(p, "lobby0", "");
                     return;
             }
         }
@@ -185,37 +185,38 @@ class LobbyListener implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = false)
     public void onPlayerInteract(PlayerInteractEvent e) {
 //System.out.println("PlayerInteract "+e.getAction()+"   "+e.getClickedBlock());                
-        Player player = e.getPlayer();
-        if (!player.getWorld().getName().equals("lobby") || e.getAction()==Action.PHYSICAL ) return;
-        Arena arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(player);
+        Player p = e.getPlayer();
+        if (!p.getWorld().getName().equals("lobby") || e.getAction()==Action.PHYSICAL ) return;
+        Arena arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(p);
         if (arena==null) {
             ItemStack item = e.getItem();
             if ( item == null || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName() ) return;
             e.setCancelled(true);
             switch (item.getType()) {
                 case CAMPFIRE:
-                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP , 20.0F, 20.0F);
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mbedwars arenasgui open default_basic "+player.getName());
+                    p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP , 20.0F, 20.0F);
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mbedwars arenasgui open default_basic "+p.getName());
                     return;
                     
                 case EMERALD:
+                    p.performCommand("bw achievements");
                     //player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST , 20.0F, 20.0F);
-                    openAchivInv(player);
+                    //openAchivInv(p);
                     return;
                     
                 case END_CRYSTAL:
-                    player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST , 20.0F, 20.0F);
-                    player.performCommand("mbedwars stats");
+                    p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST , 20.0F, 20.0F);
+                    p.performCommand("mbedwars stats");
                     return;
                     
-                case PLAYER_HEAD:
-                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP , 20.0F, 20.0F);
-                    player.performCommand("profile");
+                case WARD_ARMOR_TRIM_SMITHING_TEMPLATE:
+                    p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP , 20.0F, 20.0F);
+                    p.performCommand("profile");
                     return;
                     
                 case MAGMA_CREAM:
-                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP , 20.0F, 20.0F);
-                    ApiOstrov.sendToServer(player, "lobby0", "");
+                    p.playSound(p.getLocation(), Sound.ENTITY_ITEM_PICKUP , 20.0F, 20.0F);
+                    ApiOstrov.sendToServer(p, "lobby0", "");
                     return;
             }
 
@@ -224,7 +225,7 @@ class LobbyListener implements Listener {
 
     }
     
-    private void openAchivInv(final Player p) {
+ /*   private void openAchivInv(final Player p) {
         
         //BedwarsAPI.getGameAPI().
         de.marcely.bedwars.api.BedwarsAPI.getPlayerDataAPI().getAchievements(p.getUniqueId() , acm -> {
@@ -239,80 +240,8 @@ class LobbyListener implements Listener {
 
         } );
 
-        //getAchievements
-      /*  final PlayerAchievements pac = BedwarsAPIa.getPlayerDataAPI().getAchievementsNow(p.getUniqueId()).get();
-        
-        PlayerAchievement pa;
-        for (int i=1; i<=28; i++) {
-            pa = get(i);
-            if (pac.has(pa)) {
-                
-                //
-                
-            }
-        }*/
-       // final AchievementsAPI aa = 
-        //for (final DefaultPlayerAchievement da : DefaultPlayerAchievement.values()) {
-         //   if (BedwarsAPI.getPlayerStatsNow(player).))
-       // }
-        
-       // for (final PlayerAchievement pa : PlayerAchievement.values()) {
-        //    if (BedwarsAPI.getPlayerStatsNow(player).))
-       // }
-        
-        
-       // Inventory inv = Bukkit.createInventory(player, InventoryType.CHEST, "§bДостижения");
-       // player.openInventory(inv);
-     /*   de.marcely.bedwars.Sound.LOBBY_ACHIEVEMENTS_OPEN.play(player);
-        final Future futureResult = UserAchievements.a(player.getUniqueId());
-
-         de.marcely.bedwars.util.s.a(futureResult, new Runnable() {
-            @Override
-            public void run() {
-               try {
-                  UserAchievements userAcivki = (UserAchievements)futureResult.get();
-                  GUI guiInv = new GUI(de.marcely.bedwars.message.b.a(Language.GUI_Achievements_Title).f(player), 0);
-                    //Achievement.values();
-                  //for(Iterator achivki = de.marcely.bedwars.util.s.ac.iterator(); achivki.hasNext(); var2.setBackground(new DecGUIItem(de.marcely.bedwars.util.i.a(ConfigValue.gui_achievements_backgroundmaterial, " ")))) {
-                  for (int i = 0; i<Achievement.values().length; i++) {
-                      guiInv.setBackground(new DecGUIItem(de.marcely.bedwars.util.i.a(ConfigValue.gui_achievements_backgroundmaterial, " ")));
-                      Achievement achiv = Achievement.values()[i];
-                      ItemStack item = userAcivki.has(achiv) ? de.marcely.bedwars.util.i.a(de.marcely.bedwars.util.i.a(ConfigValue.gui_achievements_material_earned.clone(), ChatColor.GREEN + achiv.a(player)), ChatColor.DARK_PURPLE + " " + achiv.c(player)) : de.marcely.bedwars.util.i.a(de.marcely.bedwars.util.i.a(ConfigValue.gui_achievements_material_unearned.clone(), ChatColor.RED + achiv.a(player)), "" + ChatColor.GRAY + ChatColor.BOLD + " ????");
-                      guiInv.addItem(new GUIItem(item) {
-                        @Override
-                        public void onClick(Player var1x, boolean var2, boolean var3) {
-                           de.marcely.bedwars.Sound.LOBBY_ACHIEVEMENTS_CLICK.play(var1x);
-                        }
-                     });
-                     if (ConfigValue.gui_achievements_centered) {
-                        guiInv.centerAtYAll(GUI.CenterFormatType.Normal);
-                     }
-
-                  }
-                  
-                  for(Iterator achivki = Achievement.values(); achivki.hasNext(); guiInv.setBackground(new DecGUIItem(de.marcely.bedwars.util.i.a(ConfigValue.gui_achievements_backgroundmaterial, " ")))) {
-                     Achievement achiv = (Achievement)achivki.next();
-                     ItemStack item = userAcivki.has(achiv) ? de.marcely.bedwars.util.i.a(de.marcely.bedwars.util.i.a(ConfigValue.gui_achievements_material_earned.clone(), ChatColor.GREEN + var3.a(player)), ChatColor.DARK_PURPLE + " " + var3.c(player)) : de.marcely.bedwars.util.i.a(de.marcely.bedwars.util.i.a(ConfigValue.gui_achievements_material_unearned.clone(), ChatColor.RED + var3.a(player)), "" + ChatColor.GRAY + ChatColor.BOLD + " ????");
-                     guiInv.addItem(new GUIItem(item) {
-                        public void onClick(Player var1x, boolean var2, boolean var3) {
-                           de.marcely.bedwars.Sound.LOBBY_ACHIEVEMENTS_CLICK.play(var1x);
-                        }
-                     });
-                     if (ConfigValue.gui_achievements_centered) {
-                        guiInv.centerAtYAll(GUI.CenterFormatType.Normal);
-                     }
-                  }
-
-                  guiInv.open(player);
-               } catch (ExecutionException | InterruptedException var6) {
-                  var6.printStackTrace();
-               }
-
-            }
-         });*/
-
     }
-  
+  */
    
 
     

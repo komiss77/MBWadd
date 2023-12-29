@@ -1,6 +1,6 @@
 package ru.komiss77;
 
-
+/*
 import de.marcely.bedwars.api.player.DefaultPlayerAchievement;
 import de.marcely.bedwars.api.player.PlayerAchievement;
 import de.marcely.bedwars.api.player.PlayerAchievements;
@@ -54,13 +54,13 @@ public class AchivMenu implements InventoryProvider {
         
         //final PlayerAchievements pac = BedwarsAPIa.getPlayerDataAPI().getAchievements(p.getUniqueId()).get();
         
-        
+        // de.marcely.bedwars.api.BedwarsAPI.getPlayerDataAPI().getCachedAchievements()
         
         
         
         
         PlayerAchievement pa;
-        for (int i=1; i<=28; i++) {
+        for (int i=1; i<=30; i++) {
             pa = get(i);
             
             //if (pac.has(pa)) {
@@ -68,9 +68,9 @@ public class AchivMenu implements InventoryProvider {
             menuEntry.add(ClickableItem.empty(new ItemBuilder(acm.has(pa) ? Material.TURTLE_HELMET : Material.FIREWORK_STAR)
                 .name("§b"+pa.getName() )
                 .addFlags(ItemFlag.HIDE_ATTRIBUTES)
-                .lore("")
-                .lore(pa.getDescription())
-                .lore("")
+                .addLore("")
+                .addLore(pa.getDescription())
+                .addLore("")
                 .build()));            
                 
            // }
@@ -128,15 +128,11 @@ public class AchivMenu implements InventoryProvider {
         pagination.addToIterator(contents.newIterator(SlotIterator.Type.HORIZONTAL, SlotPos.of(1, 1)).allowOverride(false));
         
 
-        
-        
+
 
     }
     
-    
-    
 
-    
     
     
     private static PlayerAchievement get(int num) {
@@ -169,7 +165,7 @@ public class AchivMenu implements InventoryProvider {
                 return DefaultPlayerAchievement.KILL_WITH_BOW;
             }
             case 10: {
-                return DefaultPlayerAchievement.WIN_100_ROUNDS;
+                return DefaultPlayerAchievement.WIN_WITHIN_TIME;
             }
             case 11: {
                 return DefaultPlayerAchievement.KILL_WITH_HALF_HEART;
@@ -225,12 +221,22 @@ public class AchivMenu implements InventoryProvider {
             case 28: {
                 return DefaultPlayerAchievement.USE_FIREBALL;
             }
+            case 29: {
+                return DefaultPlayerAchievement.USE_INVIS_POTION;
+            }
+            case 30: {
+                return DefaultPlayerAchievement.SPEND_200_RESOURCES;
+            }
         }
         return null;
 
     }    
     
     
+
+
     
     
 }
+
+*/

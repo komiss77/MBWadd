@@ -1,14 +1,6 @@
 package de.marcely.bedwarsaddon.kits115;
 
 
-import de.marcely.bedwars.libraries.configmanager2.objects.Tree;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import ru.komiss77.BwAdd;
-import ru.komiss77.utils.ItemBuilder;
-
-
 
 public class Config {
 /*

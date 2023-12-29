@@ -351,9 +351,11 @@ class PlayerListener implements Listener {
         //final Player p = e.getPlayer();
         //final Arena arena = BedwarsAPI.getArena(p);
         new BukkitRunnable() {
-            final Player p = e.getPlayer();
+            final String name = e.getPlayer().getName();
             @Override
             public void run() {
+                final Player p = Bukkit.getPlayerExact(name);
+                if (p==null) return;
                     switchLocalGlobal(p, true);
                     LobbyListener.perWorldTabList(e.getPlayer());
                     if (!e.getPlayer().getWorld().getName().equals("lobby")) {   
