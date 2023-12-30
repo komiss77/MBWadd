@@ -1,6 +1,6 @@
 package ru.komiss77;
 
-
+import com.destroystokyo.paper.ClientOption;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -32,9 +32,6 @@ import ru.komiss77.utils.inventory.SmartInventory;
 
 
 
-
-
-
 public class BwAdd extends JavaPlugin {
     
     public static BwAdd instance;    
@@ -63,58 +60,30 @@ public class BwAdd extends JavaPlugin {
         
         instance = this;
         marcelyBWplugin = (MBedwars) Bukkit.getPluginManager().getPlugin("MBedwars");
-        
-        //bwaddConfig = new ConfigManager(this, "bwaddConfig.cfg");
-        //bwaddConfig.load();
-        
 
         Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
 
-        
-        
-        /*scoreboard = new CustomScoreboard(this, false, 
-                    "§eBW",
-                    new String[] {
-                        "§6§m-----------",
-                        "",
-                        "",
-                        "§6§m-----------",
-                    }
-            );*/
-        
-        //scoreboard.update("§7Прячутся:", "§5"+hidersTotal, true);
-        
-        
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new GameListener(), this);
         Bukkit.getPluginManager().registerEvents(new LobbyListener(), this);
-        
-        
-        
-        
-        //new BukkitRunnable() {
-        //    @Override
-        //    public void run() {
-                for (Arena a:BedwarsAPI.getGameAPI().getArenas()) {
-                    ApiOstrov.sendArenaData(
-                            TCUtils.stripColor(a.getDisplayName()),                        //arena name
-                            GameState.РАБОТАЕТ,
-                            "§bBedWars §1",                        //line0
-                            "§5"+a.getDisplayName(),                        //line1
-                            "§2Заходите!",                        //line2
-                            "",                        //line3
-                            "§8включение сервера",                        //extra
-                            0                     //players
-                    );
-                }
-        //    }
-        //}.runTaskLater(this, 20);
 
+        for (Arena a:BedwarsAPI.getGameAPI().getArenas()) {
+            ApiOstrov.sendArenaData(
+                    TCUtils.stripColor(a.getDisplayName()),                        //arena name
+                    GameState.РАБОТАЕТ,
+                    "§bBedWars §1",                        //line0
+                    "§5"+a.getDisplayName(),                        //line1
+                    "§2Заходите!",                        //line2
+                    "",                        //line3
+                    "§8включение сервера",                        //extra
+                    0                     //players
+            );
+        }
         
         startTimer();
         
         
-        final LobbyItemHandler lih = new LobbyItemHandler("selectshopdesign", this) {
+        final LobbyItemHandler lihRu = new LobbyItemHandler("selectshopdesign", this) {
             @Override
             public void handleUse(Player p, Arena a, LobbyItem li) {
                 //p.sendMessage("handleUse ");
@@ -129,13 +98,35 @@ public class BwAdd extends JavaPlugin {
             
             @Override
             public boolean isVisible(Player p, Arena a, LobbyItem li) {
-                //p.sendMessage("isVisible ");
-                return a.getStatus()==ArenaStatus.LOBBY;
+                return a.getStatus()==ArenaStatus.LOBBY && p.getClientOption(ClientOption.LOCALE).equals("ru_ru");
             }
         };
-        BedwarsAPI.getGameAPI().registerLobbyItemHandler(lih);
+        BedwarsAPI.getGameAPI().registerLobbyItemHandler(lihRu);
         
-        final SpectatorItemHandler sih = new SpectatorItemHandler("nextArena", this) {
+        
+        final LobbyItemHandler lihEn = new LobbyItemHandler("selectshopdesign", this) {
+            @Override
+            public void handleUse(Player p, Arena a, LobbyItem li) {
+                //p.sendMessage("handleUse ");
+                SmartInventory.builder()
+                    .id("ssd")
+                    .provider(new SelectShopDesign())
+                    .size(3, 9)
+                    .title("§aShop design")
+                    .build()
+                    .open(p);
+            }
+            
+            @Override
+            public boolean isVisible(Player p, Arena a, LobbyItem li) {
+                //p.sendMessage("isVisible ");
+                return a.getStatus()==ArenaStatus.LOBBY  && !p.getClientOption(ClientOption.LOCALE).equals("ru_ru");
+            }
+        };
+        BedwarsAPI.getGameAPI().registerLobbyItemHandler(lihEn);   
+        
+        
+        final SpectatorItemHandler sihRu = new SpectatorItemHandler("nextArena", this) {
 
             @Override
             public void handleUse(Spectator sp, SpectatorItem si) {
@@ -166,13 +157,49 @@ public class BwAdd extends JavaPlugin {
             }
 
             @Override
-            public boolean isVisible(Spectator spctr, SpectatorItem si) {
-                return true;
+            public boolean isVisible(Spectator sp, SpectatorItem si) {
+                return  sp.getPlayer().getClientOption(ClientOption.LOCALE).equals("ru_ru");
             }
         };
-        BedwarsAPI.getGameAPI().registerSpectatorItemHandler(sih);
+        BedwarsAPI.getGameAPI().registerSpectatorItemHandler(sihRu);
         
-       // bedwarsAddon = new BedwarsAddon(instance);
+        
+        final SpectatorItemHandler sihEn = new SpectatorItemHandler("nextArena", this) {
+
+            @Override
+            public void handleUse(Spectator sp, SpectatorItem si) {
+                List<String> arenaInGame=new ArrayList();
+            
+                for (Arena a:BedwarsAPI.getGameAPI().getArenas()) {
+                    if ( a.getStatus()==ArenaStatus.RUNNING) { //перебираем работающие арены
+                        if ( !a.getGameWorldName().equals(sp.getPlayer().getWorld().getName()) ) continue; //перебираем до арены, на которой находимся
+                        if ( !a.getGameWorldName().equals(sp.getPlayer().getWorld().getName()) ) arenaInGame.add(a.getDisplayName()); //добавляем остальные кроме текущей, что далее по списку
+                    }
+                }
+
+                if (arenaInGame.isEmpty()) {        //если далее по списку не найдено работающих арен, делаем еще один проход сначала
+                    for (Arena a:de.marcely.bedwars.api.GameAPI.get().getArenas()) {
+                        if ( a.getStatus()==ArenaStatus.RUNNING) { //перебираем работающие арены
+                            if ( a.getGameWorldName().equals(sp.getPlayer().getWorld().getName()) ) break; //если дошли до нашей, значит, больше не искать
+                            arenaInGame.add(a.getDisplayName()); //добавляем те, что найдены ДО нашей
+                        }
+                    }
+                }
+
+                if (arenaInGame.isEmpty()) {
+                    sp.getPlayer().sendMessage("§5No more arenas to watch!");
+                } else {
+                    sp.getPlayer().performCommand("bw join "+arenaInGame.get(0));
+                    sp.getPlayer().sendMessage("§5Go to arena "+arenaInGame.get(0));
+                }
+            }
+
+            @Override
+            public boolean isVisible(Spectator sp, SpectatorItem si) {
+                return !sp.getPlayer().getClientOption(ClientOption.LOCALE).equals("ru_ru");
+            }
+        };
+        BedwarsAPI.getGameAPI().registerSpectatorItemHandler(sihEn);       // bedwarsAddon = new BedwarsAddon(instance);
 
       //  ssdConfig = new ConfigManager(this, "ssdConfig.cfg");
       //  BedwarsAddonSelectShopDesign.load();
@@ -194,24 +221,6 @@ public class BwAdd extends JavaPlugin {
     }    
     
 
-    
-    
-    
-   // public static String stringToChatColor(String msg) {
-   //     return msg.replaceAll("&", "§");
-    //}
-    
-   // public static String chatColorToString(String msg) {
-   //     return ChatColor.translateAlternateColorCodes('&', msg);
-  //  }
-    
-    
-    
-    
-    
-    
-    
-    
     
     @Override
     public void onDisable() {
@@ -259,24 +268,26 @@ public class BwAdd extends JavaPlugin {
                     
                     switch (a.getStatus()) {
                         
-                        case LOBBY:
+                        
+                        case LOBBY -> {
                             //if (a.getPlayers().get(0).getLevel()>0 && a.getPlayers().get(0).getLevel()<90) {
                             if (a.getLobbyTimeRemaining()>0 && a.getLobbyTimeRemaining()<90) {
                                 ApiOstrov.sendArenaData(
-                                    a.getDisplayName(),                        //arena name
-                                    GameState.СТАРТ,
-                                    "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),                        //line0
-                                    "§5"+a.getDisplayName(),                       //line1
-                                    "§1"+a.getPlayers().size()+" / "+a.getMaxPlayers(),                        //line2
-                                    //"§6§lДо Старта: §4"+a.getPlayers().get(0).getLevel(),                        //line3
-                                    "§6До Старта: §4"+a.getLobbyTimeRemaining(),                        //line3
-                                    "§8ожидание в лобби",                        //extra
-                                    a.getPlayers().size()                     //players
+                                        a.getDisplayName(),                        //arena name
+                                        GameState.СТАРТ,
+                                        "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),                        //line0
+                                        "§5"+a.getDisplayName(),                       //line1
+                                        "§1"+a.getPlayers().size()+" / "+a.getMaxPlayers(),                        //line2
+                                        //"§6§lДо Старта: §4"+a.getPlayers().get(0).getLevel(),                        //line3
+                                        "§6До Старта: §4"+((int)a.getLobbyTimeRemaining()),                        //line3
+                                        "§8ожидание в лобби",                        //extra
+                                        a.getPlayers().size()                     //players
                                 );
-                            }   
-                            break;
-                            
-                        case RUNNING:
+                            }
+                        }
+                          
+                        
+                        case RUNNING -> {
                             String info = "";
                             for (Team t : a.getEnabledTeams()) { //getRemainingTeams ??
                                 info = info + TCUtils.toChat(t.getDyeColor()) + ( a.getPlayersInTeam(t).isEmpty() ? "X" : a.getPlayersInTeam(t).size()+" ");
@@ -300,22 +311,7 @@ public class BwAdd extends JavaPlugin {
                                     }
                                 }
                             }
-                                /*
-                            game.getRealTeams().stream().forEach((t) -> {
-                            if (t.getPlayers().isEmpty()) Main.InfoLine= Main.InfoLine+t.getChatColor()+"X ";
-                            else Main.InfoLine= Main.InfoLine+t.getChatColor()+t.getPlayers().size()+" ";
-                            });
-                            
-                            {countdown}
-                            final int n = this.arena.N / 60;
-                            String s = String.valueOf(this.arena.N - n * 60);
-                            if (s.length() == 1) {
-                            s = "0" + s;
-                            }
-                            */
-                            //de.marcely.bedwars.game.arena.Arena mArena = de.marcely.bedwars.util.s.a(var5); //арена по игроку
-                            //final de.marcely.bedwars.game.arena.Arena mArena = de.marcely.bedwars.util.s.b(a.getDisplayName()); //арена по названию
-                            
+
                             ApiOstrov.sendArenaData(
                                     a.getDisplayName(),                        //arena name
                                     GameState.ИГРА,
@@ -325,42 +321,39 @@ public class BwAdd extends JavaPlugin {
                                     info,                        //line3
                                     "идёт игра",                        //extra
                                     a.getPlayers().size()                     //players
-                            );  
-                            break;
+                            );
+                        }
                             
-                        case END_LOBBY:
-                            ApiOstrov.sendArenaData(
+                        
+                        case END_LOBBY -> ApiOstrov.sendArenaData(
                                     a.getDisplayName(),                        //arena name
                                     GameState.ФИНИШ,
                                     "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),                        //line0
                                     "§5"+a.getDisplayName(),                        //line1
                                     "§5Заканчивается",                        //line2
-                                    "§4"+(a.getPlayers().isEmpty()?"":a.getLobbyTimeRemaining()),                        //line3
+                                    "§4"+(a.getPlayers().isEmpty()?"":((int)a.getLobbyTimeRemaining())),                        //line3
                                     "§8конец",                        //extra
                                     a.getPlayers().size()                     //players
-                            );  
-                            break;
+                            );
                             
-                        default:
-                            break;
+                        default -> {
+                        }
                             
                     }
                 }
                 
-            //if (PM.nameTagManager!=null) {
-                Arena arena;
-                Team team;
-                for (Player p : Bukkit.getWorld("lobby").getPlayers()) {
-                    final Oplayer op = PM.getOplayer(p);
-                    arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(p);
-                    if (arena != null) {
-                        team = arena.getPlayerTeam(p);
-                        op.tag("§3"+arena.getDisplayName()+" §f", (team==null ? " §8[Команда?]" : team.getChatColor()+" ["+team.getDisplayName()+ "]") );
-                    } else {
-                        op.tag("", "");
-                    }
+            Arena arena;
+            Team team;
+            for (Player p : Bukkit.getWorld("lobby").getPlayers()) {
+                final Oplayer op = PM.getOplayer(p);
+                arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(p);
+                if (arena != null) {
+                    team = arena.getPlayerTeam(p);
+                    op.tag("§3"+arena.getDisplayName()+" §f", (team==null ? " §8[Команда?]" :TCUtils.toChat(team.getDyeColor())+" ["+team.getDisplayName()+ "]") );
+                } else {
+                    op.tag("", "");
                 }
-           // }
+            }
             
             sec++;
             if (sec%60==0) {
@@ -373,8 +366,11 @@ public class BwAdd extends JavaPlugin {
     //System.out.println(" ---- p.setPlayerTime(1000, true);");
                     }
                 }
-                //перезагрузить таблички
+                //перезагрузить таблички и инфо арен
                 GM.OnWorldsLoadDone();
+                for (Arena a:de.marcely.bedwars.api.GameAPI.get().getArenas()) {
+                    GameListener.sendLobbyState(a);
+                }
             }
             
             }

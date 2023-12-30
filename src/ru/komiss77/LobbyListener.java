@@ -26,46 +26,32 @@ import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import ru.komiss77.utils.ItemBuilder;
-
-
-
+import ru.komiss77.utils.TCUtils;
 
 
 class LobbyListener implements Listener {
     
-    //private static Set <String> executed;
     private static ItemStack arenaSelector;
     private static ItemStack stat;
     private static ItemStack achivki;
     private static ItemStack profile;
     private static ItemStack exit;
-    //public static ItemStack nextArenaSpectate;
 
+    
     public LobbyListener() {
-        //executed = new HashSet<>();
         arenaSelector = new ItemBuilder(Material.CAMPFIRE).name("§aВыбор Арены").build();
         achivki = new ItemBuilder(Material.EMERALD).name("§5Достижения").build();
         stat = new ItemBuilder(Material.END_CRYSTAL).name("§6Статистика").build();
         profile = new ItemBuilder(Material.WARD_ARMOR_TRIM_SMITHING_TEMPLATE).name("§bПрофиль").build();
         exit = new ItemBuilder(Material.MAGMA_CREAM).name("§4Вернуться в лобби").build();
-        //nextArenaSpectate = new ItemBuilder(Material.ELYTRA).name("§6Следующая Арена").build();
-    
     }
-    
-    
-    
-    
-    
-    
     
 
     
     
     
     public static void lobbyJoin (final Player player) {
-        //if (executed.contains(player.getName())) return; //дико зацикливалось на onPlayerQuitArenaSpectatorEvent, такая вот защитка
-        //executed.add(player.getName());
-        
+
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -85,7 +71,7 @@ class LobbyListener implements Listener {
                 //player.setMaxHealth(20.0D);
                 player.setHealth(20.0D);
                 player.setFireTicks(0);
-                player.setPlayerListName("§f"+player.getName());
+                player.playerListName(TCUtils.format("§7"+player.getName()));
                 perWorldTabList(player);
                 //player.resetPlayerTime();
                 //player.resetPlayerWeather();

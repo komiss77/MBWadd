@@ -2,13 +2,10 @@ package ru.komiss77;
 
 
 import de.marcely.bedwars.api.arena.Arena;
-import de.marcely.bedwars.api.arena.ArenaStatus;
 import de.marcely.bedwars.api.arena.Team;
 import io.papermc.paper.event.player.AsyncChatEvent;
-import java.util.Iterator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

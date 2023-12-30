@@ -48,6 +48,7 @@ import ru.komiss77.modules.games.ArenaInfo;
 import ru.komiss77.modules.games.GM;
 import ru.komiss77.modules.player.Oplayer;
 import ru.komiss77.modules.player.PM;
+import ru.komiss77.utils.TCUtils;
 
 
 
@@ -56,11 +57,7 @@ import ru.komiss77.modules.player.PM;
 class PlayerListener implements Listener {
 
     protected static final Map <String,ShopLayoutType> shopDesign = new HashMap();
-    
-    public PlayerListener() {}
-    
-    
-    
+
     
     
     
@@ -459,7 +456,7 @@ class PlayerListener implements Listener {
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDie(PlayerDeathEvent e) {
-        e.setDeathMessage(null);
+        //e.setDeathMessage(null);
 //System.out.println( "PlayerDeathEvent loc=" + LocationUtil.StringFromLoc(e.getEntity().getLocation()) );
             new BukkitRunnable() {
             final Player p = e.getEntity();
@@ -549,6 +546,7 @@ class PlayerListener implements Listener {
     public void onPlayerJoinArenaSpectatorEvent (final SpectatorJoinArenaEvent e) { //переход игрока арены в статус зрителя после гибели
         final Player p = e.getPlayer();
         p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10, 1));
+        p.playerListName(TCUtils.format("§8[Зритель] "+e.getPlayer().getName()));
       /*  final Arena arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(e.getPlayer());
 //System.out.println(" ---- onPlayerJoinArenaSpectatorEvent --- "+e.getArena().getName()+" "+e.getPlayer().getName()+" arena="+(arena==null?"null": arena.getDisplayName()+" contains?"+e.getArena().getPlayers().contains(e.getPlayer()) ) );
         if (arena==null) { //только для чистого зрителя
@@ -713,7 +711,7 @@ class PlayerListener implements Listener {
 @EventHandler
     public void FriendTeleport(FriendTeleportEvent e) {
         Arena target_player_arena =de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(e.target);
-        if (target_player_arena != null && target_player_arena.getStatus()!=ArenaStatus.LOBBY) e.Set_canceled(true, "§eв игре!");
+        if (target_player_arena != null && target_player_arena.getStatus()!=ArenaStatus.LOBBY) e.setCanceled(true, "§eв игре!");
     }
     
 
