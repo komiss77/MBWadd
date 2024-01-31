@@ -1,0 +1,84 @@
+
+
+https://javadocs.mbedwars.com/
+https://wiki.mbedwars.com/en/Extensions/Cosmetics-and-Coins
+
+миссии добавить bw_extra bw_upgrade bw_team bw_fast
+
+голосовалки до старта
+цепочка матчей, деадматч??
+тэги ??
+
+
+
+
+
+
+ждем обнову 5.0.5 БедВарс - вещи в магазине НЕ зачарованы, некоторые потеряли мета-дату
+
+зрителей тп вверх при воид дамаж
+
+
+1. Взрыв кровати тнт овцой
+Описание: Ты взрываешь кровать тнт овцой. Она взорвалась все норм но галочка в scoreboard не убирается + если убить игрока он будет возрождаться постоянно. Итог: Победить не возможно.
+2. Появился баг со статой, пока на данный момент только килы не засчитывает. Но я не могу знать точно, думаю стату надо посмотреть.
+3. Блоки, их то поставить нельзя то сломать. в основном сломать нельзя если поставил у кровати. ( не знаю из-за анти чита это или из-за бв) Тут даже у меня работает, так что думаю не анти чит.
+4. Режим зрителя бв.
+Идет игра, ты заходишь в зрителя, оказываешься в лобби бв, там у тебя тп к игрокам скорость полета и т д, получается ты не можешь тп на карту и к игрокам. У меня с этим все норм, если игрок то не робит.
+5. Это уж не баг но так мешает игре. Взорвал ты базу, и все блоки выпали там шерсть дерево и т д. ладно если бы их поставить можно было, кстати думаю было бы круто) тут у игроков спрашивать надо. Но поставить их нельзя и получается в самый пик драки тебе надо выкинуть все это, чтобы меч то взять и другие предметы. Короче мешает.
+6. ломание блоков в лобби тоже легко исправлю, просто блочить ломание в мире лобби. 
+
+
+
+
+---БАГИ---
+
+
+---СДЕЛАТЬ---
+из старого БВ не ломать блок под соими ingame.no-friendlybreak
+
+
+
+---ВОЗМОЖНО---
+статистика - доработать учёт BW_loose в PlayerListener
+инфо по арене - сколько раз играли, наигранное время
+небольшой разброс x z при тп в лобби
+переделать зрителя на ГМ3 ?
+
+
+
+
+
+запустило с 2 игроками в 1 команде с ошибкой (лечится автобалансером)
+team_balancer = off
+[Server thread/WARN]: de.marcely.bedwars.bq: Player 'semen' isn't in a team?!
+[01:26:09] [Server thread/WARN]:        at de.marcely.bedwars.game.arena.Arena.D(Arena.java:1174)
+[01:26:09] [Server thread/WARN]:        at de.marcely.bedwars.game.arena.b.D(ArenaScheduler.java:396)
+[01:26:09] [Server thread/WARN]:        at de.marcely.bedwars.MBedwars$3.run(MBedwars.java:218)
+
+
+
+
+joingui
+[14:53:12] [Server thread/ERROR]: Could not pass event PlayerInteractEvent to MBedwars v4.0.13.1
+org.bukkit.event.EventException: null
+Caused by: java.lang.IllegalArgumentException: Size for custom inventory must be a multiple of 9 between 9 and 54 slots (got 0)
+	at org.apache.commons.lang.Validate.isTrue(Validate.java:136) ~[bw01.jar:git-Spigot-56f8471-43183ea]
+	at org.bukkit.craftbukkit.v1_14_R1.CraftServer.createInventory(CraftServer.java:1551) ~[bw01.jar:git-Spigot-56f8471-43183ea]
+	at org.bukkit.Bukkit.createInventory(Bukkit.java:1004) ~[bw01.jar:git-Spigot-56f8471-43183ea]
+	at de.marcely.bedwars.api.gui.GUI.open(GUI.java:212) ~[?:?]
+	at de.marcely.bedwars.api.gui.GUI.update(GUI.java:236) ~[?:?]
+	at de.marcely.bedwars.api.gui.GUI.clear(GUI.java:267) ~[?:?]
+	at de.marcely.bedwars.command.e.a(ArenasGUI.java:114) ~[?:?]
+	at de.marcely.bedwars.command.e.b(ArenasGUI.java:113) ~[?:?]
+	at de.marcely.bedwars.command.e$1$1.a(ArenasGUI.java:53) ~[?:?]
+	at de.marcely.bedwars.util.s$9.run(Util.java:2750) ~[?:?]
+	at de.marcely.bedwars.util.Synchronizer.<init>(Synchronizer.java:50) ~[?:?]
+	at de.marcely.bedwars.util.Synchronizer.<init>(Synchronizer.java:43) ~[?:?]
+	at de.marcely.bedwars.util.s$9.<init>(Util.java:2745) ~[?:?]
+	at de.marcely.bedwars.util.s.c(Util.java:2745) ~[?:?]
+	at de.marcely.bedwars.game.arena.Arena.a(Arena.java:856) ~[?:?]
+	at de.marcely.bedwars.game.arena.Arena.a(Arena.java:770) ~[?:?]
+	... 19 more
+
+

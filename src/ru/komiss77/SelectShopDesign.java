@@ -1,6 +1,5 @@
 package ru.komiss77;
 
-
 import de.marcely.bedwars.api.game.shop.layout.ShopLayout;
 import de.marcely.bedwars.api.game.shop.layout.ShopLayoutType;
 import org.bukkit.Material;
@@ -12,20 +11,11 @@ import ru.komiss77.utils.inventory.InventoryContent;
 import ru.komiss77.utils.inventory.InventoryProvider;
 
 
-
-
-
 public class SelectShopDesign implements InventoryProvider {
-    
-    
     
     private static final ClickableItem fill = ClickableItem.empty(new ItemBuilder(Material.GLASS_PANE).name("§8.").build());
     
 
-    
-    public SelectShopDesign() {
-    }
-    
     
     
     @Override
@@ -35,25 +25,6 @@ public class SelectShopDesign implements InventoryProvider {
         content.fillRow(0, fill);
         content.fillRow(2, fill);
         
-        
-        
-        
-        
-        
-      //  final Pagination pagination = content.pagination();
-        
-        
-       // final ArrayList<ClickableItem> menuEntry = new ArrayList<>();
-        
-
-        
-        //final PlayerAchievements pac = BedwarsAPIa.getPlayerDataAPI().getAchievements(p.getUniqueId()).get();
-        
-        
-        
-  
-         
-            
 
         ShopLayout shop;
         
@@ -64,7 +35,7 @@ public class SelectShopDesign implements InventoryProvider {
             shop = type.getLayout();
             if (shop==null) continue;
             
-            if (PlayerListener.shopDesign.containsKey(p.getName()) && PlayerListener.shopDesign.get(p.getName())==type) {
+            if (PlayerLst.shopDesign.containsKey(p.getName()) && PlayerLst.shopDesign.get(p.getName())==type) {
                 
                 content.add(ClickableItem.empty(new ItemBuilder(Material.SUGAR)
                     .name("§e"+shop.getName())
@@ -83,7 +54,7 @@ public class SelectShopDesign implements InventoryProvider {
                     .build(), e-> {
                         if (e.isLeftClick()) {
                             p.closeInventory();
-                            PlayerListener.shopDesign.put(p.getName(),type);
+                            PlayerLst.shopDesign.put(p.getName(),type);
                             p.sendMessage("§7В игре Ваш магазин будет выгладеть как на "+type.name()+".");
                             p.playSound(p.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_BREAK, 1, 1);
                         }
@@ -102,7 +73,7 @@ public class SelectShopDesign implements InventoryProvider {
             .build(), e-> {
                 if (e.isLeftClick()) {
                     p.closeInventory();
-                    PlayerListener.shopDesign.remove(p.getName());
+                    PlayerLst.shopDesign.remove(p.getName());
                     p.sendMessage("§7В игре Ваш магазин будет выгладеть как у всех.");
                     p.playSound(p.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_BREAK, 1, 1);
                 }
@@ -112,44 +83,7 @@ public class SelectShopDesign implements InventoryProvider {
             
             
         
-        
-        
-        
-        
-        
-         /*
-        
-        pagination.setItems(menuEntry.toArray(new ClickableItem[menuEntry.size()]));
-        pagination.setItemsPerPage(29);
-        
-
-        
-
-       
-        
-        contents.set( 5, 4, ClickableItem.of( new ItemBuilder(Material.OAK_DOOR).name("закрыть").build(), e -> 
-            p.closeInventory()
-        ));
-        
-
-        
-        if (!pagination.isLast()) {
-            contents.set(5, 8, ClickableItem.of(ItemUtils.nextPage, e 
-                    -> contents.getHost().open(p, pagination.next().getPage()) )
-            );
-        }
-
-        if (!pagination.isFirst()) {
-            contents.set(5, 0, ClickableItem.of(ItemUtils.previosPage, e 
-                    -> contents.getHost().open(p, pagination.previous().getPage()) )
-            );
-        }
-        
-        pagination.addToIterator(contents.newIterator(SlotIterator.Type.HORIZONTAL, SlotPos.of(1, 1)).allowOverride(false));
-        */
-
-        
-        
+    
 
     }
     
@@ -157,14 +91,30 @@ public class SelectShopDesign implements InventoryProvider {
     private static Material getMat (final ShopLayoutType type) {
 
         switch (type) {
-            case NORMAL : return Material.POTATO;
-            case HYPIXEL : return Material.WOODEN_SWORD;
-            case HIVEMC : return Material.GOLDEN_APPLE;
-            case GOMMEHD : return Material.TURTLE_HELMET;
-            case REWINSIDE : return Material.LILY_PAD;
-            case MINESUCHT : return Material.STONE_SWORD;
-            case BERGWERKLABS : return Material.IRON_SWORD;
-            case HYPIXEL_V2 : return Material.GOLDEN_SWORD;
+            case NORMAL -> {
+                return Material.POTATO;
+            }
+            case HYPIXEL -> {
+                return Material.WOODEN_SWORD;
+            }
+            case HIVEMC -> {
+                return Material.GOLDEN_APPLE;
+            }
+            case GOMMEHD -> {
+                return Material.TURTLE_HELMET;
+            }
+            case REWINSIDE -> {
+                return Material.LILY_PAD;
+            }
+            case MINESUCHT -> {
+                return Material.STONE_SWORD;
+            }
+            case BERGWERKLABS -> {
+                return Material.IRON_SWORD;
+            }
+            case HYPIXEL_V2 -> {
+                return Material.GOLDEN_SWORD;
+            }
         }
         
         return Material.SUGAR;

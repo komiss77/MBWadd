@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="MarselyBWadapter">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/procyon.zip!/" />
+      <root url="jar://$PROJECT_DIR$/cfr.zip!/" />
+      <root url="jar://$PROJECT_DIR$/selectShopDesign.jar!/" />
+      <root url="jar://$PROJECT_DIR$/MarcelyBedwars.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bedwars_orig.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bw05_191219.zip!/" />
+      <root url="jar://$PROJECT_DIR$/ff_my.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

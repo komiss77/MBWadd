@@ -1,0 +1,79 @@
+
+
+
+тп во время игры в другой мир
+[01:38:32] [Server thread/ERROR]: Could not pass event PlayerTeleportEvent to MBedwars v4.0.13.1
+org.bukkit.event.EventException: null
+Caused by: java.lang.IllegalArgumentException: Cannot measure distance between map2 and map1
+
+        at de.marcely.bedwars.be.a(PlayerTeleport.java:44) ~[?:?]
+        at de.marcely.bedwars.as.a(Events.java:150) ~[?:?]
+
+
+
+
+
+
+
+
+двойной TeamEliminateEvent
+onPlayerDamage  DamageCause.VOID
+[09:59:50] [Server thread/INFO]: PlayerDeathEvent loc=map1<>74<>-65<>-431
+[09:59:50] [Server thread/INFO]: -onStatChange() stat=BW_death  value=27
+[09:59:50] [Server thread/INFO]: -xpChange() value=-1 lvl=4  exp=87
+[09:59:50] [Server thread/INFO]: PlayerRoundDeathEvent RespawnLocation=lobby<>24<>71<>9
+[09:59:50] [Server thread/INFO]: >> Teleport  canceled?false cause=PLUGIN from=lobby<>24<>71<>9 to=lobby<>24<>71<>9 game
+=SURVIVAL
+[09:59:50] [Server thread/INFO]: PlayerTeleportEvent - подмена точки на исходую!!!!
+[09:59:50] [Server thread/INFO]: PlayerTeleportEvent - разброс!!!!
+!!!!!!!!!!!    [09:59:50] [Server thread/INFO]: TeamEliminateEvent getFinalPlayer=kuzil isCausingEnd?false
+[09:59:50] [Server thread/INFO]:  ---- onPlayerQuitArenaEvent --- Ферма kuzil arena contains?false KickReason=Leave
+[09:59:50] [Server thread/INFO]:  ---- onPlayerQuitArenaEvent --- Ферма kuzil
+[09:59:50] [Server thread/INFO]:  ---- onPlayerJoinArenaSpectatorEvent --- Ферма kuzil arena=null
+[09:59:50] [Server thread/INFO]: >> Teleport  canceled?false cause=PLUGIN from=lobby<>25<>71<>9 to=map1<>105<>159<>-427
+ode =SURVIVAL
+!!!!!!!!!!!   [09:59:50] [Server thread/INFO]: TeamEliminateEvent getFinalPlayer=kuzil isCausingEnd?false
+[09:59:50] [Server thread/INFO]:  ---- onPlayerQuitArenaEvent --- Ферма kuzil arena contains?false KickReason=Lose
+[09:59:50] [Server thread/INFO]:  ---- onPlayerQuitArenaEvent --- Ферма kuzil
+>
+
+
+
+
+
+
+
+конец раунда - ктото в лобби смотрит меню арен   https://pastebin.com/KCZ8BkAD   https://pastebin.com/eVqQZYPR
+ !!!исправлено в GUI.open   --->> int slots = height*9;  if (slots==0) slots=9;
+
+
+ [MBedwars] Task #24 for MBedwars v4.0.13.1 generated an exception
+java.lang.IllegalArgumentException: Size for custom inventory must be a multiple of 9 between 9 and 54 slots (got 0)
+        at org.apache.commons.lang.Validate.isTrue(Validate.java:136) ~[bw01.jar:git-Spigot-05bb8bc-4b34472]
+        at org.bukkit.craftbukkit.v1_15_R1.CraftServer.createInventory(CraftServer.java:1554) ~[bw01.jar:git-Spigot-05bb
+b34472]
+        at org.bukkit.Bukkit.createInventory(Bukkit.java:1004) ~[bw01.jar:git-Spigot-05bb8bc-4b34472]
+        at de.marcely.bedwars.api.gui.GUI.open(GUI.java:212) ~[?:?]
+        at de.marcely.bedwars.api.gui.GUI.update(GUI.java:236) ~[?:?]
+        at de.marcely.bedwars.api.gui.GUI.setHeight(GUI.java:141) ~[?:?]
+        at de.marcely.bedwars.command.e.a(ArenasGUI.java:115) ~[?:?]
+        at de.marcely.bedwars.command.e.b(ArenasGUI.java:113) ~[?:?]
+        at de.marcely.bedwars.command.e$1$1.a(ArenasGUI.java:53) ~[?:?]
+        at de.marcely.bedwars.util.s$9.run(Util.java:2750) ~[?:?]
+        at de.marcely.bedwars.util.Synchronizer.<init>(Synchronizer.java:50) ~[?:?]
+        at de.marcely.bedwars.util.Synchronizer.<init>(Synchronizer.java:43) ~[?:?]
+        at de.marcely.bedwars.util.s$9.<init>(Util.java:2745) ~[?:?]
+        at de.marcely.bedwars.util.s.c(Util.java:2745) ~[?:?]
+        at de.marcely.bedwars.game.arena.Arena.a(Arena.java:856) ~[?:?]
+        at de.marcely.bedwars.game.arena.Arena.a(Arena.java:777) ~[?:?]
+        at de.marcely.bedwars.game.arena.Arena.a(Arena.java:934) ~[?:?]
+        at de.marcely.bedwars.game.arena.b.D(ArenaScheduler.java:514) ~[?:?]
+        at de.marcely.bedwars.MBedwars$3.run(MBedwars.java:218) ~[?:?]
+        at org.bukkit.craftbukkit.v1_15_R1.scheduler.CraftTask.run(CraftTask.java:81) ~[bw01.jar:git-Spigot-05bb8bc-4b34
+        at org.bukkit.craftbukkit.v1_15_R1.scheduler.CraftScheduler.mainThreadHeartbeat(CraftScheduler.java:394) [bw01.j
+t-Spigot-05bb8bc-4b34472]
+        at net.minecraft.server.v1_15_R1.MinecraftServer.b(MinecraftServer.java:1030) [bw01.jar:git-Spigot-05bb8bc-4b344
+        at net.minecraft.server.v1_15_R1.DedicatedServer.b(DedicatedServer.java:393) [bw01.jar:git-Spigot-05bb8bc-4b3447
+        at net.minecraft.server.v1_15_R1.MinecraftServer.a(MinecraftServer.java:978) [bw01.jar:git-Spigot-05bb8bc-4b3447
+        at net.minecraft.server.v1_15_R1.MinecraftServer.run(MinecraftServer.java:823) [bw01.jar:git-Spigot-05bb8bc-4b34
+        at java.lang.Thread.run(Thread.java:834) [?:?]

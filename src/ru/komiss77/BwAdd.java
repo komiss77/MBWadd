@@ -1,14 +1,13 @@
 package ru.komiss77;
 
-import com.destroystokyo.paper.ClientOption;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import de.marcely.bedwars.MBedwars;
 import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.api.BedwarsAddon;
 import de.marcely.bedwars.api.arena.Arena;
 import de.marcely.bedwars.api.arena.ArenaStatus;
 import de.marcely.bedwars.api.arena.Team;
@@ -17,43 +16,20 @@ import de.marcely.bedwars.api.game.lobby.LobbyItemHandler;
 import de.marcely.bedwars.api.game.spectator.Spectator;
 import de.marcely.bedwars.api.game.spectator.SpectatorItem;
 import de.marcely.bedwars.api.game.spectator.SpectatorItemHandler;
-import de.marcely.bedwars.config.ConfigValue;
-import de.marcely.bedwars.libraries.configmanager2.ConfigManager;
-import java.util.ArrayList;
-import java.util.List;
-import net.kyori.adventure.text.Component;
 import ru.komiss77.enums.GameState;
-import ru.komiss77.enums.Stat;
 import ru.komiss77.modules.games.GM;
-import ru.komiss77.modules.player.Oplayer;
-import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.TCUtils;
 import ru.komiss77.utils.inventory.SmartInventory;
-
 
 
 public class BwAdd extends JavaPlugin {
     
     public static BwAdd instance;    
     public static MBedwars marcelyBWplugin;
-    public static BedwarsAddon bedwarsAddon;
-    public static ConfigManager bwaddConfig;
-    
-    public static ConfigManager ssdConfig;    
-    public static ConfigManager deadmatchConfig;    
-    public static ConfigManager multibedConfig;    
-    public static ConfigManager kitConfig;    
-    //public static ConfigManager lvlshopConfig;    
-    //public static CustomScoreboard scoreboard;
-    
-    
-    private static final Component helpRu;
-    private static final Component helpEn;
 
     static {
-        helpRu = TCUtils.format("§7Суть Игры §8: §eВы должны защищать свою кровать. На всех базах есть специальный торговец, который снабжает бойцов экипировкой, броней, едой, блоками и другими важными вещами. Победу одержат игроки, разрушившие кровать и перебившие соперников.");
-        helpEn = TCUtils.format("§7Essence of the Game §8: §eYou must protect your bed. All bases have a special merchant who supplies fighters with equipment, armor, food, blocks and other important things. The victory will be won by the players who destroy the bed and kill their opponents.");
     }
+    
     
     @Override
     public void onEnable() {
@@ -61,13 +37,12 @@ public class BwAdd extends JavaPlugin {
         instance = this;
         marcelyBWplugin = (MBedwars) Bukkit.getPluginManager().getPlugin("MBedwars");
 
-        Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
+        Bukkit.getPluginManager().registerEvents(new ChatLst(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerLst(), this);
+        Bukkit.getPluginManager().registerEvents(new ArenaLst(), this);
+        Bukkit.getPluginManager().registerEvents(new LobbyLst(), this);
 
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
-        Bukkit.getPluginManager().registerEvents(new GameListener(), this);
-        Bukkit.getPluginManager().registerEvents(new LobbyListener(), this);
-
-        for (Arena a:BedwarsAPI.getGameAPI().getArenas()) {
+        /*for (Arena a:BedwarsAPI.getGameAPI().getArenas()) {
             ApiOstrov.sendArenaData(
                     TCUtils.stripColor(a.getDisplayName()),                        //arena name
                     GameState.РАБОТАЕТ,
@@ -78,15 +53,24 @@ public class BwAdd extends JavaPlugin {
                     "§8включение сервера",                        //extra
                     0                     //players
             );
-        }
-        
-        startTimer();
-        
-        
-        final LobbyItemHandler lihRu = new LobbyItemHandler("selectshopdesign", this) {
+        }*/
+
+        BedwarsAPI.onReady(() -> {
+            regItems();
+            for (Arena a:BedwarsAPI.getGameAPI().getArenas()) {
+                sendLobbyState(a);
+                startTimer();
+            }
+        });
+
+    }    
+    
+    
+    private void regItems() {
+       
+        final LobbyItemHandler ssd = new LobbyItemHandler("selectshopdesign", this) {
             @Override
             public void handleUse(Player p, Arena a, LobbyItem li) {
-                //p.sendMessage("handleUse ");
                 SmartInventory.builder()
                     .id("ssd")
                     .provider(new SelectShopDesign())
@@ -98,36 +82,13 @@ public class BwAdd extends JavaPlugin {
             
             @Override
             public boolean isVisible(Player p, Arena a, LobbyItem li) {
-                return a.getStatus()==ArenaStatus.LOBBY && p.getClientOption(ClientOption.LOCALE).equals("ru_ru");
+                return true;//a.getStatus()==ArenaStatus.LOBBY && p.getClientOption(ClientOption.LOCALE).equals("ru_ru");
             }
         };
-        BedwarsAPI.getGameAPI().registerLobbyItemHandler(lihRu);
-        
-        
-        final LobbyItemHandler lihEn = new LobbyItemHandler("selectshopdesign", this) {
-            @Override
-            public void handleUse(Player p, Arena a, LobbyItem li) {
-                //p.sendMessage("handleUse ");
-                SmartInventory.builder()
-                    .id("ssd")
-                    .provider(new SelectShopDesign())
-                    .size(3, 9)
-                    .title("§aShop design")
-                    .build()
-                    .open(p);
-            }
-            
-            @Override
-            public boolean isVisible(Player p, Arena a, LobbyItem li) {
-                //p.sendMessage("isVisible ");
-                return a.getStatus()==ArenaStatus.LOBBY  && !p.getClientOption(ClientOption.LOCALE).equals("ru_ru");
-            }
-        };
-        BedwarsAPI.getGameAPI().registerLobbyItemHandler(lihEn);   
-        
+        BedwarsAPI.getGameAPI().registerLobbyItemHandler(ssd);
+
         
         final SpectatorItemHandler sihRu = new SpectatorItemHandler("nextArena", this) {
-
             @Override
             public void handleUse(Spectator sp, SpectatorItem si) {
                 List<String> arenaInGame=new ArrayList();
@@ -158,68 +119,11 @@ public class BwAdd extends JavaPlugin {
 
             @Override
             public boolean isVisible(Spectator sp, SpectatorItem si) {
-                return  sp.getPlayer().getClientOption(ClientOption.LOCALE).equals("ru_ru");
+                return  true; //sp.getPlayer().getClientOption(ClientOption.LOCALE).equals("ru_ru");
             }
         };
         BedwarsAPI.getGameAPI().registerSpectatorItemHandler(sihRu);
-        
-        
-        final SpectatorItemHandler sihEn = new SpectatorItemHandler("nextArena", this) {
-
-            @Override
-            public void handleUse(Spectator sp, SpectatorItem si) {
-                List<String> arenaInGame=new ArrayList();
-            
-                for (Arena a:BedwarsAPI.getGameAPI().getArenas()) {
-                    if ( a.getStatus()==ArenaStatus.RUNNING) { //перебираем работающие арены
-                        if ( !a.getGameWorldName().equals(sp.getPlayer().getWorld().getName()) ) continue; //перебираем до арены, на которой находимся
-                        if ( !a.getGameWorldName().equals(sp.getPlayer().getWorld().getName()) ) arenaInGame.add(a.getDisplayName()); //добавляем остальные кроме текущей, что далее по списку
-                    }
-                }
-
-                if (arenaInGame.isEmpty()) {        //если далее по списку не найдено работающих арен, делаем еще один проход сначала
-                    for (Arena a:de.marcely.bedwars.api.GameAPI.get().getArenas()) {
-                        if ( a.getStatus()==ArenaStatus.RUNNING) { //перебираем работающие арены
-                            if ( a.getGameWorldName().equals(sp.getPlayer().getWorld().getName()) ) break; //если дошли до нашей, значит, больше не искать
-                            arenaInGame.add(a.getDisplayName()); //добавляем те, что найдены ДО нашей
-                        }
-                    }
-                }
-
-                if (arenaInGame.isEmpty()) {
-                    sp.getPlayer().sendMessage("§5No more arenas to watch!");
-                } else {
-                    sp.getPlayer().performCommand("bw join "+arenaInGame.get(0));
-                    sp.getPlayer().sendMessage("§5Go to arena "+arenaInGame.get(0));
-                }
-            }
-
-            @Override
-            public boolean isVisible(Spectator sp, SpectatorItem si) {
-                return !sp.getPlayer().getClientOption(ClientOption.LOCALE).equals("ru_ru");
-            }
-        };
-        BedwarsAPI.getGameAPI().registerSpectatorItemHandler(sihEn);       // bedwarsAddon = new BedwarsAddon(instance);
-
-      //  ssdConfig = new ConfigManager(this, "ssdConfig.cfg");
-      //  BedwarsAddonSelectShopDesign.load();
-        
-      //  deadmatchConfig = new ConfigManager(this, "deadmatchConfig.cfg");
-        //BedwarsAddonDeathmatch.load();
-        
-        //multibedConfig = new ConfigManager(this, "multibedConfig.cfg");
-        //BedwarsAddonMultipleBeds.load();
-        
-        //lvlshopConfig = new ConfigManager(this, "lvlshopConfig.cfg");
-        //lvlshopConfig.load();
-        //LVLShop.load();
-        
-     //   kitConfig = new ConfigManager(this, "kitConfig.cfg");
-     //   BedwarsAddonKits.load();  //ava.lang.NullPointerException: null
-        
-
-    }    
-    
+    }
 
     
     @Override
@@ -264,13 +168,11 @@ public class BwAdd extends JavaPlugin {
                 
                 for (Arena a:de.marcely.bedwars.api.GameAPI.get().getArenas()) {
                     if (a.getPlayers().isEmpty()) continue;
-//System.out.println(" --tick "+a.getDisplayName()+" state="+a.GetStatus()+" getRunningTime="+a.getRunningTime()   +" getTeamPlayers="+a.getTeamPlayers()+" getPerTeamPlayers="+a.getPerTeamPlayers());
                     
                     switch (a.getStatus()) {
                         
                         
                         case LOBBY -> {
-                            //if (a.getPlayers().get(0).getLevel()>0 && a.getPlayers().get(0).getLevel()<90) {
                             if (a.getLobbyTimeRemaining()>0 && a.getLobbyTimeRemaining()<90) {
                                 ApiOstrov.sendArenaData(
                                         a.getDisplayName(),                        //arena name
@@ -293,31 +195,14 @@ public class BwAdd extends JavaPlugin {
                                 info = info + TCUtils.toChat(t.getDyeColor()) + ( a.getPlayersInTeam(t).isEmpty() ? "X" : a.getPlayersInTeam(t).size()+" ");
                             }   
                             if (info.length()>15) info = info.substring(0,15);
-                            
-//Ostrov.log(" time="+a.getRunningTime());
-                            if (a.getRunningTime() < 1200) {
-                                for (Team team : a.getAliveTeams()) {
-                                    Oplayer op;
-                                    for (Player p : a.getPlayersInTeam(team)) {
-                                        p.playerListName( TCUtils.format("§8["+TCUtils.toChat(team.getDyeColor())+team.getDisplayName()+"§8] §f"+p.getName() ) );
-                                        op = PM.getOplayer(p);
-                                        if (op.getStat(Stat.BW_game)<5) {
-                                            if (op.eng) {
-                                                p.sendMessage(helpEn);
-                                            } else {
-                                                p.sendMessage(helpRu);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
 
                             ApiOstrov.sendArenaData(
                                     a.getDisplayName(),                        //arena name
                                     GameState.ИГРА,
                                     "§f>Зритель<",                        //line0
                                     "§5"+a.getDisplayName(),                        //line1
-                                    "§4Игра: §l"+getFormattedTimeLeft(getTimeLeft(a)),                        //line2
+                                    "§4Игра: §l"+getFormattedTimeLeft(a.getIngameTimeRemaining()),                        //line2
+                                    //"§4Игра: §l"+getFormattedTimeLeft(getTimeLeft(a)),                        //line2
                                     info,                        //line3
                                     "идёт игра",                        //extra
                                     a.getPlayers().size()                     //players
@@ -341,37 +226,16 @@ public class BwAdd extends JavaPlugin {
                             
                     }
                 }
-                
-            Arena arena;
-            Team team;
-            for (Player p : Bukkit.getWorld("lobby").getPlayers()) {
-                final Oplayer op = PM.getOplayer(p);
-                arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(p);
-                if (arena != null) {
-                    team = arena.getPlayerTeam(p);
-                    op.tag("§3"+arena.getDisplayName()+" §f", (team==null ? " §8[Команда?]" :TCUtils.toChat(team.getDyeColor())+" ["+team.getDisplayName()+ "]") );
-                } else {
-                    op.tag("", "");
-                }
-            }
-            
-            sec++;
-            if (sec%60==0) {
-                //sec=0;
-                for (World w:Bukkit.getWorlds()) {
-                    w.setTime(1000);
-                    w.setFullTime(1000);
-                    for (Player p : w.getPlayers()) {
-                        p.setPlayerTime(1000, true);
-    //System.out.println(" ---- p.setPlayerTime(1000, true);");
+
+                sec++;
+
+                if (sec==60) {
+                    //перезагрузить таблички и инфо арен
+                    GM.OnWorldsLoadDone();
+                    for (Arena a:de.marcely.bedwars.api.GameAPI.get().getArenas()) {
+                        sendLobbyState(a);
                     }
                 }
-                //перезагрузить таблички и инфо арен
-                GM.OnWorldsLoadDone();
-                for (Arena a:de.marcely.bedwars.api.GameAPI.get().getArenas()) {
-                    GameListener.sendLobbyState(a);
-                }
-            }
             
             }
         }.runTaskTimer(instance, 20, 20);
@@ -379,12 +243,25 @@ public class BwAdd extends JavaPlugin {
     }
     
     
+    public static void sendLobbyState(final Arena arena) {
+        ApiOstrov.sendArenaData(
+            arena.getDisplayName(),                        //arena name
+            GameState.ОЖИДАНИЕ,
+            "§bBedWars §1"+ (arena.getEnabledTeams().isEmpty() ? "" : arena.getEnabledTeams().size()+"x"+arena.getPlayersPerTeam()),                        //line0
+            "§5"+arena.getDisplayName(),                       //line1
+            "§2Заходите!",                        //line2
+            "§1"+arena.getPlayers().size()+" / "+arena.getMaxPlayers(),                        //line3
+            "§8ожидание в лобби",                        //extra
+            arena.getPlayers().size()                     //players
+        );
+    }    
+    
+        
     
     
     
-    
-    public static int getTimeLeft(final Arena arena) {
-        return ConfigValue.timer - (int) (( System.currentTimeMillis() - arena.getRoundStartTime()) /1000);
+  //  public static int getTimeLeft(final Arena arena) {
+   //     return arena.getIngameTimeRemaining();//ConfigValue.timer - (int) (( System.currentTimeMillis() - arena.RoundStartTime()) /1000);
         //this.N = ConfigValue.timer;
         //int playTime = ConfigValue.timer;
         //int usedTime = (int) (( System.currentTimeMillis() - arena.getGameStartTime() ) /1000);
@@ -396,7 +273,7 @@ public class BwAdd extends JavaPlugin {
         //    s = "0" + s;
         //}
         //return s;
-    }
+   // }
     
     
     public static String getFormattedTimeLeft(int time) {
@@ -410,6 +287,7 @@ public class BwAdd extends JavaPlugin {
     public static String twoDigitString(int i) {
         return i == 0 ? "00" : (i / 10 == 0 ? "0" + i : String.valueOf(i));
     }
+
 
    
     
