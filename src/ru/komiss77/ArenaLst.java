@@ -85,7 +85,7 @@ class ArenaLst implements Listener {
                 Oplayer op;
                 for (Player p : e.getArena().getPlayers()) {
                     op = PM.getOplayer(p);
-                    op.setLocalChat(true);
+                    //op.setLocalChat(true);
                     op.tag(false);
                     p.sendMessage("§8Чат переключен на Арену");
                     if (op.getStat(Stat.BW_game)<5) {
@@ -101,11 +101,11 @@ class ArenaLst implements Listener {
             
 
             case END_LOBBY -> {
-                Oplayer op;
-                for (Player p : e.getArena().getPlayers()) {
-                    op = PM.getOplayer(p);
-                    op.setLocalChat(false);
-                }
+                //Oplayer op;
+                //for (Player p : e.getArena().getPlayers()) {
+                //    op = PM.getOplayer(p);
+                    //op.setLocalChat(false);
+                //}
                 ApiOstrov.sendArenaData(
                         e.getArena().getDisplayName(),                        //arena name
                         GameState.ОЖИДАНИЕ,

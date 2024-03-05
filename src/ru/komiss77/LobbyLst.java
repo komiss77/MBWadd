@@ -78,7 +78,7 @@ class LobbyLst implements Listener {
         final Oplayer op = PM.getOplayer(p);
         op.tabSuffix("§7[§3Лобби§7]", p);
         op.tag(true);
-        PM.getOplayer(p).setLocalChat(false);
+        //PM.getOplayer(p).setLocalChat(false);
     }    
 
     

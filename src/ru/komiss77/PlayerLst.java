@@ -62,9 +62,9 @@ class PlayerLst implements Listener {
     }
         
     
-    @EventHandler (priority = EventPriority.MONITOR)
-    public void onJoin (final PlayerJoinEvent e) {
-    }
+    //@EventHandler (priority = EventPriority.MONITOR)
+    //public void onJoin (final PlayerJoinEvent e) {
+    //}
     
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -116,9 +116,9 @@ class PlayerLst implements Listener {
     public void onPlayerQuitArenaEvent (final PlayerQuitArenaEvent e) {
         final Player p = e.getPlayer();
         LobbyLst.lobbyJoin(p);
-        final Oplayer op = PM.getOplayer(p);
-        op.setLocalChat(false);
-        p.sendMessage("§8Чат переключен на Общий");
+        //final Oplayer op = PM.getOplayer(p);
+        //op.setLocalChat(false);
+        //p.sendMessage("§8Чат переключен на Общий");
     }        
     
     
