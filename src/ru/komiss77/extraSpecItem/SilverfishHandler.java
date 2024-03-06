@@ -5,9 +5,6 @@ import de.marcely.bedwars.api.arena.Arena;
 import de.marcely.bedwars.api.arena.Team;
 import de.marcely.bedwars.api.event.player.PlayerUseSpecialItemEvent;
 import de.marcely.bedwars.api.message.Message;
-import ru.komiss77.extraSpecItem.ExtraSpecialItemsPlugin;
-import ru.komiss77.extraSpecItem.ConfigValue;
-import ru.komiss77.extraSpecItem.CustomSpecialItemUseSession;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -22,6 +19,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.scheduler.BukkitTask;
+import ru.komiss77.utils.TCUtils;
 
 public class SilverfishHandler extends CustomSpecialItemUseSession implements Listener {
 
@@ -35,6 +33,7 @@ public class SilverfishHandler extends CustomSpecialItemUseSession implements Li
         super(event);
     }
 
+    @Override
     public void run(PlayerUseSpecialItemEvent event) {
         this.takeItem();
         Player player = event.getPlayer();
@@ -51,7 +50,7 @@ public class SilverfishHandler extends CustomSpecialItemUseSession implements Li
     private void startUpdatingDisplayName() {
         if (ConfigValue.silverfish_name_tag != null && !ConfigValue.silverfish_name_tag.isEmpty()) {
             final String teamName = this.team.getDisplayName();
-            final String color = this.team.getBungeeChatColor().toString();
+            final String color = TCUtils.toChat(team.getDyeColor());//this.team.getBungeeChatColor().toString();
             final int amountOfTags = ConfigValue.silverfish_name_tag.size();
             long updateTime = (long) (ConfigValue.silverfish_life_duration / amountOfTags);
 
@@ -59,12 +58,13 @@ public class SilverfishHandler extends CustomSpecialItemUseSession implements Li
             this.task = Bukkit.getScheduler().runTaskTimer(ExtraSpecialItemsPlugin.getInstance(), new Runnable() {
                 int i = 0;
 
+                @Override
                 public void run() {
                     if (SilverfishHandler.this.silverfish.isValid() && this.i < amountOfTags) {
                         String unformattedDisplayName = (String) ConfigValue.silverfish_name_tag.get(this.i);
                         String displayName = Message.build(unformattedDisplayName != null ? unformattedDisplayName : "").placeholder("team-color", color).placeholder("team-name", teamName).placeholder("sqr", "■").done();
 
-                        SilverfishHandler.this.silverfish.setCustomName(displayName);
+                        SilverfishHandler.this.silverfish.customName(TCUtils.format(displayName));
                         ++this.i;
                     } else {
                         SilverfishHandler.this.stop();
@@ -75,6 +75,7 @@ public class SilverfishHandler extends CustomSpecialItemUseSession implements Li
         }
     }
 
+    @Override
     protected void handleStop() {
         HandlerList.unregisterAll(this);
         if (this.task != null) {

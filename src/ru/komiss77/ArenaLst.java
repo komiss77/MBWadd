@@ -1,5 +1,6 @@
 package ru.komiss77;
 
+import de.marcely.bedwars.api.arena.Arena;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -10,8 +11,10 @@ import de.marcely.bedwars.api.event.arena.ArenaStatusChangeEvent;
 import de.marcely.bedwars.api.event.arena.RoundEndEvent;
 import de.marcely.bedwars.api.event.arena.TeamEliminateEvent;
 import net.kyori.adventure.text.Component;
+import ru.komiss77.enums.Game;
 import ru.komiss77.enums.GameState;
 import ru.komiss77.enums.Stat;
+import ru.komiss77.modules.games.GM;
 import ru.komiss77.modules.player.Oplayer;
 import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.TCUtils;
@@ -44,46 +47,50 @@ class ArenaLst implements Listener {
     
     @EventHandler (priority = EventPriority.MONITOR)
     public void onStatusChange (final ArenaStatusChangeEvent e) {
+        final Arena a = e.getArena();
 //Ostrov.log(" ---- onArenaStatusUpdateEvent --- "+e.getArena().getName()+" "+e.getOldStatus()+" -> "+e.getNewStatus());
         switch (e.getNewStatus()) {
 
             case LOBBY -> {
-                BwAdd.sendLobbyState(e.getArena());
+//Ostrov.log("onStatusChange LOBBY "+e.getArena().getDisplayName());
+                if (!a.getName().equals(a.getDisplayName())) { //отсылает английские названия при старте!!!
+                    BwAdd.sendLobbyState(a);
+                }
                 return;
             }
 
             case RESETTING -> {
-                ApiOstrov.sendArenaData(
-                        e.getArena().getDisplayName(),                        //arena name
-                        GameState.РЕГЕНЕРАЦИЯ,
-                        "§bBedWars",                        //line0
-                        "§5"+e.getArena().getDisplayName(),                        //line1
-                        "§eРегенерация",                        //line2
-                        "",                        //line3
-                        "§8реген",                        //extra
-                        e.getArena().getPlayers().size()                     //players
-                );
+                GM.sendArenaData(
+                    Game.BW, 
+                    a.getDisplayName(), 
+                    GameState.РЕГЕНЕРАЦИЯ, 
+                    a.getPlayers().size(),
+                    "§bBedWars",
+                    "§5"+a.getDisplayName(),
+                    "§eРегенерация",
+                    ""
+                );  
                 return;
             }
 
 
             case STOPPED -> {
-                ApiOstrov.sendArenaData(
-                        e.getArena().getDisplayName(),                        //arena name
-                        GameState.ВЫКЛЮЧЕНА,
-                        "§bBedWars §1"+e.getArena().getEnabledTeams().size()+"x"+e.getArena().getPlayersPerTeam(),                        //line0
-                        "§5"+e.getArena().getDisplayName(),                        //line1
-                        "§4Выключена",                        //line2
-                        "",                        //line3
-                        "§8off",                        //extra
-                        e.getArena().getPlayers().size()                     //players
-                );
+                GM.sendArenaData(
+                    Game.BW, 
+                    a.getDisplayName(), 
+                    GameState.ВЫКЛЮЧЕНА, 
+                    a.getPlayers().size(),
+                    "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),                        //line0
+                    "§5"+a.getDisplayName(),                        //line1
+                    "§4Выключена",
+                    ""
+                );  
                 return;
             }
 
             case RUNNING -> {
                 Oplayer op;
-                for (Player p : e.getArena().getPlayers()) {
+                for (Player p : a.getPlayers()) {
                     op = PM.getOplayer(p);
                     //op.setLocalChat(true);
                     op.tag(false);
@@ -101,21 +108,16 @@ class ArenaLst implements Listener {
             
 
             case END_LOBBY -> {
-                //Oplayer op;
-                //for (Player p : e.getArena().getPlayers()) {
-                //    op = PM.getOplayer(p);
-                    //op.setLocalChat(false);
-                //}
-                ApiOstrov.sendArenaData(
-                        e.getArena().getDisplayName(),                        //arena name
-                        GameState.ОЖИДАНИЕ,
-                        "§bBedWars §1"+e.getArena().getEnabledTeams().size()+"x"+e.getArena().getPlayersPerTeam(),                         //line0
-                        "§5"+e.getArena().getDisplayName(),                        //line1
-                        "§5Заканчивается",                        //line2
-                        "",                        //line3
-                        "§8конец",                        //extra
-                        e.getArena().getPlayers().size()                     //players
-                );
+                GM.sendArenaData(
+                    Game.BW, 
+                    a.getDisplayName(), 
+                    GameState.ФИНИШ, 
+                    a.getPlayers().size(),
+                    "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),                         //line0
+                    "§5"+a.getDisplayName(),                        //line1
+                    "§5Заканчивается",
+                    ""
+                );  
                 return;
             }
 

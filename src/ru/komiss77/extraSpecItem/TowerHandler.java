@@ -3,27 +3,21 @@ package ru.komiss77.extraSpecItem;
 import de.marcely.bedwars.api.arena.Arena;
 import de.marcely.bedwars.api.arena.Team;
 import de.marcely.bedwars.api.event.player.PlayerUseSpecialItemEvent;
-import de.marcely.bedwars.tools.NMSHelper;
 import de.marcely.bedwars.tools.Pair;
 import de.marcely.bedwars.tools.PersistentBlockData;
 import java.util.ArrayDeque;
 import java.util.Queue;
-import ru.komiss77.extraSpecItem.ExtraSpecialItemsPlugin;
-import ru.komiss77.extraSpecItem.ConfigValue;
-import ru.komiss77.extraSpecItem.CustomSpecialItemUseSession;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
-import org.bukkit.material.Ladder;
 import org.bukkit.scheduler.BukkitTask;
 
 public class TowerHandler extends CustomSpecialItemUseSession {
 
-    private static boolean placeLadderLegacy;
+    //private static boolean placeLadderLegacy;
     private static PersistentBlockData blockData;
     private BukkitTask buildTask;
     private BlockFace direction;
@@ -36,10 +30,11 @@ public class TowerHandler extends CustomSpecialItemUseSession {
     }
 
     public static void init() {
-        TowerHandler.placeLadderLegacy = NMSHelper.get().getVersion() < 13;
+        //TowerHandler.placeLadderLegacy = NMSHelper.get().getVersion() < 13;
         TowerHandler.blockData = PersistentBlockData.fromMaterial(ConfigValue.tower_block_material);
     }
 
+    @Override
     public void run(PlayerUseSpecialItemEvent event) {
         Player player = event.getPlayer();
         Arena arena = event.getArena();
@@ -97,6 +92,7 @@ public class TowerHandler extends CustomSpecialItemUseSession {
         }
     }
 
+    @Override
     protected void handleStop() {
         if (this.buildTask != null) {
             this.buildTask.cancel();
@@ -115,16 +111,16 @@ public class TowerHandler extends CustomSpecialItemUseSession {
             data.place(block, true);
         } else {
             block.setType(Material.LADDER);
-            if (!TowerHandler.placeLadderLegacy) {
+           // if (!TowerHandler.placeLadderLegacy) {
                 PlaceLadderModern.placeLadder(block, this.direction);
-            } else {
-                BlockState state = block.getState();
-                Ladder legacyLadder = new Ladder();
+          //  } else {
+           //     BlockState state = block.getState();
+           //     Ladder legacyLadder = new Ladder();
 
-                legacyLadder.setFacingDirection(this.direction.getOppositeFace());
-                state.setData(legacyLadder);
-                state.update();
-            }
+          //      legacyLadder.setFacingDirection(this.direction.getOppositeFace());
+          //      state.setData(legacyLadder);
+            //    state.update();
+          //  }
         }
 
         arena.setBlockPlayerPlaced(block, true);
@@ -248,17 +244,10 @@ public class TowerHandler extends CustomSpecialItemUseSession {
         Block block = null;
 
         switch (this.direction) {
-            case NORTH:
-                block = this.chest.getRelative(x, height, y);
-                break;
-            case SOUTH:
-                block = this.chest.getRelative(x * -1, height, y * -1);
-                break;
-            case EAST:
-                block = this.chest.getRelative(y * -1, height, x);
-                break;
-            case WEST:
-                block = this.chest.getRelative(y, height, x * -1);
+            case NORTH -> block = this.chest.getRelative(x, height, y);
+            case SOUTH -> block = this.chest.getRelative(x * -1, height, y * -1);
+            case EAST -> block = this.chest.getRelative(y * -1, height, x);
+            case WEST -> block = this.chest.getRelative(y, height, x * -1);
         }
 
         if (block != null) {

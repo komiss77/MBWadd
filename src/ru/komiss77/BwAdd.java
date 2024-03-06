@@ -16,6 +16,7 @@ import de.marcely.bedwars.api.game.lobby.LobbyItemHandler;
 import de.marcely.bedwars.api.game.spectator.Spectator;
 import de.marcely.bedwars.api.game.spectator.SpectatorItem;
 import de.marcely.bedwars.api.game.spectator.SpectatorItemHandler;
+import ru.komiss77.enums.Game;
 import ru.komiss77.enums.GameState;
 import ru.komiss77.modules.games.GM;
 import ru.komiss77.utils.TCUtils;
@@ -42,25 +43,9 @@ public class BwAdd extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ArenaLst(), this);
         Bukkit.getPluginManager().registerEvents(new LobbyLst(), this);
 
-        /*for (Arena a:BedwarsAPI.getGameAPI().getArenas()) {
-            ApiOstrov.sendArenaData(
-                    TCUtils.stripColor(a.getDisplayName()),                        //arena name
-                    GameState.РАБОТАЕТ,
-                    "§bBedWars §1",                        //line0
-                    "§5"+a.getDisplayName(),                        //line1
-                    "§2Заходите!",                        //line2
-                    "",                        //line3
-                    "§8включение сервера",                        //extra
-                    0                     //players
-            );
-        }*/
-
         BedwarsAPI.onReady(() -> {
             regItems();
-            for (Arena a:BedwarsAPI.getGameAPI().getArenas()) {
-                sendLobbyState(a);
-                startTimer();
-            }
+            startTimer();
         });
 
     }    
@@ -131,15 +116,15 @@ public class BwAdd extends JavaPlugin {
         
         for (Arena a:BedwarsAPI.getGameAPI().getArenas()) {
             
-            ApiOstrov.sendArenaData(
-                    a.getDisplayName(),                        //arena name
-                    GameState.ВЫКЛЮЧЕНА,
-                    "§4█████████",                        //line0
-                    "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),                        //line1
-                    "§5"+a.getDisplayName(),                        //line2
-                    "§4█████████",                        //line3
-                    "§8выключение сервера",                        //extra
-                    0                     //players
+            GM.sendArenaData(
+                    Game.BW, 
+                    a.getDisplayName(),
+                    GameState.ВЫКЛЮЧЕНА, 
+                    0, 
+                    "§4█████████", 
+                    "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),
+                    "§5"+a.getDisplayName(), 
+                    "§4█████████"
             );
         }
         
@@ -174,16 +159,15 @@ public class BwAdd extends JavaPlugin {
                         
                         case LOBBY -> {
                             if (a.getLobbyTimeRemaining()>0 && a.getLobbyTimeRemaining()<90) {
-                                ApiOstrov.sendArenaData(
-                                        a.getDisplayName(),                        //arena name
-                                        GameState.СТАРТ,
-                                        "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),                        //line0
-                                        "§5"+a.getDisplayName(),                       //line1
-                                        "§1"+a.getPlayers().size()+" / "+a.getMaxPlayers(),                        //line2
-                                        //"§6§lДо Старта: §4"+a.getPlayers().get(0).getLevel(),                        //line3
-                                        "§6До Старта: §4"+((int)a.getLobbyTimeRemaining()),                        //line3
-                                        "§8ожидание в лобби",                        //extra
-                                        a.getPlayers().size()                     //players
+                                GM.sendArenaData(
+                                        Game.BW, 
+                                        a.getDisplayName(), 
+                                        GameState.СТАРТ, 
+                                        a.getPlayers().size(),
+                                        "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),
+                                        "§5"+a.getDisplayName(),
+                                        "§1"+a.getPlayers().size()+" / "+a.getMaxPlayers(),
+                                        "§6До Старта: §4"+((int)a.getLobbyTimeRemaining())
                                 );
                             }
                         }
@@ -196,40 +180,41 @@ public class BwAdd extends JavaPlugin {
                             }   
                             if (info.length()>15) info = info.substring(0,15);
 
-                            ApiOstrov.sendArenaData(
-                                    a.getDisplayName(),                        //arena name
-                                    GameState.ИГРА,
-                                    "§f>Зритель<",                        //line0
-                                    "§5"+a.getDisplayName(),                        //line1
-                                    "§4Игра: §l"+getFormattedTimeLeft(a.getIngameTimeRemaining()),                        //line2
-                                    //"§4Игра: §l"+getFormattedTimeLeft(getTimeLeft(a)),                        //line2
-                                    info,                        //line3
-                                    "идёт игра",                        //extra
-                                    a.getPlayers().size()                     //players
-                            );
+                                GM.sendArenaData(
+                                    Game.BW, 
+                                    a.getDisplayName(), 
+                                    GameState.ИГРА, 
+                                    a.getPlayers().size(),
+                                    "§f>Зритель<",
+                                    "§5"+a.getDisplayName(),
+                                    "§4Игра: §l"+getFormattedTimeLeft(a.getIngameTimeRemaining()),
+                                    info
+                                );
                         }
                             
                         
-                        case END_LOBBY -> ApiOstrov.sendArenaData(
-                                    a.getDisplayName(),                        //arena name
-                                    GameState.ФИНИШ,
-                                    "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),                        //line0
-                                    "§5"+a.getDisplayName(),                        //line1
-                                    "§5Заканчивается",                        //line2
-                                    "§4"+(a.getPlayers().isEmpty()?"":((int)a.getLobbyTimeRemaining())),                        //line3
-                                    "§8конец",                        //extra
-                                    a.getPlayers().size()                     //players
-                            );
+                        case END_LOBBY -> {
                             
-                        default -> {
+                            GM.sendArenaData(
+                                Game.BW, 
+                                a.getDisplayName(), 
+                                GameState.ФИНИШ, 
+                                a.getPlayers().size(),
+                                "§bBedWars §1"+a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam(),
+                                "§5"+a.getDisplayName(),
+                                "§5Заканчивается",
+                                "§4"+(a.getPlayers().isEmpty()?"":((int)a.getLobbyTimeRemaining()))
+                            );
                         }
+                            
+                        default -> {}
                             
                     }
                 }
 
                 sec++;
 
-                if (sec==60) {
+                if (sec==40) {
                     //перезагрузить таблички и инфо арен
                     GM.OnWorldsLoadDone();
                     for (Arena a:de.marcely.bedwars.api.GameAPI.get().getArenas()) {
@@ -243,17 +228,17 @@ public class BwAdd extends JavaPlugin {
     }
     
     
-    public static void sendLobbyState(final Arena arena) {
-        ApiOstrov.sendArenaData(
-            arena.getDisplayName(),                        //arena name
-            GameState.ОЖИДАНИЕ,
-            "§bBedWars §1"+ (arena.getEnabledTeams().isEmpty() ? "" : arena.getEnabledTeams().size()+"x"+arena.getPlayersPerTeam()),                        //line0
-            "§5"+arena.getDisplayName(),                       //line1
-            "§2Заходите!",                        //line2
-            "§1"+arena.getPlayers().size()+" / "+arena.getMaxPlayers(),                        //line3
-            "§8ожидание в лобби",                        //extra
-            arena.getPlayers().size()                     //players
-        );
+    public static void sendLobbyState(final Arena a) {
+            GM.sendArenaData(
+                Game.BW, 
+                a.getDisplayName(), 
+                GameState.ОЖИДАНИЕ, 
+                a.getPlayers().size(),
+                "§bBedWars §1"+ (a.getEnabledTeams().isEmpty() ? "" : a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam()),
+                "§5"+a.getDisplayName(),
+                "§2Заходите!",
+                "§1"+a.getPlayers().size()+" / "+a.getMaxPlayers()
+            );        
     }    
     
         

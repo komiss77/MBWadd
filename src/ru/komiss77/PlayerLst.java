@@ -12,7 +12,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -36,6 +35,7 @@ import de.marcely.bedwars.api.game.shop.layout.ShopLayoutType;
 import org.bukkit.Tag;
 import ru.komiss77.utils.LocationUtil;
 import ru.komiss77.enums.Data;
+import ru.komiss77.enums.Game;
 import ru.komiss77.enums.Stat;
 import ru.komiss77.events.BsignLocalArenaClick;
 import ru.komiss77.events.BungeeDataRecieved;
@@ -87,7 +87,7 @@ class PlayerLst implements Listener {
         final Player p = e.getPlayer();
         final Oplayer op = PM.getOplayer(p);
         op.tabSuffix("§6[§e"+e.getArena().getDisplayName()+"§6]", p);
-        final ArenaInfo ai = GM.getGameInfo(GM.GAME).getArena(Ostrov.MOT_D, e.getArena().getDisplayName());
+        final ArenaInfo ai = GM.getGameInfo(Game.BW).getArena(Ostrov.MOT_D, e.getArena().getDisplayName());
         //if (ai==null) { //багает при отсутствии связи с островом, лучше без него
         //    BwAdd.log_err("нет ArenaInfo для арены "+e.getArena().getName());
         //    e.addIssue(AddPlayerIssue.PLUGIN);
