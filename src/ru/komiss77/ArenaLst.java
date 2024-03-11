@@ -11,6 +11,8 @@ import de.marcely.bedwars.api.event.arena.ArenaStatusChangeEvent;
 import de.marcely.bedwars.api.event.arena.RoundEndEvent;
 import de.marcely.bedwars.api.event.arena.TeamEliminateEvent;
 import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import ru.komiss77.enums.Game;
 import ru.komiss77.enums.GameState;
 import ru.komiss77.enums.Stat;
@@ -55,6 +57,16 @@ class ArenaLst implements Listener {
 //Ostrov.log("onStatusChange LOBBY "+e.getArena().getDisplayName());
                 if (!a.getName().equals(a.getDisplayName())) { //отсылает английские названия при старте!!!
                     BwAdd.sendLobbyState(a);
+                }
+                int r = 0;
+                for (Entity en : a.getGameWorld().getEntities()) {
+                    if (en.getType() == EntityType.DROPPED_ITEM || en.getType() == EntityType.WOLF) {
+                        en.remove();
+                        r++;
+                    }
+                }
+                if (r>0) {
+                    Ostrov.log("Арена "+a.getCustomName()+", удалено [DROPPED_ITEM,WOLF] : "+r);
                 }
                 return;
             }

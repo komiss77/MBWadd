@@ -68,7 +68,8 @@ class PlayerLst implements Listener {
     
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onBungeeStatRecieved(final BungeeDataRecieved e) {  
+    public void onBungeeStatRecieved(final BungeeDataRecieved e) {
+//Ostrov.log("------BungeeDataRecieved");
         e.getOplayer().score.remove();
         LobbyLst.lobbyJoin(e.getPlayer());
 

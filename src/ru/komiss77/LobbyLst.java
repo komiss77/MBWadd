@@ -48,6 +48,7 @@ class LobbyLst implements Listener {
 
     
     public static void lobbyJoin (final Player p) {
+//Ostrov.log("------lobbyJoin");
         //if (!player.getWorld().getName().equals("lobby")) player.teleport(Bukkit.getWorld("lobby").getSpawnLocation(),PlayerTeleportEvent.TeleportCause.COMMAND);  //зациклило на onPlayerQuitArenaSpectatorEvent
         //player.setGameMode(GameMode.SURVIVAL);
         //player.getInventory().setArmorContents(new ItemStack[4]);
