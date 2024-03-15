@@ -1,6 +1,7 @@
 package ru.komiss77;
 
 import de.marcely.bedwars.api.arena.Arena;
+import de.marcely.bedwars.api.arena.Team;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -103,9 +104,14 @@ class ArenaLst implements Listener {
             case RUNNING -> {
                 Oplayer op;
                 for (Player p : a.getPlayers()) {
+                    final Team team = a.getPlayerTeam(p);
                     op = PM.getOplayer(p);
                     //op.setLocalChat(true);
-                    op.tag(false);
+                    //op.tag(false);
+                    if (team !=null) {
+                        //op.tag(TCUtils.toChat(team.getDyeColor()), null);
+                        op.beforeName(TCUtils.toChat(team.getDyeColor()), p);
+                    }
                     p.sendMessage("§8Чат переключен на Арену");
                     if (op.getStat(Stat.BW_game)<5) {
                         if (op.eng) {

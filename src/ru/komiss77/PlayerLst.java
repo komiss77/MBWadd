@@ -136,6 +136,7 @@ class PlayerLst implements Listener {
     public void onPlayerQuitArenaSpectatorEvent (final SpectatorQuitArenaEvent e) {
         final Oplayer op = PM.getOplayer(e.getPlayer());
         op.tabSuffix("§7[§3Лобби§7]", e.getPlayer());
+        LobbyLst.lobbyJoin(e.getPlayer());
     }
     
 

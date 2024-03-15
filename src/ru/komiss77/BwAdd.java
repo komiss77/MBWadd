@@ -216,7 +216,7 @@ public class BwAdd extends JavaPlugin {
 
                 if (sec==40) {
                     //перезагрузить таблички и инфо арен
-                    GM.OnWorldsLoadDone();
+                    GM.onWorldsLoadDone();
                     for (Arena a:de.marcely.bedwars.api.GameAPI.get().getArenas()) {
                         sendLobbyState(a);
                     }
