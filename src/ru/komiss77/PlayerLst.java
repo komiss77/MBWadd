@@ -1,11 +1,7 @@
 package ru.komiss77;
 
-import de.marcely.bedwars.api.BedwarsAPI;
-import de.marcely.bedwars.api.arena.AddPlayerIssue;
 import java.util.HashMap;
 import java.util.Map;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,6 +12,10 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.Tag;
+import de.marcely.bedwars.api.BedwarsAPI;
+import de.marcely.bedwars.api.arena.AddPlayerIssue;
 import de.marcely.bedwars.api.arena.Arena;
 import de.marcely.bedwars.api.arena.ArenaStatus;
 import de.marcely.bedwars.api.arena.Team;
@@ -27,15 +27,18 @@ import de.marcely.bedwars.api.event.player.PlayerJoinArenaEvent;
 import de.marcely.bedwars.api.event.player.PlayerKillPlayerEvent;
 import de.marcely.bedwars.api.event.player.PlayerOpenShopEvent;
 import de.marcely.bedwars.api.event.player.PlayerQuitArenaEvent;
+import de.marcely.bedwars.api.event.player.PlayerRejoinArenaEvent;
 import de.marcely.bedwars.api.event.player.PlayerTeamChangeEvent;
 import de.marcely.bedwars.api.event.player.PlayerUseSpecialItemEvent;
 import de.marcely.bedwars.api.event.player.SpectatorJoinArenaEvent;
 import de.marcely.bedwars.api.event.player.SpectatorQuitArenaEvent;
 import de.marcely.bedwars.api.game.shop.layout.ShopLayoutType;
-import org.bukkit.Tag;
+import de.marcely.bedwars.api.game.spectator.KickSpectatorReason;
+import de.marcely.bedwars.api.game.spectator.SpectateReason;
 import ru.komiss77.utils.LocationUtil;
 import ru.komiss77.enums.Data;
 import ru.komiss77.enums.Game;
+import ru.komiss77.enums.GameState;
 import ru.komiss77.enums.Stat;
 import ru.komiss77.events.BsignLocalArenaClick;
 import ru.komiss77.events.BungeeDataRecieved;
@@ -106,7 +109,21 @@ class PlayerLst implements Listener {
             return;
         }
         if (e.getArena().getStatus()==ArenaStatus.LOBBY) {
-            BwAdd.sendLobbyState(e.getArena());
+            switch (e.getCause()) {
+                case ARENAS_GUI, AUTO_JOIN, COMMAND, PLUGIN, SIGN, VOTING_SWITCH_ARENA -> {
+                    BwAdd.sendLobbyState(e.getArena(), e.getArena().getPlayers().size()+1);
+//Ostrov.log("PlayerJoinArenaEvent size="+e.getArena().getPlayers().size());
+                    //Ostrov.sync( ()-> {
+                        //if (e.getArena().getPlayers().contains(p)) {
+                        //p.teleport(Bukkit.getWorld("lobby").getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                        //p.teleport(e.getArena().getLobbyLocation());
+//Ostrov.log("reTP to "+e.getArena().getLobbyLocation());
+                        //}
+                    //},1);
+                }
+                default -> {}
+            }
+            
         }
         p.resetPlayerTime();
         p.resetPlayerWeather(); 
@@ -117,26 +134,44 @@ class PlayerLst implements Listener {
     public void onPlayerQuitArenaEvent (final PlayerQuitArenaEvent e) {
         final Player p = e.getPlayer();
         LobbyLst.lobbyJoin(p);
+        if (e.getArena().getStatus()==ArenaStatus.LOBBY) {
+//Ostrov.log("PlayerQuitArenaEvent size="+e.getArena().getPlayers().size());
+            BwAdd.sendLobbyState(e.getArena(), e.getArena().getPlayers().size());
+        }
         //final Oplayer op = PM.getOplayer(p);
         //op.setLocalChat(false);
         //p.sendMessage("§8Чат переключен на Общий");
     }        
     
+    @EventHandler (priority = EventPriority.MONITOR)  //dсюда можно повесить BW_loose если вышел во врея игры
+    public void onReJoin (final PlayerRejoinArenaEvent e) {
+        if (e.hasIssues()) return;
+        final Player p = e.getPlayer();
+        final Oplayer op = PM.getOplayer(p);
+        op.tabSuffix("§6[§e"+e.getArena().getDisplayName()+"§6]", p);
+
+    }        
+
+
     
     @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerJoinArenaSpectatorEvent (final SpectatorJoinArenaEvent e) { //переход игрока арены в статус зрителя после гибели
-        final Player p = e.getPlayer();
-        p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10, 1));
-        final Oplayer op = PM.getOplayer(p);
-        op.tabSuffix("§8[Зритель]", p);
+        if (e.getReason() == SpectateReason.ENTER || e.getReason() == SpectateReason.LOSE) {
+            final Player p = e.getPlayer();
+            p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10, 1));
+            final Oplayer op = PM.getOplayer(p);
+            op.tabSuffix("§8[Зритель]", p);
+        }
     }
     
     
     @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerQuitArenaSpectatorEvent (final SpectatorQuitArenaEvent e) {
-        final Oplayer op = PM.getOplayer(e.getPlayer());
-        op.tabSuffix("§7[§3Лобби§7]", e.getPlayer());
-        LobbyLst.lobbyJoin(e.getPlayer());
+        if (e.getReason()==KickSpectatorReason.KICK || e.getReason()==KickSpectatorReason.LEAVE) {
+            final Oplayer op = PM.getOplayer(e.getPlayer());
+            op.tabSuffix("§7[§3Лобби§7]", e.getPlayer());
+            LobbyLst.lobbyJoin(e.getPlayer());
+        }
     }
     
 
@@ -194,22 +229,25 @@ class PlayerLst implements Listener {
     
     @EventHandler (ignoreCancelled = false, priority = EventPriority.LOWEST)
     public void onTeleport (final PlayerTeleportEvent e) {
+//Ostrov.log("TP from="+e.getFrom()+" to="+e.getTo());
         if ( e.getTo().getWorld().getName().equals("lobby")) { //перемещения внутри лобби
             if (e.getCause()==PlayerTeleportEvent.TeleportCause.PLUGIN) {
                 e.setTo( e.getTo().clone().add( ApiOstrov.randInt(-1, 1), 0, ApiOstrov.randInt(-1, 1)) );
-                return;
+              //  return;
             }
         }
-        if ( !e.getTo().getWorld().getName().equals("lobby") && e.getPlayer().getGameMode()==GameMode.SPECTATOR) {
-            e.setTo(e.getTo().clone().add(0, 3, 0));
-        }
+       // if ( !e.getTo().getWorld().getName().equals("lobby") && e.getPlayer().getGameMode()==GameMode.SPECTATOR) {
+         //   e.setTo(e.getTo().clone().add(0, 3, 0));
+     //   }
         
     }
     
         
     @EventHandler (priority = EventPriority.MONITOR)
     public void onBedBreakEvent (final ArenaBedBreakEvent e) {
-        ApiOstrov.addStat(e.getPlayer(), Stat.BW_bed);
+        if (e.getResult()!= ArenaBedBreakEvent.Result.CANCEL) {
+            ApiOstrov.addStat(e.getPlayer(), Stat.BW_bed);
+        }
     }        
     
         

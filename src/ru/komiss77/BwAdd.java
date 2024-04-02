@@ -218,7 +218,7 @@ public class BwAdd extends JavaPlugin {
                     //перезагрузить таблички и инфо арен
                     GM.onWorldsLoadDone();
                     for (Arena a:de.marcely.bedwars.api.GameAPI.get().getArenas()) {
-                        sendLobbyState(a);
+                        sendLobbyState(a, a.getPlayers().size());
                     }
                 }
             
@@ -228,7 +228,7 @@ public class BwAdd extends JavaPlugin {
     }
     
     
-    public static void sendLobbyState(final Arena a) {
+    public static void sendLobbyState(final Arena a, final int players) { //при PlayerJoinArenaEvent игрок добавляется после эвента
             GM.sendArenaData(
                 Game.BW, 
                 a.getDisplayName(), 

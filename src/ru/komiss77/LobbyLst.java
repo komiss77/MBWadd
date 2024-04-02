@@ -1,5 +1,6 @@
 package ru.komiss77;
 
+import de.marcely.bedwars.api.BedwarsAPI;
 import de.marcely.bedwars.api.arena.Arena;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -80,6 +81,7 @@ class LobbyLst implements Listener {
         op.tabSuffix("§7[§3Лобби§7]", p);
         op.beforeName(null, p);//op.tag(true);
         //PM.getOplayer(p).setLocalChat(false);
+        BedwarsAPI.getGameAPI().getScoreboardHandler().hide(p);
     }    
 
     
@@ -96,7 +98,7 @@ class LobbyLst implements Listener {
 
             switch (item.getType()) {
                 case CAMPFIRE -> {
-                    p.playSound(p.getLocation(), Sound.BLOCK_PISTON_EXTEND , 20.0F, 20.0F);
+                    p.playSound(p.getEyeLocation(), Sound.BLOCK_PISTON_EXTEND , 20.0F, 20.0F);
                     //player.performCommand("mbedwars arenasgui");
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mbedwars arenasgui open default_basic "+p.getName());
                     return;
@@ -108,19 +110,19 @@ class LobbyLst implements Listener {
                 }
                     
                 case END_CRYSTAL -> {
-                    p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST , 20.0F, 20.0F);
+                    p.playSound(p.getEyeLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST , 20.0F, 20.0F);
                     p.performCommand("mbedwars stats");
                     return;
                 }
                     
                 case WARD_ARMOR_TRIM_SMITHING_TEMPLATE -> {
-                    p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP , 20.0F, 20.0F);
+                    p.playSound(p.getEyeLocation(), Sound.ENTITY_PLAYER_LEVELUP , 20.0F, 20.0F);
                     p.performCommand("profile");
                     return;
                 }
                     
                 case MAGMA_CREAM -> {
-                    p.playSound(p.getLocation(), Sound.ENTITY_ITEM_PICKUP , 20.0F, 20.0F);
+                    p.playSound(p.getEyeLocation(), Sound.ENTITY_ITEM_PICKUP , 20.0F, 20.0F);
                     ApiOstrov.sendToServer(p, "lobby0", "");
                     return;
                 }
@@ -155,7 +157,7 @@ class LobbyLst implements Listener {
             e.setCancelled(true);
             switch (item.getType()) {
                 case CAMPFIRE -> {
-                    p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP , 20.0F, 20.0F);
+                    p.playSound(p.getEyeLocation(), Sound.ENTITY_PLAYER_LEVELUP , 20.0F, 20.0F);
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mbedwars arenasgui open default_basic "+p.getName());
                     return;
                 }
@@ -166,19 +168,19 @@ class LobbyLst implements Listener {
                 }
                     
                 case END_CRYSTAL -> {
-                    p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST , 20.0F, 20.0F);
+                    p.playSound(p.getEyeLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST , 20.0F, 20.0F);
                     p.performCommand("mbedwars stats");
                     return;
                 }
                     
                 case WARD_ARMOR_TRIM_SMITHING_TEMPLATE -> {
-                    p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP , 20.0F, 20.0F);
+                    p.playSound(p.getEyeLocation(), Sound.ENTITY_PLAYER_LEVELUP , 20.0F, 20.0F);
                     p.performCommand("profile");
                     return;
                 }
                     
                 case MAGMA_CREAM -> {
-                    p.playSound(p.getLocation(), Sound.ENTITY_ITEM_PICKUP , 20.0F, 20.0F);
+                    p.playSound(p.getEyeLocation(), Sound.ENTITY_ITEM_PICKUP , 20.0F, 20.0F);
                     ApiOstrov.sendToServer(p, "lobby0", "");
                     return;
                 }

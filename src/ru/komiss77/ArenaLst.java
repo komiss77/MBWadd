@@ -8,10 +8,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import de.marcely.bedwars.api.event.arena.ArenaOutOfTimeEvent;
+import de.marcely.bedwars.api.event.arena.ArenaRegenerationStartEvent;
+import de.marcely.bedwars.api.event.arena.ArenaRegenerationStopEvent;
 import de.marcely.bedwars.api.event.arena.ArenaStatusChangeEvent;
 import de.marcely.bedwars.api.event.arena.RoundEndEvent;
 import de.marcely.bedwars.api.event.arena.TeamEliminateEvent;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import ru.komiss77.enums.Game;
@@ -20,6 +24,7 @@ import ru.komiss77.enums.Stat;
 import ru.komiss77.modules.games.GM;
 import ru.komiss77.modules.player.Oplayer;
 import ru.komiss77.modules.player.PM;
+import ru.komiss77.modules.world.WorldManager;
 import ru.komiss77.utils.TCUtils;
 
 
@@ -43,9 +48,20 @@ class ArenaLst implements Listener {
         }
         
     }    
-  
 
+    //@EventHandler (priority = EventPriority.MONITOR)
+    public void onRegen (final ArenaRegenerationStartEvent e) {
+//Ostrov.log("ArenaRegenerationStartEvent "+e.getArena().getName());
+    }
     
+    //фикс бага - пустая карта после первой игры,висит в воздухе
+    @EventHandler (priority = EventPriority.MONITOR)
+    public void onRegen (final ArenaRegenerationStopEvent e) {
+//Ostrov.log("ArenaRegenerationStopEvent "+e.getArena().getName());
+        final World w = e.getArena().getGameWorld();
+        Bukkit.unloadWorld(w, false);
+        WorldManager.load(Bukkit.getConsoleSender(), w.getName(), w.getEnvironment(), WorldManager.Generator.Empty);
+    }
     
     
     @EventHandler (priority = EventPriority.MONITOR)
@@ -57,7 +73,7 @@ class ArenaLst implements Listener {
             case LOBBY -> {
 //Ostrov.log("onStatusChange LOBBY "+e.getArena().getDisplayName());
                 if (!a.getName().equals(a.getDisplayName())) { //отсылает английские названия при старте!!!
-                    BwAdd.sendLobbyState(a);
+                    BwAdd.sendLobbyState(a, a.getPlayers().size());
                 }
                 int r = 0;
                 for (Entity en : a.getGameWorld().getEntities()) {
@@ -165,7 +181,7 @@ class ArenaLst implements Listener {
     @EventHandler
     public void onRoundEndEvent (final RoundEndEvent e) {  //вызывается если определилась команда-победители, после эвента выполняется ConfigValue.prize_commands
         final boolean fast = e.getArena().getRunningTime().getSeconds()<60;
-        Ostrov.log("getRunningTime="+e.getArena().getRunningTime().getSeconds()+" fast?"+fast);
+//Ostrov.log("getRunningTime="+e.getArena().getRunningTime().getSeconds()+" fast?"+fast);
         for (Player p : e.getArena().getPlayers()) {
             if (e.getWinners().contains(p)) {
                 ApiOstrov.addStat(p, Stat.BW_game);

@@ -1,6 +1,7 @@
 package ru.komiss77;
 
 
+import de.marcely.bedwars.api.BedwarsAPI;
 import de.marcely.bedwars.api.arena.Arena;
 import de.marcely.bedwars.api.arena.ArenaStatus;
 import de.marcely.bedwars.api.arena.Team;
@@ -23,11 +24,13 @@ import ru.komiss77.utils.TCUtils;
 class ChatLst implements Listener  {
     
     private static final Component onlyTeam;
+    private static final Component noMap;
     
     static {
         onlyTeam = Component.text("§7Сообщение видно только вашей команде.\n"
                                 + "§7Чтобы сказать всем командам,\n"
                                 + "§7в начале сообщения добавьте !");
+        noMap = TCUtils.format("§bBedWars \n§7Арена не выбрана");
     }
     
     public ChatLst() {
@@ -65,14 +68,24 @@ class ChatLst implements Listener  {
         final Arena arena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(p);
         
         Component c;
+        Component msg;
         
         if (arena==null) {
             
-            c = TCUtils.format("§8<карта?> §7")
-                    .hoverEvent(HoverEvent.showText(TCUtils.format("§bBedWars \n§7Арена не выбрана")))
-                ;
+            c = TCUtils.format("§8<карта?> §7").hoverEvent(HoverEvent.showText(noMap));
             e.setSenderGameInfo(c);
             e.setViewerGameInfo(c);
+            
+            //фикс - не видят игроки в лобби других арен, т.к. в другом мире
+            msg = TCUtils.format("§8<карта?> §7"+p.getName()+"§o≫ §f"+e.getMessage() )
+                                .hoverEvent(HoverEvent.showText(noMap));
+            for (Arena a : BedwarsAPI.getGameAPI().getArenas()) {
+                if (a.getStatus() == ArenaStatus.LOBBY) {
+                    for (Player pl : a.getPlayers()) {
+                        pl.sendMessage(msg);
+                    }
+                }
+            }
             
         } else {
             
@@ -80,8 +93,8 @@ class ChatLst implements Listener  {
             
             if (arena.getStatus() == ArenaStatus.RUNNING) {
                 
+                Arena recipientArena;
                 if (team !=null) {
-                    Component msg;
         
                     if ( e.getMessage().startsWith("!") ) { //если всем
                         
@@ -89,21 +102,26 @@ class ChatLst implements Listener  {
                                 .hoverEvent(HoverEvent.showText(Component.text("§7Сообщение всем командам")));
 
                         for (Player pl: e.viewers()) {
-                            pl.sendMessage(msg);
+                            recipientArena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(pl);
+//Ostrov.log("pl="+pl.getName()+" recipientArena="+recipientArena);
+                            if (recipientArena!=null && recipientArena.getName().equals(arena.getName())) {
+                                pl.sendMessage(msg);
+                            }
                         }
+                        p.sendMessage(msg);
                         e.viewers().clear();
                         //return;
                         
                     } else { //только в команде
 
-                        Arena recipientArena;
+                        
                         Team recipientTeam;
-
                         msg = TCUtils.format("§f"+p.getName()+"§o"+TCUtils.toChat(team.getDyeColor())+"≫ §f"+e.getMessage() )
                                 .hoverEvent(HoverEvent.showText(onlyTeam));
 
                         for (Player pl: e.viewers()) {
-                            recipientArena =de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(pl);
+                            recipientArena = de.marcely.bedwars.api.GameAPI.get().getArenaByPlayer(pl);
+//Ostrov.log("pl="+pl.getName()+" recipientArena="+recipientArena);
                             if (recipientArena!=null) {
                                 recipientTeam = recipientArena.getPlayerTeam(pl);
                                     if (recipientTeam!=null && recipientTeam.getDisplayName().equalsIgnoreCase(team.getDisplayName())) {
@@ -112,6 +130,7 @@ class ChatLst implements Listener  {
 
                             }
                         }
+                        p.sendMessage(msg);
                         e.viewers().clear();
                         //return;
                     }
