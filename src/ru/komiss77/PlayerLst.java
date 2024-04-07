@@ -109,10 +109,10 @@ class PlayerLst implements Listener {
             return;
         }
         if (e.getArena().getStatus()==ArenaStatus.LOBBY) {
+//Ostrov.log("PlayerJoinArenaEvent size="+e.getArena().getPlayers().size()+" cause="+e.getCause());
             switch (e.getCause()) {
                 case ARENAS_GUI, AUTO_JOIN, COMMAND, PLUGIN, SIGN, VOTING_SWITCH_ARENA -> {
                     BwAdd.sendLobbyState(e.getArena(), e.getArena().getPlayers().size()+1);
-//Ostrov.log("PlayerJoinArenaEvent size="+e.getArena().getPlayers().size());
                     //Ostrov.sync( ()-> {
                         //if (e.getArena().getPlayers().contains(p)) {
                         //p.teleport(Bukkit.getWorld("lobby").getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
@@ -170,7 +170,8 @@ class PlayerLst implements Listener {
         if (e.getReason()==KickSpectatorReason.KICK || e.getReason()==KickSpectatorReason.LEAVE) {
             final Oplayer op = PM.getOplayer(e.getPlayer());
             op.tabSuffix("§7[§3Лобби§7]", e.getPlayer());
-            LobbyLst.lobbyJoin(e.getPlayer());
+            //зритель после финиша нет предметов и идёт игровое табло
+            Ostrov.sync(() -> LobbyLst.lobbyJoin(e.getPlayer()));
         }
     }
     

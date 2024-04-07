@@ -233,11 +233,11 @@ public class BwAdd extends JavaPlugin {
                 Game.BW, 
                 a.getDisplayName(), 
                 GameState.ОЖИДАНИЕ, 
-                a.getPlayers().size(),
+                players,
                 "§bBedWars §1"+ (a.getEnabledTeams().isEmpty() ? "" : a.getEnabledTeams().size()+"x"+a.getPlayersPerTeam()),
                 "§5"+a.getDisplayName(),
                 "§2Заходите!",
-                "§1"+a.getPlayers().size()+" / "+a.getMaxPlayers()
+                "§1"+players+" / "+a.getMaxPlayers()
             );        
     }    
     
