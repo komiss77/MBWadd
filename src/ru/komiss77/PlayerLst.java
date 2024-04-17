@@ -38,7 +38,6 @@ import de.marcely.bedwars.api.game.spectator.SpectateReason;
 import ru.komiss77.utils.LocationUtil;
 import ru.komiss77.enums.Data;
 import ru.komiss77.enums.Game;
-import ru.komiss77.enums.GameState;
 import ru.komiss77.enums.Stat;
 import ru.komiss77.events.BsignLocalArenaClick;
 import ru.komiss77.events.BungeeDataRecieved;
@@ -171,7 +170,7 @@ class PlayerLst implements Listener {
             final Oplayer op = PM.getOplayer(e.getPlayer());
             op.tabSuffix("§7[§3Лобби§7]", e.getPlayer());
             //зритель после финиша нет предметов и идёт игровое табло
-            Ostrov.sync(() -> LobbyLst.lobbyJoin(e.getPlayer()));
+            Ostrov.sync(() -> LobbyLst.lobbyJoin(e.getPlayer()), 1);
         }
     }
     
