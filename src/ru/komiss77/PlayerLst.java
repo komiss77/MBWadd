@@ -166,7 +166,10 @@ class PlayerLst implements Listener {
     
     @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerQuitArenaSpectatorEvent (final SpectatorQuitArenaEvent e) {
-        if (e.getReason()==KickSpectatorReason.KICK || e.getReason()==KickSpectatorReason.LEAVE) {
+        if (e.getReason()==KickSpectatorReason.KICK 
+                || e.getReason()==KickSpectatorReason.LEAVE 
+                || e.getReason()==KickSpectatorReason.END_LOBBY 
+                || e.getReason()==KickSpectatorReason.ARENA_STOP) {
             final Oplayer op = PM.getOplayer(e.getPlayer());
             op.tabSuffix("§7[§3Лобби§7]", e.getPlayer());
             //зритель после финиша нет предметов и идёт игровое табло
