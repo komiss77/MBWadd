@@ -19,7 +19,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.scheduler.BukkitTask;
-import ru.komiss77.utils.TCUtils;
+import ru.komiss77.utils.TCUtil;
 
 public class SilverfishHandler extends CustomSpecialItemUseSession implements Listener {
 
@@ -50,7 +50,7 @@ public class SilverfishHandler extends CustomSpecialItemUseSession implements Li
     private void startUpdatingDisplayName() {
         if (ConfigValue.silverfish_name_tag != null && !ConfigValue.silverfish_name_tag.isEmpty()) {
             final String teamName = this.team.getDisplayName();
-            final String color = TCUtils.toChat(team.getDyeColor());//this.team.getBungeeChatColor().toString();
+            final String color = TCUtil.toChat(team.getDyeColor());//this.team.getBungeeChatColor().toString();
             final int amountOfTags = ConfigValue.silverfish_name_tag.size();
             long updateTime = (long) (ConfigValue.silverfish_life_duration / amountOfTags);
 
@@ -64,7 +64,7 @@ public class SilverfishHandler extends CustomSpecialItemUseSession implements Li
                         String unformattedDisplayName = (String) ConfigValue.silverfish_name_tag.get(this.i);
                         String displayName = Message.build(unformattedDisplayName != null ? unformattedDisplayName : "").placeholder("team-color", color).placeholder("team-name", teamName).placeholder("sqr", "■").done();
 
-                        SilverfishHandler.this.silverfish.customName(TCUtils.format(displayName));
+                        SilverfishHandler.this.silverfish.customName(TCUtil.form(displayName));
                         ++this.i;
                     } else {
                         SilverfishHandler.this.stop();

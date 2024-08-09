@@ -35,7 +35,7 @@ import de.marcely.bedwars.api.event.player.SpectatorQuitArenaEvent;
 import de.marcely.bedwars.api.game.shop.layout.ShopLayoutType;
 import de.marcely.bedwars.api.game.spectator.KickSpectatorReason;
 import de.marcely.bedwars.api.game.spectator.SpectateReason;
-import ru.komiss77.utils.LocationUtil;
+import ru.komiss77.utils.LocUtil;
 import ru.komiss77.enums.Data;
 import ru.komiss77.enums.Game;
 import ru.komiss77.enums.Stat;
@@ -46,7 +46,7 @@ import ru.komiss77.modules.games.ArenaInfo;
 import ru.komiss77.modules.games.GM;
 import ru.komiss77.modules.player.Oplayer;
 import ru.komiss77.modules.player.PM;
-import ru.komiss77.utils.TCUtils;
+import ru.komiss77.utils.TCUtil;
 
 
 //https://javadocs.mbedwars.com/de/marcely/bedwars/api/event/player/package-summary.html
@@ -76,9 +76,11 @@ class PlayerLst implements Listener {
         LobbyLst.lobbyJoin(e.getPlayer());
 
         final String wantToArena = e.getOplayer().getDataString(Data.WANT_ARENA_JOIN);
+//Ostrov.log_warn("wantToArena="+wantToArena);
         if (wantToArena.isEmpty() || wantToArena.equals("any")) return;
         for (final Arena arena : BedwarsAPI.getGameAPI().getArenas()) {
             if (arena.getDisplayName().equalsIgnoreCase(wantToArena)) {
+//Ostrov.log_warn("bw join "+arena.getName());
                 Ostrov.sync( () -> e.getPlayer().performCommand("bw join "+arena.getName()), 5);//не уменьшать!! на 1 - срабатывает lobbyJoin
             }
         }
@@ -185,7 +187,7 @@ class PlayerLst implements Listener {
         if (team==null) {
             op.beforeName(null, e.getPlayer());
         } else {
-            op.beforeName(TCUtils.toChat(team.getDyeColor()), e.getPlayer());
+            op.beforeName(TCUtil.toChat(team.getDyeColor()), e.getPlayer());
         }
     }
 
@@ -222,7 +224,7 @@ class PlayerLst implements Listener {
             if (e.hasItem()) {
                 player.sendMessage("§cСломать цель можно только рукой!");
                 e.setCancelled(true);
-            } else if(LocationUtil.getDistance( e.getPlayer().getLocation(), e.getClickedBlock().getLocation())>3) {
+            } else if(LocUtil.getDistance( e.getPlayer().getLocation(), e.getClickedBlock().getLocation())>3) {
                 e.getPlayer().sendMessage("Вы должны быть ближе к цели, чтобы сломать её!");
                 e.setCancelled(true);
             } 

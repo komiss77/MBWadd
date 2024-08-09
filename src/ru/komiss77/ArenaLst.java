@@ -25,7 +25,7 @@ import ru.komiss77.modules.games.GM;
 import ru.komiss77.modules.player.Oplayer;
 import ru.komiss77.modules.player.PM;
 import ru.komiss77.modules.world.WorldManager;
-import ru.komiss77.utils.TCUtils;
+import ru.komiss77.utils.TCUtil;
 
 
 class ArenaLst implements Listener {
@@ -34,8 +34,8 @@ class ArenaLst implements Listener {
     private static final Component helpEn;
 
     static {
-        helpRu = TCUtils.format("§7Суть Игры §8: §eВы должны защищать свою кровать. На всех базах есть специальный торговец, который снабжает бойцов экипировкой, броней, едой, блоками и другими важными вещами. Победу одержат игроки, разрушившие кровать и перебившие соперников.");
-        helpEn = TCUtils.format("§7Essence of the Game §8: §eYou must protect your bed. All bases have a special merchant who supplies fighters with equipment, armor, food, blocks and other important things. The victory will be won by the players who destroy the bed and kill their opponents.");
+        helpRu = TCUtil.form("§7Суть Игры §8: §eВы должны защищать свою кровать. На всех базах есть специальный торговец, который снабжает бойцов экипировкой, броней, едой, блоками и другими важными вещами. Победу одержат игроки, разрушившие кровать и перебившие соперников.");
+        helpEn = TCUtil.form("§7Essence of the Game §8: §eYou must protect your bed. All bases have a special merchant who supplies fighters with equipment, armor, food, blocks and other important things. The victory will be won by the players who destroy the bed and kill their opponents.");
     }
 
 
@@ -77,13 +77,13 @@ class ArenaLst implements Listener {
                 }
                 int r = 0;
                 for (Entity en : a.getGameWorld().getEntities()) {
-                    if (en.getType() == EntityType.DROPPED_ITEM || en.getType() == EntityType.WOLF) {
+                    if (en.getType() == EntityType.ITEM || en.getType() == EntityType.WOLF) {
                         en.remove();
                         r++;
                     }
                 }
                 if (r>0) {
-                    Ostrov.log("Арена "+a.getCustomName()+", удалено [DROPPED_ITEM,WOLF] : "+r);
+                    Ostrov.log("Арена "+a.getCustomName()+", удалено [ITEM,WOLF] : "+r);
                 }
                 return;
             }
@@ -125,8 +125,8 @@ class ArenaLst implements Listener {
                     //op.setLocalChat(true);
                     //op.tag(false);
                     if (team !=null) {
-                        //op.tag(TCUtils.toChat(team.getDyeColor()), null);
-                        op.beforeName(TCUtils.toChat(team.getDyeColor()), p);
+                        //op.tag(TCUtil.toChat(team.getDyeColor()), null);
+                        op.beforeName(TCUtil.toChat(team.getDyeColor()), p);
                     }
                     p.sendMessage("§8Чат переключен на Арену");
                     if (op.getStat(Stat.BW_game)<5) {

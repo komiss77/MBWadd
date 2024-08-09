@@ -39,18 +39,18 @@ public class SelectShopDesign implements InventoryProvider {
                 
                 content.add(ClickableItem.empty(new ItemBuilder(Material.SUGAR)
                     .name("§e"+shop.getName())
-                    .addLore("")
-                    .addLore("§aУже выбран")
-                    .addLore("")
+                    .lore("")
+                    .lore("§aУже выбран")
+                    .lore("")
                     .build())); 
 
             } else {
                 
                 content.add(ClickableItem.of(new ItemBuilder(getMat(type))
                     .name("§e"+shop.getName() )
-                    .addLore("")
-                    .addLore("§7ЛКМ - выбрать")
-                    .addLore("")
+                    .lore("")
+                    .lore("§7ЛКМ - выбрать")
+                    .lore("")
                     .build(), e-> {
                         if (e.isLeftClick()) {
                             p.closeInventory();
@@ -67,9 +67,9 @@ public class SelectShopDesign implements InventoryProvider {
 
         content.add(ClickableItem.of(new ItemBuilder(Material.SUGAR)
             .name("§fИспользовать обычный" )
-            .addLore("")
-            .addLore("§7ЛКМ - выбрать")
-            .addLore("")
+            .lore("")
+            .lore("§7ЛКМ - выбрать")
+            .lore("")
             .build(), e-> {
                 if (e.isLeftClick()) {
                     p.closeInventory();

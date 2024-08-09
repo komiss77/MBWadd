@@ -19,7 +19,7 @@ import de.marcely.bedwars.api.game.spectator.SpectatorItemHandler;
 import ru.komiss77.enums.Game;
 import ru.komiss77.enums.GameState;
 import ru.komiss77.modules.games.GM;
-import ru.komiss77.utils.TCUtils;
+import ru.komiss77.utils.TCUtil;
 import ru.komiss77.utils.inventory.SmartInventory;
 
 
@@ -176,7 +176,7 @@ public class BwAdd extends JavaPlugin {
                         case RUNNING -> {
                             String info = "";
                             for (Team t : a.getEnabledTeams()) { //getRemainingTeams ??
-                                info = info + TCUtils.toChat(t.getDyeColor()) + ( a.getPlayersInTeam(t).isEmpty() ? "X" : a.getPlayersInTeam(t).size()+" ");
+                                info = info + TCUtil.toChat(t.getDyeColor()) + ( a.getPlayersInTeam(t).isEmpty() ? "X" : a.getPlayersInTeam(t).size()+" ");
                             }   
                             if (info.length()>15) info = info.substring(0,15);
 
