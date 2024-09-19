@@ -66,7 +66,7 @@ class LobbyLst implements Listener {
         //player.setMaxHealth(20.0D);
     //    player.setHealth(20.0D);
         p.setFireTicks(0);
-    //    player.playerListName(TCUtils.format("§7"+player.getName()));
+    //    player.playerListName(TCUtil.form("§7"+player.getName()));
       //  perWorldTabList(player);
         //player.resetPlayerTime();
         //player.resetPlayerWeather();

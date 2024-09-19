@@ -90,25 +90,31 @@ class PlayerLst implements Listener {
     @EventHandler (priority = EventPriority.MONITOR)  //dсюда можно повесить BW_loose если вышел во врея игры
     public void onPlayerJoinArenaEvent (final PlayerJoinArenaEvent e) {
         final Player p = e.getPlayer();
+        p.resetPlayerTime();
+        p.resetPlayerWeather(); 
+        
         final Oplayer op = PM.getOplayer(p);
         op.tabSuffix("§6[§e"+e.getArena().getDisplayName()+"§6]", p);
         final ArenaInfo ai = GM.getGameInfo(Game.BW).getArena(Ostrov.MOT_D, e.getArena().getDisplayName());
-        //if (ai==null) { //багает при отсутствии связи с островом, лучше без него
-        //    BwAdd.log_err("нет ArenaInfo для арены "+e.getArena().getName());
-        //    e.addIssue(AddPlayerIssue.PLUGIN);
-         //   e.getPlayer().sendMessage("§cАрены ещё не готовы к работе!");
-         //   return;
-        //}
-        if (op.getStat(Stat.LEVEL)<ai.level) {
-            p.sendMessage("§cАрена будет доступна с уровня §e"+ai.level);
-            e.addIssue(AddPlayerIssue.NOT_BETA_USER);
-            return;
+        if (ai!=null) { //PlayerJoinArenaEvent проскакивает раньше создания оплеер при входе
+            //if (ai==null) { //багает при отсутствии связи с островом, лучше без него
+            //    BwAdd.log_err("нет ArenaInfo для арены "+e.getArena().getName());
+            //    e.addIssue(AddPlayerIssue.PLUGIN);
+             //   e.getPlayer().sendMessage("§cАрены ещё не готовы к работе!");
+             //   return;
+            //}
+            if (op.getStat(Stat.LEVEL)<ai.level) {
+                p.sendMessage("§cАрена будет доступна с уровня §e"+ai.level);
+                e.addIssue(AddPlayerIssue.NOT_BETA_USER);
+                return;
+            }
+            if (op.getStat(Stat.REPUTATION)<ai.reputation) {
+                p.sendMessage("§cАрена будет доступна при репутации выше §e"+ai.reputation);
+                e.addIssue(AddPlayerIssue.NOT_BETA_USER);
+                return;
+            }
         }
-        if (op.getStat(Stat.REPUTATION)<ai.reputation) {
-            p.sendMessage("§cАрена будет доступна при репутации выше §e"+ai.reputation);
-            e.addIssue(AddPlayerIssue.NOT_BETA_USER);
-            return;
-        }
+        
         if (e.getArena().getStatus()==ArenaStatus.LOBBY) {
 //Ostrov.log("PlayerJoinArenaEvent size="+e.getArena().getPlayers().size()+" cause="+e.getCause());
             switch (e.getCause()) {
@@ -126,8 +132,7 @@ class PlayerLst implements Listener {
             }
             
         }
-        p.resetPlayerTime();
-        p.resetPlayerWeather(); 
+        
     }        
     
     

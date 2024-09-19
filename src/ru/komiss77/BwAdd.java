@@ -144,7 +144,8 @@ public class BwAdd extends JavaPlugin {
     
     
     private static void startTimer() {
-                
+//Ostrov.log_warn("========================= startTimer");
+               
         new BukkitRunnable() {
             int sec=0;
             
@@ -214,12 +215,17 @@ public class BwAdd extends JavaPlugin {
 
                 sec++;
 
-                if (sec==40) {
+                if (sec==35) {
+//Ostrov.log_warn("========================= sec=35");
                     //перезагрузить таблички и инфо арен
-                    GM.onWorldsLoadDone();
                     for (Arena a:de.marcely.bedwars.api.GameAPI.get().getArenas()) {
                         sendLobbyState(a, a.getPlayers().size());
                     }
+                }
+                if (sec==40) {
+//Ostrov.log_warn("========================= sec=40");
+                    //перезагрузить таблички и инфо арен
+                    GM.onWorldsLoadDone();
                 }
             
             }

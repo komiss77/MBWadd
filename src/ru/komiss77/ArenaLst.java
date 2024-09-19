@@ -21,6 +21,7 @@ import org.bukkit.entity.EntityType;
 import ru.komiss77.enums.Game;
 import ru.komiss77.enums.GameState;
 import ru.komiss77.enums.Stat;
+import ru.komiss77.events.WorldsLoadCompleteEvent;
 import ru.komiss77.modules.games.GM;
 import ru.komiss77.modules.player.Oplayer;
 import ru.komiss77.modules.player.PM;
@@ -37,6 +38,7 @@ class ArenaLst implements Listener {
         helpRu = TCUtil.form("§7Суть Игры §8: §eВы должны защищать свою кровать. На всех базах есть специальный торговец, который снабжает бойцов экипировкой, броней, едой, блоками и другими важными вещами. Победу одержат игроки, разрушившие кровать и перебившие соперников.");
         helpEn = TCUtil.form("§7Essence of the Game §8: §eYou must protect your bed. All bases have a special merchant who supplies fighters with equipment, armor, food, blocks and other important things. The victory will be won by the players who destroy the bed and kill their opponents.");
     }
+ 
 
 
     
