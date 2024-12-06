@@ -17,6 +17,9 @@ import de.marcely.bedwars.api.game.spectator.Spectator;
 import de.marcely.bedwars.api.game.spectator.SpectatorItem;
 import de.marcely.bedwars.api.game.spectator.SpectatorItemHandler;
 import org.bukkit.World;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import ru.komiss77.enums.Game;
@@ -29,7 +32,7 @@ import ru.komiss77.utils.TCUtil;
 import ru.komiss77.utils.inventory.SmartInventory;
 
 
-public class BwAdd extends JavaPlugin {
+public class BwAdd extends JavaPlugin implements CommandExecutor {
     
     public static BwAdd instance;    
     public static MBedwars marcelyBWplugin;
@@ -38,6 +41,13 @@ public class BwAdd extends JavaPlugin {
     static {
     }
     
+    @Override //bwadd
+    public boolean onCommand(CommandSender cs, Command cmd, String label, String[] arg) {
+        if (!(cs instanceof Player)) return true;
+        Player p = (Player) cs;
+        GM.randomPlay(p, Game.BW, Ostrov.MOT_D);
+        return true;
+    }
     
     @Override
     public void onEnable() {
@@ -51,7 +61,9 @@ public class BwAdd extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new LobbyLst(), this);
 
         addon = new ExtraSpecialItemsAddon(this);
-                
+        
+        instance.getCommand("bwadd").setExecutor(this);
+        
         BedwarsAPI.onReady(() -> {
             regItems();
             startTimer();
