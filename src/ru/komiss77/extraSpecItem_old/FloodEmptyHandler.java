@@ -1,4 +1,4 @@
-package ru.komiss77.extraSpecItem;
+package ru.komiss77.extraSpecItem_old;
 
 import de.marcely.bedwars.api.event.player.PlayerUseSpecialItemEvent;
 import de.marcely.bedwars.tools.VarParticle;
@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import ru.komiss77.extraSpecItem.ExtraSpecialItemsPlugin;
-import ru.komiss77.extraSpecItem.CustomSpecialItemUseSession;
+import ru.komiss77.extraSpecItem_old.ExtraSpecialItemsPlugin;
+import ru.komiss77.extraSpecItem_old.CustomSpecialItemUseSession;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

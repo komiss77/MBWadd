@@ -1,4 +1,4 @@
-package ru.komiss77.extraSpecItem;
+package ru.komiss77.extraSpecItem_old;
 
 import de.marcely.bedwars.api.BedwarsAddon;
 

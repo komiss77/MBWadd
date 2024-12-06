@@ -16,8 +16,14 @@ import de.marcely.bedwars.api.game.lobby.LobbyItemHandler;
 import de.marcely.bedwars.api.game.spectator.Spectator;
 import de.marcely.bedwars.api.game.spectator.SpectatorItem;
 import de.marcely.bedwars.api.game.spectator.SpectatorItemHandler;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import ru.komiss77.enums.Game;
 import ru.komiss77.enums.GameState;
+import ru.komiss77.extra.CustomSpecialItem;
+import ru.komiss77.extra.ExtraSpecialItemsAddon;
+import ru.komiss77.extra.TowerHandler;
 import ru.komiss77.modules.games.GM;
 import ru.komiss77.utils.TCUtil;
 import ru.komiss77.utils.inventory.SmartInventory;
@@ -27,7 +33,8 @@ public class BwAdd extends JavaPlugin {
     
     public static BwAdd instance;    
     public static MBedwars marcelyBWplugin;
-
+    public static ExtraSpecialItemsAddon addon;
+    
     static {
     }
     
@@ -43,14 +50,18 @@ public class BwAdd extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ArenaLst(), this);
         Bukkit.getPluginManager().registerEvents(new LobbyLst(), this);
 
+        addon = new ExtraSpecialItemsAddon(this);
+                
         BedwarsAPI.onReady(() -> {
             regItems();
             startTimer();
+            CustomSpecialItem.registerAll();
+            TowerHandler.init();
         });
 
     }    
     
-    
+
     private void regItems() {
        
         final LobbyItemHandler ssd = new LobbyItemHandler("selectshopdesign", this) {
@@ -153,7 +164,36 @@ public class BwAdd extends JavaPlugin {
             public void run() {
                 
                 for (Arena a:de.marcely.bedwars.api.GameAPI.get().getArenas()) {
-                    if (a.getPlayers().isEmpty()) continue;
+/*World w = a.getGameWorld();
+if (w==null) {
+    Ostrov.log_warn("world=null");
+} else {
+    EnumMap<EntityType,Integer> map = new EnumMap(EntityType.class);
+    for (Entity e:w.getEntities()) {
+        if (map.containsKey(e.getType())) {
+            map.replace(e.getType(), map.get(e.getType())+1);
+        } else {
+            map.put(e.getType(), 1);
+        }
+    }
+    Ostrov.log_warn(map.toString());
+}*/
+                    if (a.getPlayers().isEmpty()) {
+                        World w = a.getGameWorld();
+                        if (w!=null && w.getEntityCount()>0) {
+                            int r = 0;
+                            for (Entity en : w.getEntities()) {
+                                if (en.getType() == EntityType.ITEM || en.getType() == EntityType.WOLF) {
+                                    en.remove();
+                                    r++;
+                                }
+                            }
+                            if (r>0) {
+                                Ostrov.log("Арена "+a.getCustomName()+", удалено [ITEM,WOLF] : "+r);
+                            }
+                        }
+                        continue;
+                    }
                     
                     switch (a.getStatus()) {
                         

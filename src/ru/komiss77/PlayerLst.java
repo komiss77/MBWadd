@@ -265,8 +265,10 @@ class PlayerLst implements Listener {
     public void onPlayerKillPlayerEvent (final PlayerKillPlayerEvent e) {
         final Arena a = e.getArena();
         final Team t = a.getPlayerTeam(e.getPlayer());
+//Ostrov.log("PlayerKillPlayerEvent "+e.getKiller().getName()+"->"+e.getPlayer().getName()+"("+t.getDisplayName()+") isBedDestroyed?"+a.isBedDestroyed(t));
         if (a.isBedDestroyed(t)) {
             ApiOstrov.addCustomStat(e.getKiller(), "bw_team");
+//Ostrov.log_warn("bw_team!!!!!!!!!");
         } else {
             ApiOstrov.addStat(e.getKiller(), Stat.BW_kill);
         }
@@ -282,15 +284,20 @@ class PlayerLst implements Listener {
     
     @EventHandler
     public void onPlayerEarnAchievementEvent (final PlayerEarnAchievementEvent e) {
-        Ostrov.sync( ()->Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "reward "+e.getPlayer().getName()+" exp add rnd:5:10 bedWars" ), 0);
+        Ostrov.sync( ()->Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "reward "+e.getPlayer().getName()+" exp add rnd_5_10 bedWars" ), 0);
     }
     
     
     @EventHandler
     public void onPlayerUseExtraItemEvent (final PlayerUseSpecialItemEvent e) {
-//Ostrov.log("PlayerUseSpecialItemEvent isTakingItem?"+e.isTakingItem());
-        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "reward "+e.getPlayer().getName()+" exp add rnd:5:10 bedWars" );
-        ApiOstrov.addCustomStat(e.getPlayer(), "bw_extra");
+//Ostrov.log_warn("PlayerUseSpecialItemEvent "+e.getSpecialItem().getId()+" isTakingItem?"+e.isTakingItem());
+        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "reward "+e.getPlayer().getName()+" exp add rnd_5_10 bedWars" );
+        Oplayer op = PM.getOplayer(e.getPlayer());
+        op.user_perms.add(e.getSpecialItem().getId().toLowerCase());
+        if (op.user_perms.contains("tower") && op.user_perms.contains("tntsheep") && op.user_perms.contains("bridge") ) {
+            ApiOstrov.addCustomStat(e.getPlayer(), "bw_extra");
+//Ostrov.log_warn("bw_extra!!!!!!!!!");
+        }
     }        
  
     @EventHandler

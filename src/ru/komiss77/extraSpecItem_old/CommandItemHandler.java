@@ -1,9 +1,8 @@
-package ru.komiss77.extraSpecItem;
+package ru.komiss77.extraSpecItem_old;
 
 import de.marcely.bedwars.api.event.player.PlayerUseSpecialItemEvent;
 import de.marcely.bedwars.api.message.Message;
 import de.marcely.bedwars.tools.Helper;
-import ru.komiss77.extraSpecItem.CustomSpecialItemUseSession;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;

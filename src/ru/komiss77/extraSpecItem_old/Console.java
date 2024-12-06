@@ -1,6 +1,6 @@
-package ru.komiss77.extraSpecItem;
+package ru.komiss77.extraSpecItem_old;
 
-import ru.komiss77.extraSpecItem.ExtraSpecialItemsPlugin;
+import ru.komiss77.extraSpecItem_old.ExtraSpecialItemsPlugin;
 
 public class Console {
 

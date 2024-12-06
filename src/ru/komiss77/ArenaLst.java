@@ -1,6 +1,7 @@
 package ru.komiss77;
 
 import de.marcely.bedwars.api.arena.Arena;
+import de.marcely.bedwars.api.arena.ArenaStatus;
 import de.marcely.bedwars.api.arena.Team;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +14,7 @@ import de.marcely.bedwars.api.event.arena.ArenaRegenerationStopEvent;
 import de.marcely.bedwars.api.event.arena.ArenaStatusChangeEvent;
 import de.marcely.bedwars.api.event.arena.RoundEndEvent;
 import de.marcely.bedwars.api.event.arena.TeamEliminateEvent;
+import java.time.Duration;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -21,7 +23,6 @@ import org.bukkit.entity.EntityType;
 import ru.komiss77.enums.Game;
 import ru.komiss77.enums.GameState;
 import ru.komiss77.enums.Stat;
-import ru.komiss77.events.WorldsLoadCompleteEvent;
 import ru.komiss77.modules.games.GM;
 import ru.komiss77.modules.player.Oplayer;
 import ru.komiss77.modules.player.PM;
@@ -61,14 +62,39 @@ class ArenaLst implements Listener {
     public void onRegen (final ArenaRegenerationStopEvent e) {
 //Ostrov.log("ArenaRegenerationStopEvent "+e.getArena().getName());
         final World w = e.getArena().getGameWorld();
-        Bukkit.unloadWorld(w, false);
-        WorldManager.load(Bukkit.getConsoleSender(), w.getName(), w.getEnvironment(), WorldManager.Generator.Empty);
+        Ostrov.sync( ()->{
+            Bukkit.unloadWorld(w, false); //иногда багает - мир аустой
+            WorldManager.load(Bukkit.getConsoleSender(), w.getName(), w.getEnvironment(), WorldManager.Generator.Empty);
+            /*int r = 0;
+            for (Entity en : w.getEntities()) {
+                if (en.getType() == EntityType.ITEM || en.getType() == EntityType.WOLF) {
+                    en.remove();
+                    r++;
+                }
+            }
+            if (r>0) {
+                Ostrov.log("Арена "+e.getArena().getCustomName()+", удалено [ITEM,WOLF] : "+r);
+            }*/
+        }, 1);
+        
     }
     
     
     @EventHandler (priority = EventPriority.MONITOR)
     public void onStatusChange (final ArenaStatusChangeEvent e) {
         final Arena a = e.getArena();
+        if (e.getOldStatus() == ArenaStatus.LOBBY) {
+            /*int r = 0;
+            for (Entity en : a.getGameWorld().getEntities()) {
+                if (en.getType() == EntityType.ITEM || en.getType() == EntityType.WOLF) {
+                    en.remove();
+                    r++;
+                }
+            }
+            if (r>0) {
+                Ostrov.log("Арена "+e.getArena().getCustomName()+", удалено [ITEM,WOLF] : "+r);
+            }*/
+        }
 //Ostrov.log(" ---- onArenaStatusUpdateEvent --- "+e.getArena().getName()+" "+e.getOldStatus()+" -> "+e.getNewStatus());
         switch (e.getNewStatus()) {
 
@@ -77,16 +103,7 @@ class ArenaLst implements Listener {
                 if (!a.getName().equals(a.getDisplayName())) { //отсылает английские названия при старте!!!
                     BwAdd.sendLobbyState(a, a.getPlayers().size());
                 }
-                int r = 0;
-                for (Entity en : a.getGameWorld().getEntities()) {
-                    if (en.getType() == EntityType.ITEM || en.getType() == EntityType.WOLF) {
-                        en.remove();
-                        r++;
-                    }
-                }
-                if (r>0) {
-                    Ostrov.log("Арена "+a.getCustomName()+", удалено [ITEM,WOLF] : "+r);
-                }
+                
                 return;
             }
 
@@ -182,14 +199,22 @@ class ArenaLst implements Listener {
     
     @EventHandler
     public void onRoundEndEvent (final RoundEndEvent e) {  //вызывается если определилась команда-победители, после эвента выполняется ConfigValue.prize_commands
-        final boolean fast = e.getArena().getRunningTime().getSeconds()<60;
-//Ostrov.log("getRunningTime="+e.getArena().getRunningTime().getSeconds()+" fast?"+fast);
+        final Duration dur = e.getArena().getRunningTime();
+        boolean fast = false;
+        if (dur!=null) {
+            fast = dur.getSeconds()<120;
+//Ostrov.log_warn(e.getArena().getName()+"getRunningTime="+dur.getSeconds()+" fast?"+fast);
+        }
         for (Player p : e.getArena().getPlayers()) {
             if (e.getWinners().contains(p)) {
                 ApiOstrov.addStat(p, Stat.BW_game);
                 ApiOstrov.addStat(p, Stat.BW_win);
+                if (fast) {
+                    ApiOstrov.addCustomStat(p, "bw_fast");
+//Ostrov.log_warn("bw_fast!!!!!!!!!");
+                }
                 
-            } else {
+            } else if (e.getLosers().contains(p)) {
                 ApiOstrov.addStat(p, Stat.BW_game);
                 ApiOstrov.addStat(p, Stat.BW_loose);
             }

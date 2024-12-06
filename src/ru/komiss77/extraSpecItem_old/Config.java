@@ -1,4 +1,4 @@
-package ru.komiss77.extraSpecItem;
+package ru.komiss77.extraSpecItem_old;
 
 import de.marcely.bedwars.tools.Helper;
 import de.marcely.bedwars.tools.Pair;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import ru.komiss77.extraSpecItem.ExtraSpecialItemsPlugin;
+import ru.komiss77.extraSpecItem_old.ExtraSpecialItemsPlugin;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
